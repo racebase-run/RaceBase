@@ -1,0 +1,245 @@
+@import (reference) 'colors.less';
+
+@font-face {
+  src: url('../fonts/AvenirNext.woff2') format('woff2'),
+       url('../fonts/AvenirNext.woff') format('woff');
+  font-family: 'Avenir Next';
+  font-display: fallback;
+}
+
+@font-face {
+  src: url('../fonts/DS-Digital.woff2') format('woff2');
+  font-family: 'DS Digital';
+  font-display: fallback;
+}
+
+html, body {
+  height: 100% !important;
+}
+
+body {
+  font-family: 'Avenir Next', 'Helvetica', sans-serif;
+}
+
+a {
+  color: @blue;
+}
+
+a.btn-primary, 
+a.btn-danger, 
+a:not([href]).btn-primary, 
+a:not([href]).btn-danger {
+  color: white !important;
+}
+
+b, strong {
+  font-weight: 500;
+}
+
+p {
+  line-height: 29px;
+  font-size: 17px;
+  @media (min-width: 768px) { 
+    line-height: 27px;
+    font-size: 16px;
+  }
+}
+
+.page-content p {
+
+}
+
+h1 {
+  text-align: left;
+  font-size: 25px;
+  font-weight: 500;
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+
+.w-90 {
+  width: 90%;
+}
+
+.w-95 {
+  width: 95%;
+}
+
+.btn-primary {
+  color: white !important;
+  border: 1px solid @dark-blue;
+}
+
+.btn-default {
+  background-color: white;
+  color: black;
+  border: 1px solid @light-grey;
+}
+
+.profile-pic {
+  vertical-align: top;
+  border-radius: 10px;
+  border: 1px solid @light-grey;
+  width: 58px;
+  height: 58px;
+  object-fit: cover;
+  object-position: 100% 0;
+}
+
+.brand-pic {
+  -webkit-filter: grayscale(100%);
+  filter: grayscale(100%);
+  width: 100px;
+  object-fit: cover;
+  display: block;
+  margin: 0 auto;
+}
+
+.close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 16px;
+}
+
+.table-responsive {
+
+  border-collapse: collapse;
+  border-radius: 5px;
+  border: 1px solid @light-grey;
+
+  th {
+    font-weight: 500;
+    border: none;
+    border-bottom: 1px solid @light-grey;
+    font-size: 14px;
+    text-transform: uppercase;
+  }
+
+  td, tr {
+    border: none !important;
+  }
+
+  td.vote-data {
+    display: table-cell;
+    width: 95px;
+    height: 100%;
+    text-align: center;
+    white-space: nowrap;
+    padding-left: 10px !important;
+
+    .votes {
+      width: 30px;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 20px;
+      text-align: center;
+
+      div {
+        width: 100%;
+        vertical-align: middle;
+      }
+    }
+  }
+
+  .race-title {
+    font-size: 18px;
+  }
+
+}
+
+h3 {
+  text-align: center;
+  font-weight: 400;
+  font-size: 30px;
+}
+
+textarea {
+  resize: vertical;
+}
+
+form input, textarea {
+  box-shadow: none !important;
+}
+
+.table-striped>tbody>tr:nth-of-type(odd) {
+  background-color: @light-blue;
+}
+
+.results-container, 
+.results-container *, 
+.table-responsive, 
+.table-responsive *, 
+table, table *, 
+ul, div, div * {
+  overflow-scrolling: touch !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+
+a.fas,
+a.far,
+a .fas,
+a .far {
+  cursor: pointer;
+}
+
+label {
+  font-weight: 400; 
+}
+
+.fa-user {
+  font-size: 13px;
+}
+
+.fa-thumbs-up {
+  color: @bright-blue;
+}
+
+.fa-thumbs-down {
+  color: #777;
+}
+
+.btn-primary .fa-thumbs-up, 
+.btn-primary .fa-thumbs-down {
+  color: white;
+}
+
+.dropdown-menu {
+  box-shadow: 0px 0px 3px 0px rgba(187,221,255,.3);
+  min-width: 0px;
+  li {
+    a {
+      line-height: 28p; 
+    }
+  }
+}
+
+.no-hover:hover, 
+.no-hover:active, 
+.no-hover:focus {
+  background: #fff !important;
+  outline: none !important;
+  cursor: default !important;
+  box-shadow: none !important;
+  border-color: #ccc !important;
+}
+
+input:not([type="radio"]):not([type="checkbox"]), textarea {
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  box-shadow: none !important;
+}
+
+ul {
+  list-style: none;
+  &.jump-to {
+    padding-left: 0;
+    margin-bottom: 10px;
+    text-align: center;
+    li {
+      text-align: center; 
+    }
+  }
+}

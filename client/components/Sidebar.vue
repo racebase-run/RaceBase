@@ -1,0 +1,280 @@
+<style lang="less" scoped>
+
+@import (reference) "~assets/less/colors.less";
+
+.sidebar {
+  border-right: 1px solid @light-grey;
+  height: auto;
+  overflow: auto;
+  border-bottom: 1px solid @light-grey;
+}
+
+.header {
+  width: 100%;
+  padding-top: 30px;
+
+  a {
+    color: black;
+    text-decoration: none;
+  }
+
+  h1, h2 {
+    font-weight: normal;
+    text-align: center;
+    width: 100%;
+  }
+
+  h1 {
+    font-size: 28px;
+    img {
+      width: 37px;
+    }
+  }
+
+  h2 {
+    font-size: 13px;
+  }
+
+  form {
+    margin: 0 auto;
+    width: 75%;
+
+
+    input {
+      font-size: 14px;
+    }
+
+    .input-group-text {
+      background-color: @bright-blue;
+      text-align: center;
+      color: white;
+      border: 1px solid @dark-blue;
+    }
+  }
+
+}
+
+.stories {
+  width: 80%;
+  margin: 0 auto;
+  margin-top: 20px;
+  h3 {
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    text-align: left;
+  }
+
+  h4 {
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 25px;
+  }
+
+  .metadata {
+    font-size: 13px;
+    text-transform: uppercase;
+  }
+
+  .subtitle {
+    font-size: 13px;
+  }
+
+  .more {
+    font-size: 12px;
+    text-transform: uppercase;
+    text-decoration: underline;
+    font-style: italic;
+  }
+}
+
+.profile {
+  max-width: 100%
+}
+
+.user {
+  h3 {
+    font-size: 18px;
+    font-weight: normal;
+    text-align: left;
+  }
+
+  h4 {
+    font-size: 14px;
+  }
+
+  .profile-pic {
+    width: 45px;
+    height: 45px;
+    margin: 0 auto;
+  }
+
+}
+
+.links {
+
+  text-align: center;
+
+  @media (min-width: 768px) { text-align: left; }
+  
+  a {
+    margin: 5px;
+    font-size: 14px;
+    color: @blue;
+  }
+  .btn-default {
+    color: black;
+  }
+}
+
+.site-links {
+  text-align: center;
+  width: 100%;
+  a {
+    font-size: 11px;
+    color: grey;
+    text-decoration: underline;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+}
+
+.actions {
+  text-align: center;
+}
+
+@media (min-width: 768px) { 
+  .sidebar {
+    border-bottom: none;
+    height: 100%;
+    min-height: 100%;
+  }
+}
+
+</style>
+
+<template>
+<div class="sidebar"> 
+  <div class="d-flex flex-column h-100">
+    <div class="header">
+      <h1> 
+        <nuxt-link to="/">
+          <img class="logo mb-2" src="/images/logo.svg"> RaceBase 
+        </nuxt-link>
+      </h1>
+      <h2>
+        <nuxt-link to="/"> Community sourced running results </nuxt-link>
+      </h2>
+
+      <form class="search-form mb-3 mt-3" @submit.prevent="search()">
+        <div class="input-group input-group-sm">
+          <input type="text" placeholder="search" v-model="searchText" class="form-control">
+          <div class="input-group-append">
+            <span class="input-group-text">
+              <fa icon="search" @click="search()"></fa>
+            </span>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div class="stories mt-auto mb-3 d-none d-md-block">
+      <h3 class="mb-3"> Top Stories </h3>
+
+      <div v-for="(post, index) in posts" class="mb-2">
+        <h4>
+          <nuxt-link :to="'/news/post/' + post.link" class="mb-2">
+            {{ post.title }}
+          </nuxt-link>
+        </h4>
+        <div class="metadata mb-1">
+          <span class="date mr-2">{{ post.date }}</span>
+          <span class="author">
+            <fa icon="user-circle"></fa>
+            {{ post.author }}
+          </span>
+        </div>
+        <div class="subtitle">{{ post.subtitle }}</div>
+      </div>
+
+      <nuxt-link to="/news" class="more">More Stories</nuxt-link>
+    </div>
+
+    <div class="user mt-3 mt-md-auto mx-md-0 mx-auto" v-if="isLoggedIn">
+      <div class="profile row mb-1 pl-3">
+        <div class="col-3 pl-4">
+          <img 
+            v-if="!user.profilePicUrl"
+            class="profile-pic mr-3 d-inline-block" 
+            src="/images/default.png"
+          />
+          <img 
+            v-if="user.profilePicUrl"
+            class="profile-pic mr-3 d-inline-block"
+            :src="user.profilePicUrl.replace('http', 'https')"
+          />
+        </div>
+        <div class="col-9">
+          <h3 class="mb-2"> {{ user.name }} </h3>
+          <h4> 
+            <span v-if="user.athlete_id">
+              <nuxt-link :to="'/athlete/' + user.athlete_id">
+                @{{ user.athlete_id }} 
+              </nuxt-link>
+            </span>
+            <span v-if="!user.athlete_id">
+              <nuxt-link to="/user/settings">Claim an ID</nuxt-link>
+            </span>
+          </h4>
+        </div>
+      </div>
+      <div class="links pl-4">
+        <nuxt-link to="/user/content">Content</nuxt-link>
+        <nuxt-link to="/user/settings">Settings</nuxt-link>
+        <a @click="logOut()" href="#">Log Out</a>
+      </div>
+    </div>
+
+    <div class="actions links mt-auto" v-if="!isLoggedIn">
+      <nuxt-link class="btn btn-default" to="/login">Log In</nuxt-link>
+      <nuxt-link class="btn btn-primary" to="/signup">Sign Up</nuxt-link>
+    </div>
+
+    <div class="site-links links mt-2 pl-0 pb-4">
+      <nuxt-link to="/developers">For Developers</nuxt-link>
+      <nuxt-link to="/press">For the Press</nuxt-link>
+      <nuxt-link to="/privacy">Privacy</nuxt-link>
+    </div>
+
+  </div>
+</div>
+</template>
+
+<script>
+export default {
+  data () {
+    return {
+      searchText: ""
+    }
+  }, 
+  computed: {
+    posts () {
+      return this.$store.state.posts.posts.slice(0,2)
+    }, 
+    user () {
+      return this.$store.state.auth.user
+    },
+    isLoggedIn () {
+      return this.$store.getters['auth/isLoggedIn']
+    }
+  }, 
+  methods: {
+    logOut: async function() {
+      this.$store.dispatch('auth/logout')
+    }, 
+    search: function() {
+      this.$router.push({ name: 'search-query', params: { query: this.searchText }})
+    }
+  }
+}
+</script>
