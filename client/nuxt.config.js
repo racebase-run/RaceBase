@@ -105,11 +105,6 @@ module.exports = {
   },
 
   /*
-  ** Build directory
-  */
-  buildDir: '.nuxt',
-
-  /*
   ** Build configuration
   */
   build: {
