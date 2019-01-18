@@ -5,6 +5,7 @@ var Race = require('../models/race');
 var Result = require('../models/result');
 
 var moment = require('moment');
+var authCheck = require('../auth')
 
 router.get('/results/:query/:page/:length', function(req, res) {
   if (!req.params.query || req.params.query == "" || typeof req.params.query== 'undefined') {
@@ -65,5 +66,32 @@ router.get('/races/:query', function(req, res) {
     });
   }
 });
+
+router.get('/user/races/:query', authCheck, function(req, res) {
+  if (!req.params.query || req.params.query == "" || typeof req.params.query== 'undefined') {
+    res.send("Invalid search!");
+  } else {
+
+    Race.find({
+      $text: { $search: req.params.query }, 
+      user_id: req.userId
+    }, { 
+      score : { $meta: 'textScore' } 
+    }).sort({
+      score: {
+        $meta: 'textScore'
+      }
+    }).lean().exec( 
+    function(err, results) {
+      if (err)
+        res.send(err);
+      for (x in results) {
+        results[x].date = moment(results[x].date).format('MMMM D YYYY');
+      }
+      results.sort({ score : { $meta: 'textScore' } });
+      res.json(results);
+    });
+  }
+})
 
 module.exports = router; 
