@@ -201,6 +201,11 @@
     </div>
 
     <div class="user mt-3 mt-md-auto mx-md-0 mx-auto" v-if="isLoggedIn">
+
+<!--       <div class="btn btn-default mb-3 mx-auto d-table">
+        <nuxt-link to="/user/content" class="d-block mx-auto"> Add Race </nuxt-link>
+      </div> -->
+
       <div class="profile row mb-1 pl-3">
         <div class="col-3 pl-4">
           <img 
@@ -233,6 +238,7 @@
         <nuxt-link to="/user/settings">Settings</nuxt-link>
         <a @click="logOut()" href="#">Log Out</a>
       </div>
+
     </div>
 
     <div class="actions links mt-auto" v-if="!isLoggedIn">
