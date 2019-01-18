@@ -5,9 +5,9 @@
   "author": "rbreeze",
   "private": true,
   "scripts": {
-    "dev": "nuxt",
-    "build": "nuxt build",
-    "start": "node server/index.js",
+    "dev": "cross-env NODE_ENV=development nuxt",
+    "build": "cross-env NODE_ENV=production nuxt build",
+    "start": "cross-env NODE_ENV=development nuxt",
     "generate": "nuxt generate"
   },
   "dependencies": {
