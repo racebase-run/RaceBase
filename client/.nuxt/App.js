@@ -5,18 +5,6 @@ import '../node_modules/@fortawesome/fontawesome-svg-core/styles.css'
 
 import '../node_modules/bootstrap/dist/css/bootstrap.css'
 
-import '../node_modules/@fortawesome/fontawesome-svg-core/styles.css'
-
-import '../node_modules/bootstrap/dist/css/bootstrap.css'
-
-import '../node_modules/@fortawesome/fontawesome-svg-core/styles.css'
-
-import '../node_modules/bootstrap/dist/css/bootstrap.css'
-
-import '../node_modules/@fortawesome/fontawesome-svg-core/styles.css'
-
-import '../node_modules/bootstrap/dist/css/bootstrap.css'
-
 import '../assets/less/basics.less'
 
 import _6f6c098b from '../layouts/default.vue'
@@ -95,8 +83,6 @@ export default {
     },
 
     setLayout(layout) {
-      if(layout && typeof layout !== 'string') throw new Error('[nuxt] Avoid using non-string value as layout property.')
-
       if (!layout || !layouts['_' + layout]) {
         layout = 'default'
       }

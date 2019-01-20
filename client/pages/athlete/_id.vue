@@ -332,12 +332,18 @@ h3.event-header {
       <br/> to add custom images.
     </div>
 
-    <img class="brand-pic brand mb-4" v-if="athlete" :src="athlete.brandPicUrl.replace('http', 'https')"/>
+    <img 
+      class="brand-pic brand mb-4" 
+      v-if="athlete.brandPicUrl" 
+      :src="athlete.brandPicUrl.replace('http', 'https')"
+    />
+    
     <img 
       v-if="athlete.featuredPicUrl"
       class="user-image mb-4" 
       :src="athlete.featuredPicUrl.replace('http', 'https')"
     />
+
     <div class="table-responsive personal-records mt-4 mx-auto w-90">
       <table class="table mb-2">
         <thead>
