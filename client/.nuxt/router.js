@@ -3,8 +3,8 @@ import Router from 'vue-router'
 import { interopDefault } from './utils'
 
 const _14020fcc = () => interopDefault(import('../pages/about.vue' /* webpackChunkName: "pages/about" */))
+const _ca9b4a84 = () => interopDefault(import('../pages/contribute.vue' /* webpackChunkName: "pages/contribute" */))
 const _667a3f8c = () => interopDefault(import('../pages/developers.vue' /* webpackChunkName: "pages/developers" */))
-const _499e6a40 = () => interopDefault(import('../pages/donate.vue' /* webpackChunkName: "pages/donate" */))
 const _053ce4b0 = () => interopDefault(import('../pages/login.vue' /* webpackChunkName: "pages/login" */))
 const _01f47e67 = () => interopDefault(import('../pages/news/index.vue' /* webpackChunkName: "pages/news/index" */))
 const _2da14582 = () => interopDefault(import('../pages/press.vue' /* webpackChunkName: "pages/press" */))
@@ -86,13 +86,13 @@ export function createRouter() {
       component: _14020fcc,
       name: "about"
     }, {
+      path: "/contribute",
+      component: _ca9b4a84,
+      name: "contribute"
+    }, {
       path: "/developers",
       component: _667a3f8c,
       name: "developers"
-    }, {
-      path: "/donate",
-      component: _499e6a40,
-      name: "donate"
     }, {
       path: "/login",
       component: _053ce4b0,

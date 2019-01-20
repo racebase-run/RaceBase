@@ -20,11 +20,30 @@
       Add Race &nbsp;<fa icon="pencil-alt"></fa>
     </a>
 
-      <div class="no-races user-no-races mt-3">
-        <div class="alert alert-info" v-if="Object.keys(myRaces).length == 0 && !addingRace"> 
-          You haven't added any races. Add one by clicking "Add Race" above. 
-        </div>
+    <form class="search-form mb-3 mt-3 mx-auto" @submit.prevent="search(false)">
+      <div class="input-group search home-search">
+        <input 
+          type="text" 
+          class="form-control" 
+          v-model="searchInput"
+          placeholder="Search" 
+          @keyup="search(true)"
+        />
+        <span class="input-group-append" id="basic-addon2">
+          
+          <span class="input-group-text">
+            <fa icon="search" @click="search(false)"></fa>
+          </span>
+
+        </span>
       </div>
+    </form>
+
+    <div class="no-races user-no-races mt-3">
+      <div class="alert alert-info" v-if="Object.keys(myRaces).length == 0 && !addingRace"> 
+        You haven't added any races. Add one by clicking "Add Race" above. 
+      </div>
+    </div>
 
   </div>
 
@@ -79,6 +98,7 @@ export default {
         date: "", 
         csv: "",
       },
+      searchInput: "",
       currentPage: 0,
       currentRace: {},
       myRaces: {}
@@ -87,8 +107,9 @@ export default {
   methods : {
     loadRaces: async function() {
       let id = this.$store.state.auth.user._id
-      let myRaces = await (this.$axios.$get('user/' + id + '/races')).docs
-      this.myRaces = myRaces ? myRaces.reverse() : {}
+      let myRaces = await (this.$axios.$get('user/' + id + '/races'))
+      if (this.myRaces)
+        this.myRaces = myRaces.docs ? myRaces.docs.reverse() : {}
     },
     closeWindow: function() {
       this.addingRace = false
@@ -109,6 +130,21 @@ export default {
       .then((res) => {
         this.loadRaces()
       })
+    }, 
+    search: function(typing) {
+      if (!this.searchInput) {
+        this.loadRaces()
+      } else {
+        this.$axios.$get('search/user/races/' + this.searchInput)
+        .then((res) => {
+          if (!typing || res.length > 0) {
+            this.myRaces = res; 
+            this.searching = true; 
+          } else {
+            this.searching = false;
+          }
+        });   
+      }
     }
   }
 }

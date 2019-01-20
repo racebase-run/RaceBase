@@ -376,7 +376,7 @@ import wordsToNumbers from 'words-to-numbers'
 
 let format = async function(x) {
   try {
-    x = wordsToNumbers(x.toLowerCase()); 
+    x = wordsToNumbers(x.toLowerCase()) || 0; 
     if (x.match(/(\d\s?k|\d\s?km|(meter)(s)?|00\s?m)/g)) {
       var meters = await getMeters(x);
       if (meters > 3000 && Number.isInteger(meters / 1000))

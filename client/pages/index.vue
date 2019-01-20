@@ -314,7 +314,7 @@ h4 {
           </a>
         </div>
         <p class="mb-2"> Want to help us make RaceBase better? </p>
-        <a class="more" href="#"> Learn about ways you can help </a>
+        <nuxt-link to="contribute"> Learn about ways you can help </nuxt-link>
       </div>
     </div>
   </div>

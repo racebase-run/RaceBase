@@ -1,4 +1,8 @@
 node_modules/
 .env
+<<<<<<< HEAD
 .env*
 .DS_STORE
+=======
+dev.sh
+>>>>>>> hotfix
