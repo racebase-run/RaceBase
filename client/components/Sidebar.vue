@@ -25,14 +25,14 @@
   }
 
   h1 {
-    font-size: 28px;
-    img {
-      width: 37px;
+    font-size: 35px;
+    .logo {
+      width: 39px;
     }
   }
 
   h2 {
-    font-size: 13px;
+    font-size: 14px;
   }
 
   form {
@@ -44,12 +44,6 @@
       font-size: 14px;
     }
 
-    .input-group-text {
-      background-color: @bright-blue;
-      text-align: center;
-      color: white;
-      border: 1px solid @dark-blue;
-    }
   }
 
 }
@@ -121,10 +115,18 @@
     margin: 5px;
     font-size: 14px;
     color: @blue;
+    cursor: pointer !important;
+    text-transform: uppercase;
   }
+
   .btn-default {
     color: black;
   }
+
+  .logout {
+    font-weight: 600;
+  }
+
 }
 
 .site-links {
@@ -168,7 +170,7 @@
 
       <form class="search-form mb-3 mt-3" @submit.prevent="search()">
         <div class="input-group input-group-sm">
-          <input type="text" placeholder="search" v-model="searchText" class="form-control">
+          <input type="text" placeholder="Search..." v-model="searchText" class="form-control">
           <div class="input-group-append">
             <span class="input-group-text">
               <fa icon="search" @click="search()"></fa>
@@ -235,8 +237,8 @@
       </div>
       <div class="links pl-4">
         <nuxt-link to="/user/content">Content</nuxt-link>
-        <nuxt-link to="/user/settings">Settings</nuxt-link>
-        <a @click="logOut()" href="#">Log Out</a>
+        <nuxt-link to="/user/settings"><fa icon="sliders-h"></fa></nuxt-link>
+        <a @click="logOut()" class="logout" href="#">Log Out</a>
       </div>
 
     </div>
@@ -279,7 +281,7 @@ export default {
       this.$store.dispatch('auth/logout')
     }, 
     search: function() {
-      this.$router.push({ name: 'search-query', params: { query: this.searchText }})
+      this.$router.push({ path: '/search/' + encodeURI(this.searchText) })
     }
   }
 }

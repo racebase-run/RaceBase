@@ -20,16 +20,6 @@ p {
   line-height: 24px;
 }
 
-.btn-primary {
-  color: white;
-  border: 1px solid @dark-blue;
-}
-
-.btn-default {
-  background-color: white;
-  border: 1px solid @light-grey;
-}
-
 .more {
   font-style: italic;
 }
@@ -118,14 +108,20 @@ h4 {
   height: 50px;
 }
 
-.search-form {
-  margin: 0 auto;
+.search-container {
   width: 100%;
 
-  .input-group {
+  .search-form {
     margin: 0 auto;
-    width: 320px;
+    width: auto;
+    display: table;
+
+    .input-group {
+      margin: 0 auto;
+      width: 320px;
+    }
   }
+
 }
 
 .user {
@@ -147,15 +143,6 @@ h4 {
 .support {
   .insta {
     font-size: 17px;
-  }
-}
-
-.input-group-append {
-  .input-group-text {
-    z-index: 10;
-    background-color: @bright-blue;
-    color: white;
-    border: 1px solid @dark-blue;
   }
 }
 
@@ -195,21 +182,23 @@ h4 {
     <h1> <img class="logo" src="/images/logo.svg"> RaceBase </h1>
     <h2> Community sourced running results </h2>
 
-    <form class="search-form mb-3" @submit.prevent="search()">
-      <div class="input-group">
-        <input 
-          type="text" 
-          placeholder="search" 
-          v-model="searchInput" 
-          class="form-control"
-        />
-        <div class="input-group-append">
-          <span class="input-group-text" @click="search()" style="cursor: pointer">
-            <fa icon="search"></fa>
-          </span>
+    <div class="search-container">
+      <form class="search-form mb-3" @submit.prevent="search()">
+        <div class="input-group">
+          <input 
+            type="text" 
+            placeholder="search" 
+            v-model="searchInput" 
+            class="form-control"
+          />
+          <div class="input-group-append">
+            <span class="input-group-text" @click="search()" style="cursor: pointer">
+              <fa icon="search"></fa>
+            </span>
+          </div>
         </div>
-      </div>
-    </form>
+      </form>
+    </div>
     
     <div class="buttons" v-if="!isLoggedIn">
       <nuxt-link to="signup" class="btn btn-primary"> Sign Up </nuxt-link>
