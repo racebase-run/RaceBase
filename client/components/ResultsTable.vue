@@ -9,6 +9,10 @@ h4 {
 
 .table-responsive {
   overflow-x: auto;
+
+  .pencil {
+    color: @purple;
+  }
 }
 
 .team-toggle {
@@ -91,7 +95,7 @@ td.team {
             <th>Time</th>
             <th>Team</th>
             <th class="nowrap">
-              <fa icon="user"></fa>
+              <fa icon="user" class="mr-1"></fa> User
             </th>
           </tr>
         </thead>
@@ -107,9 +111,8 @@ td.team {
             <td class="nowrap">
               <a v-if="$store.state.auth.user._id == result.user_id || !result.user_id" 
                 @click="$emit('openEditWindow', result)">
-                <fa icon="pencil-alt"></fa>
+                <fa icon="pencil-alt" class="pencil mr-1"></fa>
               </a>
-              &nbsp;
               <router-link v-if="result.athlete_id" :to="'/athlete/' + result.athlete_id">
                 {{ result.athlete }}
               </router-link>
@@ -120,7 +123,6 @@ td.team {
 
             <td class="data time-data nowrap">
               {{ result.time }} 
-              &nbsp;
               <fa icon="check" class="verified-data" v-if="result.verified"></fa>
             </td>
 

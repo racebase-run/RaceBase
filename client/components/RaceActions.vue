@@ -1,5 +1,13 @@
 <style lang="less" scoped>
 
+@import (reference) "~assets/less/colors.less";
+
+.vote-logged-out {
+  .btn {
+    border: 1px solid @light-grey !important;
+    box-shadow: none !important;
+  }
+}
 </style>
 
 <template>
@@ -41,7 +49,7 @@
 
   </div>
 
-  <div v-if="!isLoggedIn" class="btn-group vote" role="group">
+  <div v-if="!isLoggedIn" class="btn-group vote-logged-out" role="group">
 
     <div class="no-hover btn btn-default"> 
       {{ race.upvotes || 0 }}

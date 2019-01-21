@@ -1,2 +1,4 @@
 node_modules/
-.envdev.sh
+.env
+dev.sh
+prod.sh
