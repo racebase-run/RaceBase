@@ -1,17 +1,50 @@
 @import (reference) 'colors.less';
 
 @font-face {
-  src: url('../fonts/AvenirNext.woff2') format('woff2'),
-       url('../fonts/AvenirNext.woff') format('woff');
-  font-family: 'Avenir Next';
-  font-display: fallback;
-}
-
-@font-face {
   src: url('../fonts/DS-Digital.woff2') format('woff2');
   font-family: 'DS Digital';
   font-display: fallback;
 }
+
+@font-face {
+  src: url('../fonts/avenir-next/thin.woff2') format('woff2'), 
+       url('../fonts/avenir-next/thin.woff') format('woff');
+  font-family: 'Avenir Next';
+  font-display: fallback;
+  font-weight: 300;
+}
+
+@font-face {
+  src: url('../fonts/avenir-next/regular.woff') format('woff');
+  font-family: 'Avenir Next';
+  font-display: fallback;
+  font-weight: 400;
+}
+
+@font-face {
+  src: url('../fonts/avenir-next/medium.woff') format('woff');
+  font-family: 'Avenir Next';
+  font-display: fallback;
+  font-weight: 500;
+}
+
+@font-face {
+  src: url('../fonts/avenir-next/demi.woff2') format('woff2'), 
+       url('../fonts/avenir-next/demi.woff') format('woff');
+  font-family: 'Avenir Next';
+  font-display: fallback;
+  font-weight: 600;
+}
+
+@font-face {
+  src: url('../fonts/avenir-next/bold.woff2') format('woff2'), 
+       url('../fonts/avenir-next/bold.woff') format('woff');
+  font-family: 'Avenir Next';
+  font-display: fallback;
+  font-weight: 700;
+}
+
+@shadow: 0px 3px 5px 1px rgba(200,200,200,.38);
 
 html, body {
   height: 100% !important;
@@ -23,6 +56,7 @@ body {
 
 a {
   color: @blue;
+  cursor: pointer !important;
 }
 
 a.btn-primary, 
@@ -45,10 +79,6 @@ p {
   }
 }
 
-.page-content p {
-
-}
-
 h1 {
   text-align: left;
   font-size: 25px;
@@ -67,25 +97,27 @@ h1 {
   width: 95%;
 }
 
+.btn {
+  box-shadow: @shadow;
+}
+
 .btn-primary {
   color: white !important;
-  border: 1px solid @dark-blue;
 }
 
 .btn-default {
   background-color: white;
   color: black;
-  border: 1px solid @light-grey;
 }
 
 .profile-pic {
   vertical-align: top;
   border-radius: 10px;
-  border: 1px solid @light-grey;
   width: 58px;
   height: 58px;
   object-fit: cover;
   object-position: 100% 0;
+  box-shadow: @shadow;
 }
 
 .brand-pic {
@@ -108,14 +140,14 @@ h1 {
 
   border-collapse: collapse;
   border-radius: 5px;
-  border: 1px solid @light-grey;
+  box-shadow: @shadow;
 
   th {
     font-weight: 500;
-    border: none;
-    border-bottom: 1px solid @light-grey;
+    border: none !important;
     font-size: 14px;
     text-transform: uppercase;
+    color: @light-grey - #222;
   }
 
   td, tr {
@@ -161,10 +193,35 @@ textarea {
 }
 
 form input, textarea {
-  box-shadow: none !important;
+  box-shadow: none;
+}
+
+.search-form {
+  box-shadow: @shadow;
+  border-radius: 5px;
+
+  input {
+    border: none;
+  }
+
+  .input-group-text {
+    color: @bright-blue;
+    text-align: center;
+    background-color: white;
+    border: none;
+  }
+
+  ::placeholder {
+    color: @light-grey - #111;
+  }
+
 }
 
 .table-striped>tbody>tr:nth-of-type(odd) {
+  background-color: white;
+}
+
+.table-striped>tbody>tr:nth-of-type(even) {
   background-color: @light-blue;
 }
 
@@ -207,8 +264,10 @@ label {
 }
 
 .dropdown-menu {
-  box-shadow: 0px 0px 3px 0px rgba(187,221,255,.3);
+  box-shadow: @shadow;
+  border: none;
   min-width: 0px;
+  margin-top: 10px;
   li {
     a {
       line-height: 28p; 
@@ -229,7 +288,7 @@ label {
 input:not([type="radio"]):not([type="checkbox"]), textarea {
   -webkit-appearance: none !important;
   -moz-appearance: none !important;
-  box-shadow: none !important;
+  box-shadow: none;
 }
 
 ul {

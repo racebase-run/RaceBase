@@ -23,12 +23,20 @@
     padding: 5px 7px; 
   }
 
+  .strava {
+    color: @orange;
+  }
+
 }
 
 .profile-info {
 
   .shoe {
     width: 25px;
+  }
+
+  .location .icon {
+    color: @pink;
   }
 
 }
@@ -62,16 +70,31 @@ h3.event-header {
   .title {
     color: @blue;
     font-size: 17px;
+    font-weight: 500;
   }
 
   .metadata {
-    font-size: 13px;
+    font-size: 14px;
+  }
+
+  .distance {
+    font-weight: 500;
+  }
+
+  .team, .team a {
+    color: @purple;
   }
 
   .time {
     font-family: 'DS Digital', 'Helvetica', sans-serif;
     font-size: 27px;
     color: @bright-blue;
+    text-align: right;
+    padding-right: 15px;
+
+    .star {
+      color: @orange;
+    }
   }
 
 }
@@ -99,9 +122,10 @@ h3.event-header {
     font-weight: 500;
 
     th {
+      text-transform: uppercase;
       border: none;
-      font-size: 18px;
-      text-transform: none;
+      font-size: 16px;
+      color: grey;
       padding-bottom: 0;
     }
   }
@@ -174,7 +198,7 @@ h3.event-header {
             <a v-if="athlete.stravaUrl" 
               :href="athlete.stravaUrl"
               target="_blank"
-              class="ml-3"
+              class="ml-3 strava"
             > 
               <fa :icon="['fab', 'strava']"></fa> Strava
             </a>
@@ -203,24 +227,26 @@ h3.event-header {
 
         <div class="shoes mb-2">
           <span class="trainer mr-3 d-block d-lg-inline-block" v-if="user.trainer">
-            <img class="shoe mr-1" src="/images/trainer.svg"/> 
+            <object type="image/svg+xml" data="/images/trainer-blue.svg" class="shoe mr-1">
+            </object>
             {{ user.trainer }}
           </span>
 
           <span class="racer" v-if="user.racer">
-            <img class="shoe mr-1" src="/images/racer.svg"/> 
+            <object type="image/svg+xml" data="/images/racer.svg" class="shoe mr-1">
+            </object>
             {{ user.racer }}
           </span>
         </div>
 
         <div class="personal">
           <span class="mileage mr-3" v-if="user.mileage">
-            <fa icon="calendar-alt" class="mr-1"></fa>
-            {{ user.mileage }} mpw
+            <fa icon="calendar-alt" class="icon mr-1"></fa>
+            {{ user.mileage }} MPW
           </span>
 
           <span class="location" v-if="user.location">
-            <fa icon="map-marker-alt" class="mr-1"></fa>
+            <fa icon="map-marker-alt" class="icon mr-1"></fa>
             <span itemprop="homeLocation"> {{ user.location }} </span>
           </span>
         </div>
@@ -261,18 +287,15 @@ h3.event-header {
 
     <div v-for="(list, index) in results" class="mb-4 w-90 mx-auto">
 
-      <h2 class="year"> {{ years[index] }} </h2>
+      <h2 class="year mb-3"> {{ years[index] }} </h2>
 
-      <div class="results-container" v-for="(distance, index) in list">
-        <h3 class="event-header">
-          {{ index }}
-        </h3>
+      <div class="results-container">
 
         <div class="table-responsive mb-4">
           <table class="results-table table table-striped mb-0">
             
             <tbody>
-              <tr v-for="result in distance">
+              <tr v-for="result in list">
 
                 <td class="place">
                   <div class="num"> {{ result.place }} </div>
@@ -281,18 +304,20 @@ h3.event-header {
 
                 <td class="race">
 
-                  <nuxt-link class="title" :to="'/races/' + result.race_id">
+                  <nuxt-link class="title mr-2" :to="'/races/' + result.race_id">
                     {{ result.race }}
                   </nuxt-link>
 
+                  <div class="distance d-inline-block"> {{ result.distance }} </div>
+
                   <div class="metadata mt-2">
                     <span class="date mr-2">
-                      <fa icon="calendar-alt" class="mr-1"></fa>
+                      <fa icon="calendar-alt" class="icon mr-1"></fa>
                       {{ result.date }}
                     </span> 
 
                     <span class="team no-wrap">
-                      <fa :icon="['fab', 'font-awesome-flag']" class="mr-1"></fa>
+                      <fa :icon="['fab', 'font-awesome-flag']" class="icon mr-1"></fa>
                       <nuxt-link to v-if="result.team_id" :to="'/team/' + result.team_id">
                         {{ result.team }}
                       </nuxt-link>
@@ -304,6 +329,7 @@ h3.event-header {
                 </td>
 
                 <td class="time">
+                  <span class="star" v-if="recordsArray.includes(result)">*</span>
                   {{ result.time }}
                 </td>
 
@@ -318,7 +344,7 @@ h3.event-header {
 
   </div>
 
-  <div class="col-12 col-md-4 pr-0 pl-md-3 pl-0 mt-4 ml-0 order-1 order-md-12 w-100">
+  <div class="col-12 col-md-4 pr-0 pl-0 pr-md-2 mt-4 ml-0 order-1 order-md-12 w-100">
     <div 
       v-if="!athlete.brandPicUrl || !athlete.featuredPicUrl" 
       style="text-align: center" 
@@ -386,7 +412,7 @@ let format = async function(x) {
     if (x.match(/(\d\s?k|\d\s?km|(meter)(s)?|00\s?m)/g)) {
       var meters = await getMeters(x);
       if (meters > 3000 && Number.isInteger(meters / 1000))
-        return (meters) + "m"; 
+        return (meters / 1000) + " km"; 
       else 
         return meters + "m"; 
     } else if (x.match(/(mi)/g)) {
@@ -487,13 +513,11 @@ export default {
     let distances = _.groupBy(results, 'distance')
 
     let records = {}
+    let recordsArray = []
 
     for (var distance in distances) {
       records[distance] = _.sortBy(distances[distance], 'time')[0];
-    }
-
-    for (var year in years) {
-      years[year] = _.groupBy(years[year], 'distance')
+      recordsArray.push(records[distance])
     }
 
     results = _.sortBy(Object.values(years), 'year').reverse()
@@ -509,6 +533,7 @@ export default {
       results: results, 
       years: years,
       records: records, 
+      recordsArray: recordsArray,
       claimed: claimed, 
       claimedBy: claimedBy, 
       name: name, 
