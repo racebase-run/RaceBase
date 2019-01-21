@@ -329,8 +329,7 @@ h3.event-header {
                 </td>
 
                 <td class="time">
-                  <span class="star" v-if="recordsArray.includes(result)">*</span>
-                  {{ result.time }}
+                  {{ result.time }}<span class="star" v-if="recordsArray.includes(result)">*</span>
                 </td>
 
               </tr>
