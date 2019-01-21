@@ -187,7 +187,7 @@ h4 {
         <div class="input-group">
           <input 
             type="text" 
-            placeholder="search" 
+            placeholder="Search..." 
             v-model="searchInput" 
             class="form-control"
           />
