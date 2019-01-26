@@ -258,12 +258,12 @@ h4 {
 <template>
   <div class="mx-auto w-md-100 mx-md-0 pl-md-5 container">
     <div class="row">
-      <h1 class="mt-3 col"> 
+      <h1 class="mt-4 col"> 
         <span class="name">John's</span>
         Training Log
       </h1>
       <div class="col d-flex align-items-center justify-content-end">
-        <div class="btn btn-primary">Monthly View</div>
+        <div class="btn btn-primary">Weekly View</div>
       </div>
     </div>
 

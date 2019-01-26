@@ -63,6 +63,10 @@
     font-size: 18px;
     font-weight: 500;
     line-height: 25px;
+
+    a {
+      color: @bright-blue;
+    }
   }
 
   .metadata {
@@ -79,6 +83,7 @@
     text-transform: uppercase;
     text-decoration: underline;
     font-style: italic;
+    color: @bright-blue;
   }
 }
 
@@ -135,7 +140,6 @@
   a {
     font-size: 11px;
     color: grey;
-    text-decoration: underline;
     text-transform: uppercase;
     font-weight: 500;
   }
@@ -164,9 +168,6 @@
           <img class="logo mb-2" src="/images/logo.svg"> RaceBase 
         </nuxt-link>
       </h1>
-      <h2>
-        <nuxt-link to="/"> Community sourced running results </nuxt-link>
-      </h2>
 
       <form class="search-form mb-3 mt-3" @submit.prevent="search()">
         <div class="input-group input-group-sm">
@@ -203,10 +204,6 @@
     </div>
 
     <div class="user mt-3 mt-md-auto mx-md-0 mx-auto" v-if="isLoggedIn">
-
-<!--       <div class="btn btn-default mb-3 mx-auto d-table">
-        <nuxt-link to="/user/content" class="d-block mx-auto"> Add Race </nuxt-link>
-      </div> -->
 
       <div class="profile row mb-1 pl-3">
         <div class="col-3 pl-4">
