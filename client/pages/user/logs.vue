@@ -35,7 +35,7 @@ h4 {
   box-shadow: @shadow;
   border-radius: 7px;
   width: 100%;
-  padding: 10px;
+  padding: 15px;
   margin-bottom: 25px;
 }
 
@@ -257,17 +257,22 @@ h4 {
 </style>
 <template>
   <div class="mx-auto w-md-100 mx-md-0 pl-md-5 container">
-    <h1 class="mt-3"> 
-      <span class="name">John's</span>
-      Training Log
-    </h1>
+    <div class="row">
+      <h1 class="mt-3 col"> 
+        <span class="name">John's</span>
+        Training Log
+      </h1>
+      <div class="col d-flex align-items-center justify-content-end">
+        <div class="btn btn-primary">Monthly View</div>
+      </div>
+    </div>
 
     <div class="row mt-4 mb-5">
 
       <div class="col-md-8">
         <h4>Log Entry</h4>
 
-        <form class="log-entry p-3">
+        <form class="log-entry p-4">
           <div class="row">
             <h2 class="col"> January 22 2019 </h2>
             <div class="col day">
