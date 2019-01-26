@@ -13,6 +13,7 @@ const _09abd72e = () => interopDefault(import('../pages/signup.vue' /* webpackCh
 const _4490ae74 = () => interopDefault(import('../pages/terms.vue' /* webpackChunkName: "pages/terms" */))
 const _fd5766e6 = () => interopDefault(import('../pages/races/notfound.vue' /* webpackChunkName: "pages/races/notfound" */))
 const _252ca980 = () => interopDefault(import('../pages/team/notfound.vue' /* webpackChunkName: "pages/team/notfound" */))
+const _419def32 = () => interopDefault(import('../pages/user/logs.vue' /* webpackChunkName: "pages/user/logs" */))
 const _2d3343b4 = () => interopDefault(import('../pages/user/settings.vue' /* webpackChunkName: "pages/user/settings" */))
 const _7bbed076 = () => interopDefault(import('../pages/news/post/_name.vue' /* webpackChunkName: "pages/news/post/_name" */))
 const _5f332bf2 = () => interopDefault(import('../pages/races/all/_page.vue' /* webpackChunkName: "pages/races/all/_page" */))
@@ -125,6 +126,10 @@ export function createRouter() {
       path: "/team/notfound",
       component: _252ca980,
       name: "team-notfound"
+    }, {
+      path: "/user/logs",
+      component: _419def32,
+      name: "user-logs"
     }, {
       path: "/user/settings",
       component: _2d3343b4,
