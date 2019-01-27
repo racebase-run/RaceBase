@@ -31,14 +31,6 @@ h4 {
   font-weight: 400;
 }
 
-.box {
-  box-shadow: @shadow;
-  border-radius: 7px;
-  width: 100%;
-  padding: 15px;
-  margin-bottom: 25px;
-}
-
 .log-entry {
   box-shadow: @shadow;
   border-radius: 7px;
@@ -256,7 +248,7 @@ h4 {
 
 </style>
 <template>
-  <div class="mx-auto w-md-100 mx-md-0 pl-md-5 container">
+  <div class="mx-auto w-md-100 mx-md-0 px-md-4 container">
     <div class="row">
       <h1 class="mt-4 col"> 
         <span class="name">John's</span>
@@ -274,9 +266,12 @@ h4 {
 
         <form class="log-entry p-4">
           <div class="row">
-            <h2 class="col"> January 22 2019 </h2>
+            <h2 class="col">
+              <input v-model="today" />
+              <div class="btn btn-default" @click="changeDate">Go</div>
+            </h2>
             <div class="col day">
-              Tues
+              {{ dow }}
             </div>
           </div>
 
@@ -284,22 +279,42 @@ h4 {
 
             <div class="col-md row align-items-center">
               <label class="col-md-5"> Dist </label>
-              <input type="text" placeholder="0.0" class="form-control col-md-7"/>
+              <input 
+                type="number" 
+                placeholder="0.0" 
+                v-model="entryData.run.distance" 
+                class="form-control col-md-7"
+              />
             </div>
 
             <div class="col-md row align-items-center">
               <label class="col-md-5"> Time </label>
-              <input type="text" placeholder="0:00" class="form-control col-md-7"/>
+              <input 
+                type="text" 
+                placeholder="0:00" 
+                class="form-control col-md-7"
+                v-model="entryData.run.time"
+              />
             </div>
 
             <div class="col-md row align-items-center">
               <label class="col-md-5"> Pace </label>
-              <input type="text" placeholder="0:00" class="form-control col-md-7"/>
+              <input 
+                type="text" 
+                placeholder="0:00" 
+                class="form-control col-md-7"
+                v-model="pace"
+              />
             </div>
 
             <div class="col-md row align-items-center">
               <label class="col-md-5"> Elev </label>
-              <input type="text" placeholder="0" class="form-control col-md-7"/>
+              <input 
+                type="number" 
+                placeholder="0" 
+                class="form-control col-md-7"
+                v-model="entryData.run.elevationGain"
+              />
             </div>
 
           </div>
@@ -307,7 +322,13 @@ h4 {
           <div class="sliders row mt-3">
             <div class="col">
               <h4 class="mb-3"> Difficulty </h4>
-              <input type="range" min="1" max="5" step="1" class="slider mb-2">
+              <input 
+                type="range" 
+                min="1" max="5" 
+                step="1" 
+                class="slider mb-2"
+                v-model="entryData.run.difficulty"
+              />
               <div class="numbers row">
                 <div class="col one"> 1 </div>
                 <div class="col two"> 2 </div>
@@ -318,7 +339,13 @@ h4 {
             </div>
             <div class="col">
               <h4 class="mb-3"> Feel </h4>
-              <input type="range" min="1" max="5" step="1" class="slider mb-2">
+              <input 
+                type="range" 
+                min="1" max="5" 
+                step="1" 
+                class="slider mb-2"
+                v-model="entryData.run.feel"
+              />
               <div class="numbers row">
                 <div class="col one"> 1 </div>
                 <div class="col two"> 2 </div>
@@ -429,12 +456,22 @@ h4 {
 
             <div class="col-md row align-items-center">
               <label class="col-md-5"> Sleep </label>
-              <input type="text" placeholder="0:00" class="form-control col-md-7"/>
+              <input 
+                type="text" 
+                placeholder="0:00" 
+                class="form-control col-md-7"
+                v-model="entryData.sleep"
+              />
             </div>
 
             <div class="col-md row align-items-center">
               <label class="col-md-5"> RHR </label>
-              <input type="text" placeholder="0" class="form-control col-md-7"/>
+              <input 
+                type="number" 
+                placeholder="0" 
+                class="form-control col-md-7"
+                v-model="entryData.rhr"
+              />
             </div>
 
             <div class="col-md row align-items-center">
@@ -454,7 +491,7 @@ h4 {
               Add Note <fa icon="pencil-alt"></fa>
             </div>
             <div class="col">
-              <div class="btn btn-primary"> Done </div>
+              <div class="btn btn-primary" @click="submitEntry()"> Done </div>
             </div>
           </div>
 
@@ -531,3 +568,83 @@ h4 {
 
   </div>
 </template>
+
+<script> 
+import moment from 'moment'
+export default {
+  async asyncData ({ store, $axios, params }) {
+    let user = { ...store.state.auth.user }
+
+    let dateFormat = "MM-DD-YYYY"
+    let day
+    if (!params.day || !moment(params.day, dateFormat).isValid())
+      day = new Date()
+    else 
+      day = moment(params.day, dateFormat).toDate()
+
+    let dayPretty = moment(day).format('MMMM D YYYY')
+    let dow = moment(day).format('ddd')
+    let query = params.day || null
+    let entry = await $axios.$get('log/' + query)
+
+    let entryData = typeof entry.run == 'undefined' ? {
+      run: {
+        distance: '', 
+        time: "",
+        elevationGain: '', 
+        difficulty: 1, 
+        feel: 5
+      }, 
+      sleep: '',
+      rhr: '', 
+      weight: 0, 
+      note: ""
+    } : entry
+
+    return {
+      user: user, 
+      id: user._id,
+      entryData: entryData, 
+      today: dayPretty, 
+      dow: dow
+    }
+  },
+  methods: {
+    submitEntry: function() {
+      this.entryData.run.difficulty = parseInt(this.entryData.run.difficulty)
+      this.entryData.run.feel = parseInt(this.entryData.run.feel)
+      this.$axios.$post('log/', this.entryData).then((res) => {
+        console.log("Posted entry")
+      })
+    }, 
+    changeDate: function() {
+      let m = moment(this.today, 'MMMM D YYYY')
+      if (!m.isValid())
+        return
+
+      let dateFormat = "MM-DD-YYYY"
+      let newDate = m.format(dateFormat)
+      this.$router.push("/user/log/" + newDate)
+    }
+  },
+  computed: {
+    pace: function() {
+      if (!this.entryData.run.time || !this.entryData.run.distance) 
+        return "0:00"
+
+      let hms = this.entryData.run.time
+      let a = hms.split(':')
+      let seconds = (+a[0]) * 60 + (+a[1])
+
+      let p = (seconds / this.entryData.run.distance) / 60
+      let pm = Math.floor(p)
+      let ps = Math.round((p - pm) * 60)
+
+      ps = ("0" + ps).slice(-2)
+
+      let pace = (pm == 'NaN' || ps == 'aN') ? "0:00" : pm + ":" + ps
+      return pace
+    }
+  }
+}
+</script>

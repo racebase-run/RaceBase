@@ -12,10 +12,117 @@ h1 {
   font-weight: 600;
 }
 
+h2 {
+  text-transform: uppercase;
+  font-size: 25px;
+}
+
+h4 {
+  text-transform: uppercase;
+  font-size: 14px;
+  color: @label-grey;
+  font-weight: 400;
+}
+
+.week {
+  padding: 0;
+  overflow: hidden;
+}
+
+.day {
+  overflow: hidden;
+  text-align: center; 
+  padding: 0;
+  border-right: 2px solid @light-grey + #191919;
+
+  .calendar {
+    font-size: 16px;
+    .dow {
+      text-align: left;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+
+    .date {
+      color: @medium-grey;
+      text-align: right;
+    }
+  }
+
+  .unit {
+    color: @medium-grey;
+    font-size: 14px;
+    font-weight: 400;
+    text-transform: uppercase;
+  }
+
+  .mileage {
+    font-weight: 600; 
+    font-size: 26px;
+    color: @bright-blue;
+  }
+
+  .pace {
+    font-weight: 500;
+    font-size: 19px;
+    color: @bright-blue;
+  }
+
+  .checks {
+    text-align: left;
+    font-size: 15px;
+    label {
+      margin-bottom: 0;
+      font-weight: 500;
+    }
+  }
+
+  .stats {
+    font-size: 16px;
+    font-weight: 500;
+
+    .fa-heartbeat {
+      color: @pink;
+    }
+
+    .fa-bed {
+      color: @orange;
+    }
+  }
+
+  .feel {
+    width: 100%;
+    height: 7px;
+    background: @bright-blue;
+  }
+
+  .f1 { background: @pink; }
+  .f2 { background: @orange; }
+  .f3 { background: @green; }
+  .f4 { background: @bright-blue; }
+  .f5 { background: @purple; }
+
+}
+
+.box.col {
+  margin: 10px;
+}
+
+.num {
+  color: @bright-blue;
+}
+
+.data {
+  text-align: right;
+  font-weight: 500;
+  font-size: 21px;
+  color: @medium-grey;
+}
+
 </style>
 
 <template>
-  <div class="mx-auto w-md-100 mx-md-0 pl-md-5 container">
+  <div class="mx-auto w-md-100 mx-md-0 px-md-4 container">
     <div class="row">
       <h1 class="mt-4 col"> 
         <span class="name">John's</span>
@@ -25,5 +132,159 @@ h1 {
         <div class="btn btn-primary">Monthly View</div>
       </div>
     </div>
+
+    <h4 class="mt-4">Week of 1/21</h4>
+
+    <div class="week box row mt-3 mx-auto">
+
+      <div class="day col" v-for="day in days">
+        <div class="calendar row p-2">
+          <div class="dow col"> {{ day.dow }} </div>
+          <div class="date col"> {{ day.date }} </div>
+        </div>
+
+        <div class="mileage"> {{ day.mileage }} <span class="unit"> mi </span> </div>
+        <div class="pace"> {{ day.pace }} <span class="unit"> min / mi </span> </div>
+  
+        <div class="checks d-table mx-auto mt-3 mb-2">
+          <div> 
+            <input type="checkbox"/>
+            <label class="ml-3"> Core </label>
+          </div>
+          <div> 
+            <input type="checkbox"/>
+            <label class="ml-3"> Stretching </label>
+          </div>
+        </div>
+
+        <div class="stats mb-3">
+          <div> 
+            <fa icon="heartbeat" class="mr-2"></fa> {{ day.rhr }} <span class="unit ml-2"> BPM </span>
+          </div>
+
+          <div> 
+            <fa icon="bed" class="mr-2"></fa> {{ day.sleep }} <span class="unit ml-2"> hrs </span>
+          </div>
+        </div>
+
+        <div :class="'feel f' + day.feel"> </div>
+
+      </div>
+    </div>
+
+    <div class="row">
+      
+      <div class="box col">
+        <div class="row mb-2">
+          <h2 class="col"> Total </h2>
+          <div class="data col"><span class="num">{{ total }}</span> mi</div>
+        </div>
+      </div>
+
+      <div class="box col">
+        <h2> Avg Sleep </h2>
+      </div>
+
+      <div class="box col">
+        <div class="row mb-2">
+          <h2 class="col"> Core </h2>
+          <div class="data col"><span class="num">71%</span></div>
+        </div>
+
+        <div class="row">
+          <h2 class="col"> Stretching </h2>
+          <div class="data col"><span class="num">86%</span> mi</div>
+        </div>
+      </div>
+
+    </div>
+
   </div>
 </template>
+<script> 
+
+Array.prototype.sum = function (prop) {
+  var total = 0
+  for ( var i = 0, _len = this.length; i < _len; i++ ) {
+      total += this[i][prop]
+  }
+  return total
+}
+
+export default {
+  data () {
+    return {
+      days : [
+        { 
+          date: "21",
+          dow: "Mon",
+          mileage: 8.5,
+          pace: "7:15", 
+          rhr: 48, 
+          sleep: "8:15",
+          feel: 4
+        },
+        { 
+          date: "22",
+          dow: "Tues",
+          mileage: 10.0,
+          pace: "6:21", 
+          rhr: 46, 
+          sleep: "8:30",
+          feel: 5
+        },
+        { 
+          date: "23",
+          dow: "Wed",
+          mileage: 11.0,
+          pace: "6:52", 
+          rhr: 51, 
+          sleep: "7:55",
+          feel: 4
+        },
+        { 
+          date: "24",
+          dow: "Thurs",
+          mileage: 9.8,
+          pace: "6:30", 
+          rhr: 47, 
+          sleep: "8:23",
+          feel: 3
+        },
+        { 
+          date: "25",
+          dow: "Fri",
+          mileage: 5.0,
+          pace: "7:30", 
+          rhr: 51, 
+          sleep: "8:55",
+          feel: 4
+        },
+        { 
+          date: "26",
+          dow: "Sat",
+          mileage: 10.0,
+          pace: "6:21", 
+          rhr: 43, 
+          sleep: "7:45",
+          feel: 5
+        },
+        { 
+          date: "27",
+          dow: "Sun",
+          mileage: 14.0,
+          pace: "7:20", 
+          rhr: 52, 
+          sleep: "7:19", 
+          feel: 2
+        }
+      ]
+    }
+  }, 
+  computed: {
+    total: function() {
+      return this.days.sum("mileage")
+    }
+  }
+}
+</script>
