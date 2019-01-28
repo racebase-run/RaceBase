@@ -20,9 +20,10 @@ h2.name {
 }
 
 h3 {
-  font-size: 21px;
-  color: @bright-blue;
-  font-weight: 400;
+  font-size: 18px;
+  color: black;
+  font-weight: 500;
+  text-transform: uppercase;
   text-align: left;
 }
 
@@ -97,6 +98,7 @@ td .btn-default, .day .btn-default {
 
     h4 {
       color: black;
+      font-weight: 500;
     }
 
     .numbers {
@@ -182,18 +184,17 @@ td .btn-default, .day .btn-default {
     }
 
     td.exercise {
-      width: 45%;
+      width: 37%;
 
       input {
         border: none;
-        color: black;
-        font-weight: 500;
-        text-transform: uppercase;
+        color: @bright-blue;
+        font-weight: 400;
       }
 
       input, input::placeholder {
         text-align: right;
-        font-size: 17px;
+        font-size: 19px;
       }
     }
 
@@ -207,6 +208,10 @@ td .btn-default, .day .btn-default {
       font-size: 15px;
       font-weight: 500;
       padding: 4px 7px;
+    }
+
+    textarea {
+      resize: none;
     }
   }
 }
@@ -240,8 +245,9 @@ td .btn-default, .day .btn-default {
 .streaks, .schedule {
   h2 {
     text-transform: uppercase;
-    font-size: 21px;
-    font-weight: 400;
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 0; 
   }
 
   .num {
@@ -303,14 +309,14 @@ td .btn-default, .day .btn-default {
         </h1>
       </div>
       <div class="col d-flex align-items-center justify-content-end">
-        <div class="btn btn-primary">Weekly View</div>
+        <nuxt-link to="/user/log/week/foo" class="btn btn-primary">Weekly View</nuxt-link>
       </div>
     </div>
 
     <div class="row mt-4 mb-5">
 
       <div class="col-md-8">
-        <h4>Log Entry</h4>
+        <h4>Log Entry <fa class="ml-1" icon="book-open"></fa> </h4>
 
         <form class="log-entry px-4 py-3">
           <div class="row">
@@ -462,7 +468,7 @@ td .btn-default, .day .btn-default {
 
           </div>
 
-          <h3 class="mt-4"> Other </h3>
+          <h3 class="mt-3"> Other </h3>
 
           <div class="other row mt-3">
 
@@ -477,11 +483,11 @@ td .btn-default, .day .btn-default {
             </div>
 
             <div class="col row align-items-center">
-              <label class="col-md-5"> RHR </label>
+              <label class="col-md-7"> RHR <fa icon="heartbeat"></fa> </label>
               <input 
                 type="number" 
                 placeholder="0" 
-                class="form-control col-md-7"
+                class="form-control col-md-5"
                 v-model="entryData.rhr"
               />
             </div>
@@ -489,25 +495,25 @@ td .btn-default, .day .btn-default {
             <div class="col-md-3 row align-items-center">
               <div class="mx-auto">
                 <label class="mr-2"> Core </label>
-                <input type="checkbox"/>
+                <input type="checkbox" v-model="entryData.checks.core"/>
               </div>
             </div>
 
             <div class="col row align-items-center">
               <div class="mx-auto">
                 <label class="mr-2"> Stretching </label>
-                <input type="checkbox"/>
+                <input type="checkbox" v-model="entryData.checks.stretching" />
               </div>
             </div>
 
           </div>
 
           <div class="bottom row mt-3 mb-2">
-            <div class="col">
-              Add Note <fa icon="pencil-alt"></fa>
+            <div class="col-md-9">
+              <textarea placeholder="Add note..." class="form-control" v-model="entryData.note"></textarea>
             </div>
-            <div class="col">
-              <div class="btn btn-primary" @click="submitEntry()"> Save </div>
+            <div class="col-md-3 d-flex">
+              <div class="btn btn-primary align-self-end" @click="submitEntry()"> Save </div>
             </div>
           </div>
 
@@ -515,31 +521,31 @@ td .btn-default, .day .btn-default {
       </div>
 
       <div class="col-md-4">
-        <h4> Trends </h4>
+        <h4> Trends <fa class="ml-1" icon="chart-line"></fa> </h4>
         <div class="trends box">
           <div class="row"> <span class="stat"> 8:10 hr </span> 5 day avg sleep</div>
           <div class="row"> <span class="stat stat-down"> 8.3% </span> less sleep than usual </div>
           <div class="row"> <span class="stat"> 49 bpm </span> 5 day avg RHR </div>
         </div>
 
-        <h4> Streaks </h4>
-        <div class="streaks box">
+        <h4> Streaks <fa class="ml-1" icon="fire-alt"></fa> </h4>
+        <div class="streaks box py-2">
 
-          <div class="row">
+          <div class="row flex align-items-center">
             <h2 class="col"> Core </h2>
             <div class="data col"><span class="num">7</span> day</div>
           </div>
-          <div class="row">
+          <div class="row flex align-items-center">
             <h2 class="col"> Stretching </h2>
             <div class="data col"><span class="num">10</span> day</div>
           </div>
 
         </div>
 
-        <h4> Schedule </h4>
+        <h4> Schedule <fa class="ml-1" icon="calendar-alt"></fa> </h4>
         <div class="schedule box">
 
-          <div class="day row mb-2">
+          <div class="day row flex align-items-center mb-2">
             <h2 class="col"> Today </h2>
             <div class="data col"><span class="num">10.0</span> mi</div>
           </div>
@@ -571,7 +577,7 @@ td .btn-default, .day .btn-default {
             </div>
           </div>
 
-          <div class="row">
+          <div class="row flex align-items-center">
             <h2 class="col"> Tomorrow </h2>
             <div class="data col"><span class="num">11.0</span> mi</div>
           </div>
@@ -613,13 +619,17 @@ export default {
         difficulty: 1, 
         feel: 5
       }, 
+      checks: {
+        core: false,
+        stretching: false
+      },
       sleep: '',
       rhr: '', 
       weight: 0, 
       note: ""
     } : entry
 
-    let didWeights = entryData.weights
+    var didWeights = entryData.weights
 
     return {
       user: user, 

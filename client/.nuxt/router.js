@@ -14,7 +14,7 @@ const _4490ae74 = () => interopDefault(import('../pages/terms.vue' /* webpackChu
 const _fd5766e6 = () => interopDefault(import('../pages/races/notfound.vue' /* webpackChunkName: "pages/races/notfound" */))
 const _252ca980 = () => interopDefault(import('../pages/team/notfound.vue' /* webpackChunkName: "pages/team/notfound" */))
 const _2d3343b4 = () => interopDefault(import('../pages/user/settings.vue' /* webpackChunkName: "pages/user/settings" */))
-const _b91bc212 = () => interopDefault(import('../pages/user/week.vue' /* webpackChunkName: "pages/user/week" */))
+const _3819db20 = () => interopDefault(import('../pages/user/log/week/_date.vue' /* webpackChunkName: "pages/user/log/week/_date" */))
 const _7bbed076 = () => interopDefault(import('../pages/news/post/_name.vue' /* webpackChunkName: "pages/news/post/_name" */))
 const _5f332bf2 = () => interopDefault(import('../pages/races/all/_page.vue' /* webpackChunkName: "pages/races/all/_page" */))
 const _23a0fee5 = () => interopDefault(import('../pages/user/content/_page.vue' /* webpackChunkName: "pages/user/content/_page" */))
@@ -132,9 +132,9 @@ export function createRouter() {
       component: _2d3343b4,
       name: "user-settings"
     }, {
-      path: "/user/week",
-      component: _b91bc212,
-      name: "user-week"
+      path: "/user/log/week/:date?",
+      component: _3819db20,
+      name: "user-log-week-date"
     }, {
       path: "/news/post/:name?",
       component: _7bbed076,
