@@ -4,23 +4,25 @@
 @import (reference) "~assets/less/basics.less";
 
 h1 {
-  .name {
-    font-weight: 400; 
-    color: @bright-blue;
-  }
-  font-size: 35px;
-  font-weight: 600;
+  font-size: 32px;
+  font-weight: 500;
 }
 
 h2 {
   font-size: 26px;
-  font-weight: 500;
+  font-weight: 400;
+}
+
+h2.name {
+  font-weight: 400; 
+  font-size: 20px;
+  color: @bright-blue;
 }
 
 h3 {
-  font-size: 23px;
+  font-size: 21px;
   color: @bright-blue;
-  font-weight: 500;
+  font-weight: 400;
   text-align: left;
 }
 
@@ -29,6 +31,20 @@ h4 {
   font-size: 14px;
   color: @label-grey;
   font-weight: 400;
+}
+
+td .btn-default, .day .btn-default {
+  box-shadow: none;
+  border: 1px solid @light-grey;
+  padding: 3px 6px;
+  text-transform: uppercase;
+  color: @medium-grey;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.day .btn-default.today {
+  color: @bright-blue;
 }
 
 .log-entry {
@@ -51,15 +67,30 @@ h4 {
     text-align: right;
   }
 
-  input {
+  h2 input {
+    font-size: 22px;
+    text-align: left;
+  }
+
+  h2 input, .sliders input {
     border: none;
+  }
+
+  input {
+    border: 1px solid @light-grey;
     vertical-align: middle;
+    border-radius: 3px;
+    color: @bright-blue;
   }
 
   input, input::placeholder {
-    color: @bright-blue;
-    font-size: 23px;
-    font-weight: 500;
+    font-size: 18px;
+    font-weight: 400;
+    text-align: center
+  }
+
+  input::placeholder {
+    color: @label-grey;
   }
 
   .sliders  {
@@ -134,6 +165,7 @@ h4 {
       color: @bright-blue;
       font-weight: 500;
       text-align: center;
+      white-space: nowrap;
 
       input, input::placeholder {
         font-size: 20px;
@@ -145,12 +177,26 @@ h4 {
       color: @label-grey;
     }
 
-    td.exercise {
-      color: black;
-      font-weight: 500;
-      text-align: right; 
-      text-transform: uppercase;
+    td.delete {
+      cursor: pointer;
     }
+
+    td.exercise {
+      width: 45%;
+
+      input {
+        border: none;
+        color: black;
+        font-weight: 500;
+        text-transform: uppercase;
+      }
+
+      input, input::placeholder {
+        text-align: right;
+        font-size: 17px;
+      }
+    }
+
   }
 
   .bottom {
@@ -250,10 +296,12 @@ h4 {
 <template>
   <div class="mx-auto w-md-100 mx-md-0 px-md-4 container">
     <div class="row">
-      <h1 class="mt-4 col"> 
-        <span class="name">John's</span>
-        Training Log
-      </h1>
+      <div class="col mt-3">
+        <h2 class="name 4"> {{ user.firstName }}'s </h2>
+        <h1> 
+          Training Log
+        </h1>
+      </div>
       <div class="col d-flex align-items-center justify-content-end">
         <div class="btn btn-primary">Weekly View</div>
       </div>
@@ -264,13 +312,14 @@ h4 {
       <div class="col-md-8">
         <h4>Log Entry</h4>
 
-        <form class="log-entry p-4">
+        <form class="log-entry px-4 py-3">
           <div class="row">
             <h2 class="col">
-              <input v-model="today" />
-              <div class="btn btn-default" @click="changeDate">Go</div>
+              <input v-model="today" class="d-inline-block" />
             </h2>
             <div class="col day">
+              <div class="btn btn-default mr-2 d-inline-block" @click="changeDate"> Go </div>
+              <div class="btn btn-default mr-3 d-inline-block today" @click="changeToToday"> Today </div>
               {{ dow }}
             </div>
           </div>
@@ -356,95 +405,58 @@ h4 {
             </div>
           </div>
 
-          <h3 class="mt-4"> Weights </h3>
+          <h3 class="mt-4"> Weights <input type="checkbox" v-model="didWeights" /></h3>
 
-          <div class="weights row">
+          <div class="weights row mx-auto w-95" v-if="didWeights">
 
-            <div class="col-md">
+            <div class="row">
               <table> 
                 <thead> 
                   <th> </th>
                   <th> Sets </th>
                   <th> </th>
                   <th> Reps </th>
+                  <th> </th>
                 </thead>
 
                 <tbody> 
-                  <tr>
-                    <td class="exercise"> Back Squat </td>
+                  <tr v-for="(exercise, index) in entryData.weights">
+                    <td class="exercise"> 
+                      <input 
+                        type="text" 
+                        class="form-control" 
+                        v-model="exercise.name" 
+                        placeholder="Enter exercise" 
+                      /> 
+                    </td>
                     <td>
-                      <input type="text" placeholder="0" class="form-control">
+                      <input 
+                        type="text" 
+                        placeholder="0" 
+                        class="form-control" 
+                        v-model="exercise.sets"
+                      />
                     </td>
                     <td class="x"> x </td>
                     <td>
-                      <input type="text" placeholder="0" class="form-control">
+                      <input 
+                        type="text" 
+                        placeholder="0" 
+                        class="form-control" 
+                        v-model="exercise.reps"
+                      />
+                    </td>
+                    <td class="delete"> 
+                      <fa icon="trash" @click="deleteExercise(index)"> </fa>
                     </td>
                   </tr>
-                  <tr>
-                    <td class="exercise"> Forward Lunge </td>
-                    <td>
-                      <input type="text" placeholder="0" class="form-control">
-                    </td>
-                    <td class="x"> x </td>
-                    <td>
-                      <input type="text" placeholder="0" class="form-control">
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="exercise"> Pull Up </td>
-                    <td>
-                      <input type="text" placeholder="0" class="form-control">
-                    </td>
-                    <td class="x"> x </td>
-                    <td>
-                      <input type="text" placeholder="0" class="form-control">
-                    </td>
+
+                  <tr> 
+                    <td colspan="3"></td>
+                    <td> <div @click="addExercise" class="btn btn-default"> New Exercise </div> </td>
                   </tr>
                 </tbody>
-              </table>
-            </div>
-
-            <div class="col-md">
-              <table> 
-                <thead> 
-                  <th> </th>
-                  <th> Sets </th>
-                  <th> </th>
-                  <th> Reps </th>
-                </thead>
-
-                <tbody> 
-                  <tr>
-                    <td class="exercise"> Bent Over Row </td>
-                    <td>
-                      <input type="text" placeholder="0" class="form-control">
-                    </td>
-                    <td class="x"> x </td>
-                    <td>
-                      <input type="text" placeholder="0" class="form-control">
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="exercise"> Runner's Touch </td>
-                    <td>
-                      <input type="text" placeholder="0" class="form-control">
-                    </td>
-                    <td class="x"> x </td>
-                    <td>
-                      <input type="text" placeholder="0" class="form-control">
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="exercise"> Push Ups </td>
-                    <td>
-                      <input type="text" placeholder="0" class="form-control">
-                    </td>
-                    <td class="x"> x </td>
-                    <td>
-                      <input type="text" placeholder="0" class="form-control">
-                    </td>
-                  </tr>
-                </tbody>
+                
               </table>
             </div>
 
@@ -452,19 +464,19 @@ h4 {
 
           <h3 class="mt-4"> Other </h3>
 
-          <div class="other row">
+          <div class="other row mt-3">
 
-            <div class="col-md row align-items-center">
-              <label class="col-md-5"> Sleep </label>
+            <div class="col row align-items-center">
+              <label class="col-md-6"> Sleep </label>
               <input 
                 type="text" 
                 placeholder="0:00" 
-                class="form-control col-md-7"
+                class="form-control col-md-6"
                 v-model="entryData.sleep"
               />
             </div>
 
-            <div class="col-md row align-items-center">
+            <div class="col row align-items-center">
               <label class="col-md-5"> RHR </label>
               <input 
                 type="number" 
@@ -474,14 +486,18 @@ h4 {
               />
             </div>
 
-            <div class="col-md row align-items-center">
-              <label class="mr-3"> Core </label>
-              <input type="checkbox"/>
+            <div class="col-md-3 row align-items-center">
+              <div class="mx-auto">
+                <label class="mr-2"> Core </label>
+                <input type="checkbox"/>
+              </div>
             </div>
 
-            <div class="col-md row align-items-center">
-              <label class="mr-3"> Stretching </label>
-              <input type="checkbox"/>
+            <div class="col row align-items-center">
+              <div class="mx-auto">
+                <label class="mr-2"> Stretching </label>
+                <input type="checkbox"/>
+              </div>
             </div>
 
           </div>
@@ -491,7 +507,7 @@ h4 {
               Add Note <fa icon="pencil-alt"></fa>
             </div>
             <div class="col">
-              <div class="btn btn-primary" @click="submitEntry()"> Done </div>
+              <div class="btn btn-primary" @click="submitEntry()"> Save </div>
             </div>
           </div>
 
@@ -575,6 +591,8 @@ export default {
   async asyncData ({ store, $axios, params }) {
     let user = { ...store.state.auth.user }
 
+    user.firstName = user.name.split(' ')[0]
+
     let dateFormat = "MM-DD-YYYY"
     let day
     if (!params.day || !moment(params.day, dateFormat).isValid())
@@ -601,12 +619,15 @@ export default {
       note: ""
     } : entry
 
+    let didWeights = entryData.weights
+
     return {
       user: user, 
       id: user._id,
       entryData: entryData, 
       today: dayPretty, 
-      dow: dow
+      dow: dow, 
+      didWeights: didWeights
     }
   },
   methods: {
@@ -625,6 +646,17 @@ export default {
       let dateFormat = "MM-DD-YYYY"
       let newDate = m.format(dateFormat)
       this.$router.push("/user/log/" + newDate)
+    },
+    changeToToday: function() {
+      let dateFormat = "MM-DD-YYYY"
+      let newDate = moment(new Date()).format(dateFormat)
+      this.$router.push("/user/log/" + newDate)
+    },
+    addExercise: function() {
+      this.entryData.weights.push({ name: "", reps: 0, sets: 0 })
+    }, 
+    deleteExercise: function(index) {
+      this.entryData.weights.splice(index, 1)
     }
   },
   computed: {
