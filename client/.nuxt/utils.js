@@ -129,7 +129,7 @@ export async function setContext(app, context) {
       payload: context.payload,
       error: context.error,
       base: '/',
-      env: {"ROOT_URL":"https://racebase.io","API_URL":"https://api.racebase.io"}
+      env: {"ROOT_URL":"http://localhost:3000","API_URL":"http://localhost:3154/api"}
     }
     // Only set once
     if (context.req) app.context.req = context.req
