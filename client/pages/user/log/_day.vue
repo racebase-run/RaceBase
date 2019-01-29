@@ -32,9 +32,11 @@ h4 {
   font-size: 14px;
   color: @label-grey;
   font-weight: 400;
+  display: table;
+  height: auto;
 }
 
-td .btn-default, .day .btn-default {
+td .btn-default, .day .btn-default, .header.row .btn-default {
   box-shadow: none;
   border: 1px solid @light-grey;
   padding: 3px 6px;
@@ -167,7 +169,6 @@ td .btn-default, .day .btn-default {
       color: @bright-blue;
       font-weight: 500;
       text-align: center;
-      white-space: nowrap;
 
       input, input::placeholder {
         font-size: 20px;
@@ -202,12 +203,11 @@ td .btn-default, .day .btn-default {
 
   .bottom {
     .btn {
-      position: absolute;
-      right: 15px;
       text-transform: uppercase;
       font-size: 15px;
       font-weight: 500;
       padding: 4px 7px;
+      display: table;
     }
 
     textarea {
@@ -316,7 +316,15 @@ td .btn-default, .day .btn-default {
     <div class="row mt-4 mb-5">
 
       <div class="col-md-8">
-        <h4>Log Entry <fa class="ml-1" icon="book-open"></fa> </h4>
+        <div class="header row mb-2">
+          <div class="col d-flex">
+            <h4 class="align-self-center mb-0">Log Entry <fa class="ml-1" icon="book-open"></fa> </h4>
+          </div>
+          <div class="col d-flex flex-row align-items-end">
+            <div class="btn btn-default d-inline-block ml-auto mt-auto" @click="changeToPrev"> Prev </div>
+            <div class="btn btn-default d-inline-block ml-2" @click="changeToNext"> Next </div>
+          </div>
+        </div>
 
         <form class="log-entry px-4 py-3">
           <div class="row">
@@ -411,6 +419,44 @@ td .btn-default, .day .btn-default {
             </div>
           </div>
 
+          <div class="other row mt-3">
+
+            <div class="col row align-items-center">
+              <label class="col-md-6"> Sleep </label>
+              <input 
+                type="text" 
+                placeholder="0:00" 
+                class="form-control col-md-6"
+                v-model="entryData.sleep"
+              />
+            </div>
+
+            <div class="col row align-items-center">
+              <label class="col-md-7"> RHR <fa icon="heartbeat"></fa> </label>
+              <input 
+                type="number" 
+                placeholder="0" 
+                class="form-control col-md-5"
+                v-model="entryData.rhr"
+              />
+            </div>
+
+            <div class="col-md-3 row align-items-center">
+              <div class="mx-auto">
+                <label class="mr-2"> Core </label>
+                <input type="checkbox" v-model="entryData.checks.core"/>
+              </div>
+            </div>
+
+            <div class="col row align-items-center">
+              <div class="mx-auto">
+                <label class="mr-2"> Stretching </label>
+                <input type="checkbox" v-model="entryData.checks.stretching" />
+              </div>
+            </div>
+
+          </div>
+
           <h3 class="mt-4"> Weights <input type="checkbox" v-model="didWeights" /></h3>
 
           <div class="weights row mx-auto w-95" v-if="didWeights">
@@ -418,11 +464,13 @@ td .btn-default, .day .btn-default {
             <div class="row">
               <table> 
                 <thead> 
-                  <th> </th>
-                  <th> Sets </th>
-                  <th> </th>
-                  <th> Reps </th>
-                  <th> </th>
+                  <tr> 
+                    <th> </th>
+                    <th> Sets </th>
+                    <th> </th>
+                    <th> Reps </th>
+                    <th> </th>
+                  </tr>
                 </thead>
 
                 <tbody> 
@@ -468,52 +516,21 @@ td .btn-default, .day .btn-default {
 
           </div>
 
-          <h3 class="mt-3"> Other </h3>
-
-          <div class="other row mt-3">
-
-            <div class="col row align-items-center">
-              <label class="col-md-6"> Sleep </label>
-              <input 
-                type="text" 
-                placeholder="0:00" 
-                class="form-control col-md-6"
-                v-model="entryData.sleep"
-              />
-            </div>
-
-            <div class="col row align-items-center">
-              <label class="col-md-7"> RHR <fa icon="heartbeat"></fa> </label>
-              <input 
-                type="number" 
-                placeholder="0" 
-                class="form-control col-md-5"
-                v-model="entryData.rhr"
-              />
-            </div>
-
-            <div class="col-md-3 row align-items-center">
-              <div class="mx-auto">
-                <label class="mr-2"> Core </label>
-                <input type="checkbox" v-model="entryData.checks.core"/>
-              </div>
-            </div>
-
-            <div class="col row align-items-center">
-              <div class="mx-auto">
-                <label class="mr-2"> Stretching </label>
-                <input type="checkbox" v-model="entryData.checks.stretching" />
-              </div>
-            </div>
-
-          </div>
-
           <div class="bottom row mt-3 mb-2">
-            <div class="col-md-9">
+            <div class="col-md-8">
               <textarea placeholder="Add note..." class="form-control" v-model="entryData.note"></textarea>
             </div>
-            <div class="col-md-3 d-flex">
-              <div class="btn btn-primary align-self-end" @click="submitEntry()"> Save </div>
+            <div class="col-md-4 d-flex flex-row align-items-end">
+
+              <div class="btn btn-default mt-auto ml-auto" @click="revert()" v-if="modified">
+                Revert
+              </div>
+
+              <div class="btn btn-primary ml-3" @click="submitEntry()"> 
+                Save<span v-if="!modified">d</span>
+                <fa icon="check" v-if="!modified" class="ml-2"> </fa>
+              </div>
+
             </div>
           </div>
 
@@ -593,6 +610,7 @@ td .btn-default, .day .btn-default {
 
 <script> 
 import moment from 'moment'
+import _ from 'underscore'
 export default {
   async asyncData ({ store, $axios, params }) {
     let user = { ...store.state.auth.user }
@@ -629,12 +647,13 @@ export default {
       note: ""
     } : entry
 
-    var didWeights = entryData.weights
+    var didWeights = !!(entryData.weights)
 
     return {
       user: user, 
       id: user._id,
       entryData: entryData, 
+      originalData: JSON.parse(JSON.stringify(entryData)),
       today: dayPretty, 
       dow: dow, 
       didWeights: didWeights
@@ -644,8 +663,12 @@ export default {
     submitEntry: function() {
       this.entryData.run.difficulty = parseInt(this.entryData.run.difficulty)
       this.entryData.run.feel = parseInt(this.entryData.run.feel)
+      if (!this.didWeights)
+        this.$set(this.entryData, 'weights', null)
       this.$axios.$post('log/', this.entryData).then((res) => {
-        console.log("Posted entry")
+        this.entryData = res.entry
+        this.originalData = JSON.parse(JSON.stringify(this.entryData))
+        console.log(res.message)
       })
     }, 
     changeDate: function() {
@@ -662,11 +685,28 @@ export default {
       let newDate = moment(new Date()).format(dateFormat)
       this.$router.push("/user/log/" + newDate)
     },
+    changeToPrev: function() {
+      let dateFormat = "MM-DD-YYYY"
+      let prevDate = moment(this.today).subtract(1, 'days').format(dateFormat)
+      this.$router.push("/user/log/" + prevDate)
+    },
+    changeToNext: function() {
+      let dateFormat = "MM-DD-YYYY"
+      let nextDate = moment(this.today).add(1, 'days').format(dateFormat)
+      this.$router.push("/user/log/" + nextDate)
+    },
     addExercise: function() {
       this.entryData.weights.push({ name: "", reps: 0, sets: 0 })
     }, 
     deleteExercise: function(index) {
       this.entryData.weights.splice(index, 1)
+      if (this.entryData.weights.length < 1) {
+        this.$set(this.entryData, 'weights', null)
+        this.didWeights = false
+      }
+    },
+    revert: function() {
+      this.entryData = JSON.parse(JSON.stringify(this.originalData))
     }
   },
   computed: {
@@ -686,6 +726,15 @@ export default {
 
       let pace = (pm == 'NaN' || ps == 'aN') ? "0:00" : pm + ":" + ps
       return pace
+    },
+    modified: function() {
+      return !_.isEqual(this.entryData, this.originalData)
+    }
+  }, 
+  watch: {
+    didWeights: function() {
+      if (this.didWeights && !this.entryData.weights)
+        this.$set(this.entryData, 'weights', [{}])
     }
   }
 }
