@@ -329,7 +329,7 @@ td .btn-default, .day .btn-default, .header.row .btn-default {
         <form class="log-entry px-4 py-3">
           <div class="row">
             <h2 class="col">
-              <input v-model="today" class="d-inline-block" />
+              <input v-model="today" class="d-inline-block" @keyup.enter="changeDate"/>
             </h2>
             <div class="col day">
               <div class="btn btn-default mr-2 d-inline-block" @click="changeDate"> Go </div>
@@ -526,7 +526,7 @@ td .btn-default, .day .btn-default, .header.row .btn-default {
                 Revert
               </div>
 
-              <div class="btn btn-primary ml-3" @click="submitEntry()"> 
+              <div class="btn btn-primary" :class="modified ? 'ml-3' : 'ml-auto'" @click="submitEntry()"> 
                 Save<span v-if="!modified">d</span>
                 <fa icon="check" v-if="!modified" class="ml-2"> </fa>
               </div>
@@ -565,33 +565,6 @@ td .btn-default, .day .btn-default, .header.row .btn-default {
           <div class="day row flex align-items-center mb-2">
             <h2 class="col"> Today </h2>
             <div class="data col"><span class="num">10.0</span> mi</div>
-          </div>
-
-          <div class="workout row no-gutters d-flex align-items-center mb-3">
-            <div class="col-md-4 reps"><span class="num">6</span> x</div>
-            <div class="col-md-8 box p-2">
-              <div class="row">
-                <div class="col num">800m</div>
-                <div class="col">8k-10k</div>
-              </div>
-              <div class="recovery">2:00 standing</div>
-            </div>
-          </div>
-
-          <div class="workout row mb-3">
-            <div class="col-md-4 recovery">Rest</div>
-            <div class="col-md-8 recovery green">3:30 standing</div>
-          </div>
-
-          <div class="workout row no-gutters d-flex align-items-center mb-3">
-            <div class="col-md-4 reps"><span class="num">4</span> x</div>
-            <div class="col-md-8 box p-2">
-              <div class="row">
-                <div class="col num">200m</div>
-                <div class="col">1500m</div>
-              </div>
-              <div class="recovery">200m jog</div>
-            </div>
           </div>
 
           <div class="row flex align-items-center">
