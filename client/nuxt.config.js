@@ -27,9 +27,7 @@ module.exports = {
     script: [
       { src: 'https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js' },
       { src: 'https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js', crossorigin: 'anonymous' },
-      { src: 'https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js' },
-      { src: 'https://www.googletagmanager.com/gtag/js?id=UA-117937173-1' },
-      { src: '/js/google-analytics.js' }
+      { src: 'https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js' }
     ]
   },
 
@@ -74,7 +72,10 @@ module.exports = {
     // Doc: https://bootstrap-vue.js.org/docs/
     'bootstrap-vue/nuxt', 
     'nuxt-fontawesome', 
-    '@nuxtjs/dotenv'
+    '@nuxtjs/dotenv',
+    ['@nuxtjs/google-analytics', {
+      id: 'UA-117937173-1'
+    }]
   ],
   /*
   ** Axios module configuration
