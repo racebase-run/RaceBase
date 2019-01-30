@@ -7,16 +7,23 @@ var authCheck = require('../auth')
 
 var moment = require('moment')
 
-router.get('/:date?', authCheck, (req, res) => {
-
+let createDay = function(date) {
   let dateFormat = "MM-DD-YYYY"
   let m 
-  if (moment(req.params.date, dateFormat).isValid()) m = moment(req.params.date, dateFormat)
+  if (moment(date, dateFormat).isValid()) m = moment(date, dateFormat)
   else m = moment(new Date()) 
 
   let day  = m.startOf('day').toDate()
+  return day
+}
 
-  Entry.findOne({ date: day, userId: req.userId }, (err, data) => {
+router.get('/list/week/:date?',authCheck, (req, res) => {
+
+  let day = moment(createDay(req.params.day))
+  let monday = day.startOf('isoWeek').toDate()
+  let sunday = day.endOf('isoWeek').toDate()
+
+  Entry.find({ userId: req.userId, date: { $gte: monday, $lt: sunday }}, (err, data) => {
     if (err)
       res.status(500).send(err)
     else 
@@ -33,22 +40,24 @@ router.get('/list', authCheck, (req, res) => {
   })
 })
 
-router.get('/list/week',authCheck, (req, res) => {
-  let today = moment()
-  let monday = today.startOf('isoWeek').toDate()
-  let sunday = today.endOf('isoWeek').toDate()
-  Entry.find({ userId: req.userId, date: { $gte: monday, $lt: sunday }}, (err, data) => {
+router.get('/:date?', authCheck, (req, res) => {
+
+  let day  = createDay(req.params.date)
+
+  Entry.findOne({ date: day, userId: req.userId }, (err, data) => {
     if (err)
       res.status(500).send(err)
-    else
+    else 
       res.send(data)
   })
 })
 
-router.get('/avg/moving/rhr',authCheck, (req, res) => {
-  let today = moment().toDate()
-  let daysago = moment().subtract(5, 'days').toDate()
-  Entry.find({ userId: req.userId, date: { $gte: daysago, $lt: today }}, (err, data) => {
+router.get('/avg/moving/rhr/:date?', authCheck, (req, res) => {
+
+  let day = createDay(req.params.date)
+  let daysago = moment(day).subtract(5, 'days').toDate()
+
+  Entry.find({ userId: req.userId, date: { $gte: daysago, $lt: day }}, (err, data) => {
     if (err)
       res.status(500).send(err)
     else if (data) {
@@ -66,10 +75,12 @@ router.get('/avg/moving/rhr',authCheck, (req, res) => {
   })
 })
 
-router.get('/avg/moving/sleep',authCheck, (req, res) => {
-  let today = moment().toDate()
-  let daysago = moment().subtract(5, 'days').toDate()
-  Entry.find({ userId: req.userId, date: { $gte: daysago, $lt: today }}, (err, data) => {
+router.get('/avg/moving/sleep/:date?',authCheck, (req, res) => {
+
+  let day = createDay(req.params.date)
+  let daysago = moment(day).subtract(5, 'days').toDate()
+
+  Entry.find({ userId: req.userId, date: { $gte: daysago, $lt: day }}, (err, data) => {
     if (err)
       res.status(500).send(err)
     else if (data) {
@@ -88,6 +99,7 @@ router.get('/avg/moving/sleep',authCheck, (req, res) => {
 
       let hours = Math.floor(avg / 60)
       let minutes = Math.round(((avg/60) - hours) * 60)
+      minutes = ("0" + minutes).slice(-2)
       let formattedAvg = hours + ":" + minutes
 
       res.send({ avg: formattedAvg })
@@ -98,19 +110,12 @@ router.get('/avg/moving/sleep',authCheck, (req, res) => {
 
 router.post('/:date?', authCheck, (req, res) => {
   let entry = req.body
-
-  entry.userId = req.userId
-
-  let dateFormat = "MM-DD-YYYY"
-  let m 
-  if (moment(req.params.date, dateFormat).isValid()) m = moment(req.params.date, dateFormat)
-  else m = moment(new Date()) 
-
-  let day  = m.startOf('day').toDate()
+  let day  = createDay(req.params.date)
 
   entry.date = day
+  entry.userId = req.userId
 
-  Entry.findOneAndUpdate({ date: day, userId: req.userId }, entry, { upsert: true, new: true }, 
+  Entry.findOneAndUpdate({ userId: req.userId, date: day }, entry, { upsert: true, new: true }, 
   (err, data) => {
     if (err)
       res.status(500).send(err)
