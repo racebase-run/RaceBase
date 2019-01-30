@@ -329,11 +329,11 @@ td .btn-default, .day .btn-default, .header.row .btn-default {
         <form class="log-entry px-4 py-3">
           <div class="row">
             <h2 class="col">
-              <input v-model="today" class="d-inline-block" @keyup.enter="changeDate"/>
+              <input v-model="currentDay" class="d-inline-block" @keyup.enter="changeDate(currentDay)"/>
             </h2>
             <div class="col day">
-              <div class="btn btn-default mr-2 d-inline-block" @click="changeDate"> Go </div>
-              <div class="btn btn-default mr-3 d-inline-block today" @click="changeToToday"> Today </div>
+              <div class="btn btn-default mr-2 d-inline-block" @click="changeDate(currentDay)"> Go </div>
+              <div class="btn btn-default mr-3 d-inline-block today" @click="changeDate(new Date())"> Today </div>
               {{ dow }}
             </div>
           </div>
@@ -540,9 +540,13 @@ td .btn-default, .day .btn-default, .header.row .btn-default {
       <div class="col-md-4">
         <h4> Trends <fa class="ml-1" icon="chart-line"></fa> </h4>
         <div class="trends box">
-          <div class="row"> <span class="stat"> 8:10 hr </span> 5 day avg sleep</div>
-          <div class="row"> <span class="stat stat-down"> 8.3% </span> less sleep than usual </div>
-          <div class="row"> <span class="stat"> 49 bpm </span> 5 day avg RHR </div>
+          <div class="row"> <span class="stat"> {{ movingAvgs.sleep }} hr </span> 5 day avg sleep</div>
+          <div class="row"> 
+            <span class="stat" :class="'stat-' + (sleepTrend >= 0 ? 'up' : 'down')"> {{ sleepTrend }}% </span> 
+            {{ sleepTrend >= 0 ? "more" : "less" }} 
+            sleep than usual 
+          </div>
+          <div class="row"> <span class="stat"> {{ movingAvgs.rhr }} bpm </span> 5 day avg RHR </div>
         </div>
 
         <h4> Streaks <fa class="ml-1" icon="fire-alt"></fa> </h4>
@@ -584,23 +588,27 @@ td .btn-default, .day .btn-default, .header.row .btn-default {
 <script> 
 import moment from 'moment'
 import _ from 'underscore'
+
+let { timeStringToDecimal, formatDateUrl, getDateFromUrl } = require('~/utils/date.js')
+
 export default {
   async asyncData ({ store, $axios, params }) {
     let user = { ...store.state.auth.user }
 
     user.firstName = user.name.split(' ')[0]
 
-    let dateFormat = "MM-DD-YYYY"
-    let day
-    if (!params.day || !moment(params.day, dateFormat).isValid())
-      day = new Date()
-    else 
-      day = moment(params.day, dateFormat).toDate()
+    let dayUrl = params.day
+    let day = getDateFromUrl(dayUrl)
 
     let dayPretty = moment(day).format('MMMM D YYYY')
     let dow = moment(day).format('ddd')
     let query = params.day || null
     let entry = await $axios.$get('log/' + query)
+
+    let movingAvgs = {}
+
+    movingAvgs.rhr = Math.round((await $axios.$get('log/avg/moving/rhr/' + dayUrl)).avg * 10) / 10
+    movingAvgs.sleep = (await $axios.$get('log/avg/moving/sleep/' + dayUrl)).avg
 
     let entryData = typeof entry.run == 'undefined' ? {
       run: {
@@ -620,6 +628,11 @@ export default {
       note: ""
     } : entry
 
+    let avgSleepDecimal = timeStringToDecimal(movingAvgs.sleep)
+    let sleepTrend = ((timeStringToDecimal(entryData.sleep) - avgSleepDecimal) / avgSleepDecimal) * 100
+    sleepTrend = Math.round(sleepTrend * 10) / 10
+    if (!isFinite(sleepTrend)) sleepTrend = 0
+
     var didWeights = !!(entryData.weights)
 
     return {
@@ -627,9 +640,11 @@ export default {
       id: user._id,
       entryData: entryData, 
       originalData: JSON.parse(JSON.stringify(entryData)),
-      today: dayPretty, 
+      currentDay: dayPretty, 
       dow: dow, 
-      didWeights: didWeights
+      didWeights: didWeights, 
+      movingAvgs: movingAvgs,
+      sleepTrend: sleepTrend
     }
   },
   methods: {
@@ -638,34 +653,27 @@ export default {
       this.entryData.run.feel = parseInt(this.entryData.run.feel)
       if (!this.didWeights)
         this.$set(this.entryData, 'weights', null)
-      this.$axios.$post('log/', this.entryData).then((res) => {
+      this.$axios.$post('log/' + formatDateUrl(moment(this.currentDay)), this.entryData).then((res) => {
         this.entryData = res.entry
         this.originalData = JSON.parse(JSON.stringify(this.entryData))
         console.log(res.message)
       })
     }, 
-    changeDate: function() {
-      let m = moment(this.today, 'MMMM D YYYY')
+    changeDate: function(date) {
+
+      let m = moment(date)
       if (!m.isValid())
         return
 
-      let dateFormat = "MM-DD-YYYY"
-      let newDate = m.format(dateFormat)
-      this.$router.push("/user/log/" + newDate)
-    },
-    changeToToday: function() {
-      let dateFormat = "MM-DD-YYYY"
-      let newDate = moment(new Date()).format(dateFormat)
-      this.$router.push("/user/log/" + newDate)
+      this.$router.push("/user/log/" + formatDateUrl(m))
+
     },
     changeToPrev: function() {
-      let dateFormat = "MM-DD-YYYY"
-      let prevDate = moment(this.today).subtract(1, 'days').format(dateFormat)
+      let prevDate = formatDateUrl(moment(this.currentDay).subtract(1, 'days'))
       this.$router.push("/user/log/" + prevDate)
     },
     changeToNext: function() {
-      let dateFormat = "MM-DD-YYYY"
-      let nextDate = moment(this.today).add(1, 'days').format(dateFormat)
+      let nextDate = formatDateUrl(moment(this.currentDay).add(1, 'days'))
       this.$router.push("/user/log/" + nextDate)
     },
     addExercise: function() {

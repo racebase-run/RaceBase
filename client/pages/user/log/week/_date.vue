@@ -43,9 +43,25 @@ h4 {
       font-weight: 500;
     }
 
-    .date {
+    .dom, .dom a {
       color: @medium-grey;
       text-align: right;
+    }
+
+    .dom.today {
+      border-radius: 100px;
+      background: @pink;
+      color: white;
+      padding: 2px 5px;
+      display: table;
+      width: auto;
+      height: auto;
+      margin-top: -5px !important;
+      margin-right: 10px;
+
+      a {
+        color: white;
+      }
     }
   }
 
@@ -139,12 +155,16 @@ h4 {
 
       <div class="day col" v-for="day in days">
         <div class="calendar row p-2">
-          <div class="dow col"> {{ day.dow }} </div>
-          <div class="date col"> {{ day.date }} </div>
+          <div class="dow col"> 
+             {{ day.dow }}
+          </div>
+          <div class="dom col" :class="day.today ? 'today' : ''"> 
+            <nuxt-link :to="'/user/log/' + day.url">{{ day.dom }} </nuxt-link>
+          </div>
         </div>
 
-        <div class="mileage"> {{ day.mileage }} <span class="unit"> mi </span> </div>
-        <div class="pace"> {{ day.pace }} <span class="unit"> min / mi </span> </div>
+        <div class="mileage"> {{ day.run.distance }} <span class="unit"> mi </span> </div>
+        <div class="pace"> {{ day.run.time }} <span class="unit"> min / mi </span> </div>
   
         <div class="checks d-table mx-auto mt-3 mb-2">
           <div> 
@@ -159,15 +179,15 @@ h4 {
 
         <div class="stats mb-3">
           <div> 
-            <fa icon="heartbeat" class="mr-2"></fa> {{ day.rhr }} <span class="unit ml-2"> BPM </span>
+            <fa icon="heartbeat" class="mr-2"></fa> {{ day.rhr || "N/A" }} <span class="unit ml-2"> BPM </span>
           </div>
 
           <div> 
-            <fa icon="bed" class="mr-2"></fa> {{ day.sleep }} <span class="unit ml-2"> hrs </span>
+            <fa icon="bed" class="mr-2"></fa> {{ day.sleep || "N/A" }} <span class="unit ml-2"> hrs </span>
           </div>
         </div>
 
-        <div :class="'feel f' + day.feel"> </div>
+        <div :class="'feel f' + day.run.feel"> </div>
 
       </div>
     </div>
@@ -211,74 +231,49 @@ Array.prototype.sum = function (prop) {
   return total
 }
 
+import moment from 'moment'
+let { timeStringToDecimal, formatDateUrl, getDateFromUrl } = require('~/utils/date.js')
+
 export default {
+  async asyncData({ store, params, $axios }) {
+    let dayUrl = params.date
+    let day = getDateFromUrl(params.date)
+    let data = await $axios.$get('/log/list/week/' + dayUrl)
+
+    let days = Array.apply(null, Array(7)).map(function (_, i) {
+      let day = moment().startOf('week').weekday(i + 1)
+      let dayOfWeek = day.format('ddd')
+      let dayOfMonth = day.format('D')
+      let curDayUrl = formatDateUrl(day)
+
+      var today = false
+      if (moment().startOf('day').format('D') == dayOfMonth) today = true
+
+      if (i < data.length && moment(data[i].date).format('ddd') == dayOfWeek) {
+        let dayData = data[i]
+        dayData.dow = dayOfWeek
+        dayData.dom = dayOfMonth
+        dayData.today = today,
+        dayData.url = curDayUrl
+        return dayData
+      } else {
+        return { 
+          run: { distance: 0, time: "0:00", feel: 3 }, 
+          dow: dayOfWeek, 
+          dom: dayOfMonth, 
+          today: today, 
+          url: curDayUrl
+        }
+      }
+    });
+
+    return {
+      days: days
+    }
+  },
   data () {
     return {
-      days : [
-        { 
-          date: "21",
-          dow: "Mon",
-          mileage: 8.5,
-          pace: "7:15", 
-          rhr: 48, 
-          sleep: "8:15",
-          feel: 4
-        },
-        { 
-          date: "22",
-          dow: "Tues",
-          mileage: 10.0,
-          pace: "6:21", 
-          rhr: 46, 
-          sleep: "8:30",
-          feel: 5
-        },
-        { 
-          date: "23",
-          dow: "Wed",
-          mileage: 11.0,
-          pace: "6:52", 
-          rhr: 51, 
-          sleep: "7:55",
-          feel: 4
-        },
-        { 
-          date: "24",
-          dow: "Thurs",
-          mileage: 9.8,
-          pace: "6:30", 
-          rhr: 47, 
-          sleep: "8:23",
-          feel: 3
-        },
-        { 
-          date: "25",
-          dow: "Fri",
-          mileage: 5.0,
-          pace: "7:30", 
-          rhr: 51, 
-          sleep: "8:55",
-          feel: 4
-        },
-        { 
-          date: "26",
-          dow: "Sat",
-          mileage: 10.0,
-          pace: "6:21", 
-          rhr: 43, 
-          sleep: "7:45",
-          feel: 5
-        },
-        { 
-          date: "27",
-          dow: "Sun",
-          mileage: 14.0,
-          pace: "7:20", 
-          rhr: 52, 
-          sleep: "7:19", 
-          feel: 2
-        }
-      ]
+      days : []
     }
   }, 
   computed: {
