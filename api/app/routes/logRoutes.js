@@ -19,11 +19,11 @@ let createDay = function(date) {
 
 router.get('/list/week/:date?',authCheck, (req, res) => {
 
-  let day = moment(createDay(req.params.day))
+  let day = moment(createDay(req.params.date))
   let monday = day.startOf('isoWeek').toDate()
   let sunday = day.endOf('isoWeek').toDate()
 
-  Entry.find({ userId: req.userId, date: { $gte: monday, $lt: sunday }}, (err, data) => {
+  Entry.find({ userId: req.userId, date: { $gte: monday, $lte: sunday }}).sort({ date: 1 }).exec((err, data) => {
     if (err)
       res.status(500).send(err)
     else 
