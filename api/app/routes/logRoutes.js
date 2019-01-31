@@ -57,7 +57,7 @@ router.get('/avg/moving/rhr/:date?', authCheck, (req, res) => {
   let day = createDay(req.params.date)
   let daysago = moment(day).subtract(5, 'days').toDate()
 
-  Entry.find({ userId: req.userId, date: { $gte: daysago, $lt: day }}, (err, data) => {
+  Entry.find({ userId: req.userId, date: { $gt: daysago, $lte: day }}, (err, data) => {
     if (err)
       res.status(500).send(err)
     else if (data) {
@@ -80,7 +80,7 @@ router.get('/avg/moving/sleep/:date?',authCheck, (req, res) => {
   let day = createDay(req.params.date)
   let daysago = moment(day).subtract(5, 'days').toDate()
 
-  Entry.find({ userId: req.userId, date: { $gte: daysago, $lt: day }}, (err, data) => {
+  Entry.find({ userId: req.userId, date: { $gt: daysago, $lte: day }}, (err, data) => {
     if (err)
       res.status(500).send(err)
     else if (data) {
