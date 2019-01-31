@@ -25,3 +25,21 @@ export function getDateFromUrl(s) {
 
   return day
 }
+
+export function getPace(time, distance) {
+  if (!time || !distance) 
+        return "0:00"
+
+  let hm = time
+  let a = hm.split(':')
+  let seconds = (+a[0]) * 60 + (+a[1])
+
+  let p = (seconds / distance) / 60
+  let pm = Math.floor(p)
+  let ps = Math.round((p - pm) * 60)
+
+  ps = ("0" + ps).slice(-2)
+
+  let pace = (pm == 'NaN' || ps == 'aN') ? "0:00" : pm + ":" + ps
+  return pace
+}

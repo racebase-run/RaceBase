@@ -18,7 +18,7 @@ const _3819db20 = () => interopDefault(import('../pages/user/log/week/_date.vue'
 const _7bbed076 = () => interopDefault(import('../pages/news/post/_name.vue' /* webpackChunkName: "pages/news/post/_name" */))
 const _5f332bf2 = () => interopDefault(import('../pages/races/all/_page.vue' /* webpackChunkName: "pages/races/all/_page" */))
 const _23a0fee5 = () => interopDefault(import('../pages/user/content/_page.vue' /* webpackChunkName: "pages/user/content/_page" */))
-const _06cadb6a = () => interopDefault(import('../pages/user/log/_day.vue' /* webpackChunkName: "pages/user/log/_day" */))
+const _ddd457e2 = () => interopDefault(import('../pages/user/log/_date.vue' /* webpackChunkName: "pages/user/log/_date" */))
 const _d7b3442e = () => interopDefault(import('../pages/athlete/_id.vue' /* webpackChunkName: "pages/athlete/_id" */))
 const _e1b6b462 = () => interopDefault(import('../pages/search/_query.vue' /* webpackChunkName: "pages/search/_query" */))
 const _5bdb17c6 = () => interopDefault(import('../pages/races/_id/_gender/_event.vue' /* webpackChunkName: "pages/races/_id/_gender/_event" */))
@@ -148,9 +148,9 @@ export function createRouter() {
       component: _23a0fee5,
       name: "user-content-page"
     }, {
-      path: "/user/log/:day?",
-      component: _06cadb6a,
-      name: "user-log-day"
+      path: "/user/log/:date?",
+      component: _ddd457e2,
+      name: "user-log-date"
     }, {
       path: "/athlete/:id?",
       component: _d7b3442e,

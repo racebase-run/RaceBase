@@ -1,3 +1,5 @@
+// pages/user/log/week/_date.vue
+
 <style lang="less" scoped>
 
 @import (reference) "~assets/less/colors.less";
@@ -8,13 +10,13 @@ h1 {
     font-weight: 400; 
     color: @bright-blue;
   }
-  font-size: 35px;
-  font-weight: 600;
+  font-size: 32px;
+  font-weight: 500;
 }
 
 h2 {
   text-transform: uppercase;
-  font-size: 25px;
+  font-size: 21px;
 }
 
 h4 {
@@ -33,14 +35,17 @@ h4 {
   overflow: hidden;
   text-align: center; 
   padding: 0;
+  min-height: 100%;
   border-right: 2px solid @light-grey + #191919;
 
   .calendar {
     font-size: 16px;
-    .dow {
+
+    .dow, .dow a {
       text-align: left;
       text-transform: uppercase;
       font-weight: 500;
+      color: black;
     }
 
     .dom, .dom a {
@@ -65,6 +70,19 @@ h4 {
     }
   }
 
+  .placeholder {
+    font-size: 17px;
+    text-transform: uppercase;
+    color: @medium-grey;
+    font-weight: 500;
+    .fa-pencil-alt {
+      display: block;
+      margin: 0 auto;
+      font-size: 24px;
+      color: @bright-blue;
+    }
+  }
+
   .unit {
     color: @medium-grey;
     font-size: 14px;
@@ -73,7 +91,7 @@ h4 {
   }
 
   .mileage {
-    font-weight: 600; 
+    font-weight: 500; 
     font-size: 26px;
     color: @bright-blue;
   }
@@ -94,7 +112,7 @@ h4 {
   }
 
   .stats {
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 500;
 
     .fa-heartbeat {
@@ -109,7 +127,7 @@ h4 {
   .feel {
     width: 100%;
     height: 7px;
-    background: @bright-blue;
+    background: @medium-grey;
   }
 
   .f1 { background: @pink; }
@@ -122,6 +140,7 @@ h4 {
 
 .box.col {
   margin: 10px;
+  overflow: hidden;
 }
 
 .num {
@@ -141,7 +160,7 @@ h4 {
   <div class="mx-auto w-md-100 mx-md-0 px-md-4 container">
     <div class="row">
       <h1 class="mt-4 col"> 
-        <span class="name">John's</span>
+        <span class="name">{{ user.firstName }}'s</span>
         Training Log
       </h1>
       <div class="col d-flex align-items-center justify-content-end">
@@ -149,60 +168,81 @@ h4 {
       </div>
     </div>
 
-    <h4 class="mt-4">Week of 1/21</h4>
+    
+    <div class="header row mb-2">
+      <div class="col d-flex">
+        <h4 class="mt-4">Week of {{ weekOf }}</h4>
+      </div>
+      <div class="col d-flex flex-row align-items-end">
+        <LogPagers :date='date' interval="7" />
+      </div>
+    </div>
 
     <div class="week box row mt-3 mx-auto">
 
-      <div class="day col" v-for="day in days">
+      <div class="day col d-flex flex-column" v-for="day in days">
         <div class="calendar row p-2">
           <div class="dow col"> 
-             {{ day.dow }}
+             <nuxt-link :to="'/user/log/' + day.url">{{ day.dow }} </nuxt-link>
           </div>
           <div class="dom col" :class="day.today ? 'today' : ''"> 
             <nuxt-link :to="'/user/log/' + day.url">{{ day.dom }} </nuxt-link>
           </div>
         </div>
 
-        <div class="mileage"> {{ day.run.distance }} <span class="unit"> mi </span> </div>
-        <div class="pace"> {{ day.run.time }} <span class="unit"> min / mi </span> </div>
-  
-        <div class="checks d-table mx-auto mt-3 mb-2">
-          <div> 
-            <input type="checkbox"/>
-            <label class="ml-3"> Core </label>
+        <div class=" mb-auto">
+          <div v-if="day.run" class="mt-auto">
+            <div class="mileage"> {{ day.run.distance || 0 }} <span class="unit"> mi </span> </div>
+            <div class="pace"> {{ day.run.pace }} <span class="unit"> min / mi </span> </div>
           </div>
-          <div> 
-            <input type="checkbox"/>
-            <label class="ml-3"> Stretching </label>
-          </div>
-        </div>
-
-        <div class="stats mb-3">
-          <div> 
-            <fa icon="heartbeat" class="mr-2"></fa> {{ day.rhr || "N/A" }} <span class="unit ml-2"> BPM </span>
-          </div>
-
-          <div> 
-            <fa icon="bed" class="mr-2"></fa> {{ day.sleep || "N/A" }} <span class="unit ml-2"> hrs </span>
+          <div v-if="!day.run" class="mt-4 mb-5">
+            <nuxt-link :to="'/user/log/' + day.url" class="placeholder"> 
+              <div class="mb-2"> Edit </div>
+              <fa icon="pencil-alt"></fa> 
+            </nuxt-link>
           </div>
         </div>
 
-        <div :class="'feel f' + day.run.feel"> </div>
+        <div v-if="day.rhr || day.sleep" class="mt-2">
+          <div class="stats mb-3">
+            <div> 
+              <fa icon="heartbeat" class="mr-2"></fa> {{ day.rhr || "N/A" }} <span class="unit ml-2"> BPM </span>
+            </div>
+
+            <div> 
+              <fa icon="bed" class="mr-2"></fa> {{ day.sleep || "N/A" }} <span class="unit ml-2"> hrs </span>
+            </div>
+          </div>
+        </div>
+
+        <div v-if="!day.rhr && !day.sleep && day.run" class="mx-auto mb-3">
+          <nuxt-link :to="'/user/log/' + day.url"> Add more <fa icon="pencil-alt"></fa> </nuxt-link>
+        </div>
+
+        <div class="feel mt-1" :class="'f' + (day.run ? day.run.feel : '')"> </div>
 
       </div>
     </div>
 
-    <div class="row">
+    <div class="row align-items-start">
       
-      <div class="box col">
-        <div class="row mb-2">
+      <div class="box col p-0">
+        <div class="row mb-2 p-3">
           <h2 class="col"> Total </h2>
           <div class="data col"><span class="num">{{ total }}</span> mi</div>
         </div>
+        <no-ssr>
+          <Chart :data="days.map(a => a.run ? a.run.distance : 0)" name="mileage" color="blue"/>
+        </no-ssr>
       </div>
 
-      <div class="box col">
-        <h2> Avg Sleep </h2>
+      <div class="sleep box col p-0">
+        <div class="content p-3">
+          <h2> Avg Sleep </h2>
+        </div>
+        <no-ssr>
+          <Chart :data="days.map(a => a.sleepDecimal)" name="sleep" color="orange"/>
+        </no-ssr>
       </div>
 
       <div class="box col">
@@ -221,6 +261,7 @@ h4 {
 
   </div>
 </template>
+
 <script> 
 
 Array.prototype.sum = function (prop) {
@@ -232,22 +273,33 @@ Array.prototype.sum = function (prop) {
 }
 
 import moment from 'moment'
-let { timeStringToDecimal, formatDateUrl, getDateFromUrl } = require('~/utils/date.js')
+const Chart = () => import('~/components/Chart')
+const LogPagers = () => import('~/components/LogPagers')
+let { timeStringToDecimal, formatDateUrl, getDateFromUrl, getPace } = require('~/utils/date.js')
 
 export default {
+  components: {
+    Chart, 
+    LogPagers
+  },
   async asyncData({ store, params, $axios }) {
+    let user = { ...store.state.auth.user }
+    user.firstName = user.name.split(' ')[0]
+
     let dayUrl = params.date
-    let day = getDateFromUrl(params.date)
+    let curDay = getDateFromUrl(params.date)
+    let weekOf = moment(curDay).startOf('isoWeek').format('M/D')
     let data = await $axios.$get('/log/list/week/' + dayUrl)
 
-    let days = Array.apply(null, Array(7)).map(function (_, i) {
-      let day = moment().startOf('week').weekday(i + 1)
+    let days = await Array.apply(null, Array(7)).map(function (_, i) {
+      let day = moment(getDateFromUrl(params.date)).startOf('week').weekday(i + 1)
       let dayOfWeek = day.format('ddd')
       let dayOfMonth = day.format('D')
       let curDayUrl = formatDateUrl(day)
 
       var today = false
-      if (moment().startOf('day').format('D') == dayOfMonth) today = true
+      if (moment().startOf('day').format('D') == dayOfMonth) 
+        today = true
 
       if (i < data.length && moment(data[i].date).format('ddd') == dayOfWeek) {
         let dayData = data[i]
@@ -255,10 +307,13 @@ export default {
         dayData.dom = dayOfMonth
         dayData.today = today,
         dayData.url = curDayUrl
+        dayData.sleepDecimal = timeStringToDecimal(dayData.sleep)
+        dayData.run.pace = getPace(dayData.run.time, dayData.run.distance)
+        if (dayData.run.distance == 0 || !dayData.run.distance)
+          delete dayData.run
         return dayData
       } else {
         return { 
-          run: { distance: 0, time: "0:00", feel: 3 }, 
           dow: dayOfWeek, 
           dom: dayOfMonth, 
           today: today, 
@@ -268,18 +323,27 @@ export default {
     });
 
     return {
-      days: days
+      days: days, 
+      weekOf: weekOf, 
+      user: user, 
+      date: params.date
     }
   },
-  data () {
-    return {
-      days : []
-    }
-  }, 
   computed: {
     total: function() {
-      return this.days.sum("mileage")
+      var total = 0
+      for ( var i = 0, l = this.days.length; i < l; i++ ) {
+        if (this.days[i].run)
+          total += this.days[i].run.distance
+      }
+      return total
     }
+  }, 
+  watch: {
+    $route: function () {
+      console.log(this.$route.params.date)
+      this.date = this.$route.params.date || this.date
+    } 
   }
 }
 </script>

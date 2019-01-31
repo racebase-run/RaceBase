@@ -1,3 +1,5 @@
+// pages/user/log/_date.vue
+
 <style lang="less" scoped>
 
 @import (reference) "~assets/less/colors.less";
@@ -309,7 +311,7 @@ td .btn-default, .day .btn-default, .header.row .btn-default {
         </h1>
       </div>
       <div class="col d-flex align-items-center justify-content-end">
-        <nuxt-link to="/user/log/week/foo" class="btn btn-primary">Weekly View</nuxt-link>
+        <nuxt-link to="/user/log/week/" class="btn btn-primary">Weekly View</nuxt-link>
       </div>
     </div>
 
@@ -321,8 +323,7 @@ td .btn-default, .day .btn-default, .header.row .btn-default {
             <h4 class="align-self-center mb-0">Log Entry <fa class="ml-1" icon="book-open"></fa> </h4>
           </div>
           <div class="col d-flex flex-row align-items-end">
-            <div class="btn btn-default d-inline-block ml-auto mt-auto" @click="changeToPrev"> Prev </div>
-            <div class="btn btn-default d-inline-block ml-2" @click="changeToNext"> Next </div>
+            <LogPagers :date="date" interval="1" />
           </div>
         </div>
 
@@ -589,20 +590,29 @@ td .btn-default, .day .btn-default, .header.row .btn-default {
 import moment from 'moment'
 import _ from 'underscore'
 
-let { timeStringToDecimal, formatDateUrl, getDateFromUrl } = require('~/utils/date.js')
+let { timeStringToDecimal, formatDateUrl, getDateFromUrl, getPace } = require('~/utils/date.js')
+const LogPagers = () => import('~/components/LogPagers')
 
 export default {
+  components: {
+    LogPagers
+  },
+  head () {
+    let titleDate = moment(this.day).format('M/D/YY')
+    return {
+      title: "Training Log " + titleDate + " - RaceBase"
+    }
+  },
   async asyncData ({ store, $axios, params }) {
     let user = { ...store.state.auth.user }
-
     user.firstName = user.name.split(' ')[0]
 
-    let dayUrl = params.day
+    let dayUrl = params.date
     let day = getDateFromUrl(dayUrl)
 
     let dayPretty = moment(day).format('MMMM D YYYY')
     let dow = moment(day).format('ddd')
-    let query = params.day || null
+    let query = params.date || null
     let entry = await $axios.$get('log/' + query)
 
     let movingAvgs = {}
@@ -644,7 +654,9 @@ export default {
       dow: dow, 
       didWeights: didWeights, 
       movingAvgs: movingAvgs,
-      sleepTrend: sleepTrend
+      sleepTrend: sleepTrend, 
+      day: day, 
+      date: params.date
     }
   },
   methods: {
@@ -706,7 +718,7 @@ export default {
       ps = ("0" + ps).slice(-2)
 
       let pace = (pm == 'NaN' || ps == 'aN') ? "0:00" : pm + ":" + ps
-      return pace
+      return getPace(this.entryData.run.time, this.entryData.run.distance)
     },
     modified: function() {
       return !_.isEqual(this.entryData, this.originalData)
@@ -716,7 +728,11 @@ export default {
     didWeights: function() {
       if (this.didWeights && !this.entryData.weights)
         this.$set(this.entryData, 'weights', [{}])
-    }
+    },
+    $route: function () {
+      console.log(this.$route.params.date)
+      this.date = this.$route.params.date || this.date
+    } 
   }
 }
 </script>
