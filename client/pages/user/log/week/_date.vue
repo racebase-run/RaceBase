@@ -234,7 +234,7 @@ h4 input, .schedule input {
   <div class="mx-auto w-md-100 mx-md-0 px-md-4 container">
     <div class="row">
       <h1 class="mt-4 col"> 
-        <span class="name">{{ user.firstName }}'s</span>
+        <span class="name" v-if="user.name">{{ user.firstName }}'s</span>
         Training Log
       </h1>
       <div class="col d-flex align-items-center justify-content-end">
@@ -432,7 +432,10 @@ export default {
   middleware: 'auth',
   async asyncData({ store, params, $axios }) {
     let user = { ...store.state.auth.user }
-    user.firstName = user.name.split(' ')[0]
+    if (user.name)
+      user.firstName = user.name.split(' ')[0]
+    else 
+      user.firstName = ""
 
     let dayUrl = params.date
     let curDay = getDateFromUrl(params.date)

@@ -357,7 +357,7 @@ td .btn-default, .day .btn-default, .header.row .btn-default {
   <div class="mx-auto w-md-100 mx-md-0 px-md-4 container">
     <div class="row">
       <div class="col mt-3">
-        <h2 class="name 4"> {{ user.firstName }}'s </h2>
+        <h2 class="name 4" v-if="user.name"> {{ user.firstName }}'s </h2>
         <h1> 
           Training Log
         </h1>
@@ -710,7 +710,10 @@ export default {
   middleware: 'auth',
   async asyncData ({ store, $axios, params }) {
     let user = { ...store.state.auth.user }
-    user.firstName = user.name.split(' ')[0]
+    if (user.name)
+      user.firstName = user.name.split(' ')[0]
+    else 
+      user.firstName = ""
 
     let dayUrl = params.date
     let day = getDateFromUrl(dayUrl)
