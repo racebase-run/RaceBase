@@ -4,6 +4,7 @@
 
 @import (reference) "~assets/less/colors.less";
 @import (reference) "~assets/less/basics.less";
+@import (reference) "~assets/less/sizes.less";
 
 h1 {
   .name {
@@ -110,12 +111,18 @@ h4 input, .schedule input {
     font-weight: 500; 
     font-size: 26px;
     color: @bright-blue;
+    @media (min-width: @large) {
+      font-size: 23px;
+    }
   }
 
   .pace {
-    font-weight: 500;
+    font-weight: 400;
     font-size: 19px;
     color: @bright-blue;
+    @media (min-width: @large) {
+      font-size: 16px;
+    }
   }
 
   .checks {
@@ -128,8 +135,12 @@ h4 input, .schedule input {
   }
 
   .stats {
-    font-size: 15px;
+    font-size: 18px;
     font-weight: 500;
+
+    @media (min-width: @large) {
+      font-size: 15px;
+    }
 
     .fa-heartbeat {
       color: @pink;
@@ -158,12 +169,18 @@ h4 input, .schedule input {
   h4 {
     font-size: 15px;
   }
+  max-width: 100%;
   font-size: 17px;
   .col {
     .label {
       text-transform: uppercase;
       color: @dark-grey;
       font-weight: 500;
+      text-align: center;
+
+      @media (min-width: @large) {
+        text-align: right;
+      }
     }
     .mileage {
       color: @bright-blue;
@@ -188,7 +205,7 @@ h4 input, .schedule input {
 
 }
 
-.box.col {
+.stats.row .box {
   margin: 10px;
   overflow: hidden;
 
@@ -240,7 +257,7 @@ h4 input, .schedule input {
 
     <div class="week box row mt-3 mx-auto mb-3">
 
-      <div class="day col d-flex flex-column" v-for="day in days">
+      <div class="day col-lg d-flex flex-column" v-for="day in days">
         <div class="calendar row p-2">
           <div class="dow col"> 
              <nuxt-link :to="'/user/log/' + day.url">{{ day.dow }} </nuxt-link>
@@ -250,38 +267,44 @@ h4 input, .schedule input {
           </div>
         </div>
 
-        <div class="mt-auto mb-auto">
-          <div v-if="day.run" class="mt-auto">
-            <div class="mileage"> {{ day.run.distance || 0 }} <span class="unit"> mi </span> </div>
-            <div class="pace"> {{ day.run.pace }} <span class="unit"> min / mi </span> </div>
-          </div>
-          <div v-else-if="day.rhr || day.sleep">
-            <nuxt-link :to="'/user/log/' + day.url" class="placeholder"> 
-              <div class="mb-2"> Edit <fa icon="pencil-alt"></fa> </div>
-            </nuxt-link>
-          </div>
-          <div v-else class="mt-3 mb-5">
-            <nuxt-link :to="'/user/log/' + day.url" class="placeholder"> 
-              <div class="mb-2"> Edit </div>
-              <fa icon="pencil-alt"></fa> 
-            </nuxt-link>
-          </div>
-        </div>
-
-        <div v-if="day.rhr || day.sleep" class="mt-2">
-          <div class="stats mb-3">
-            <div> 
-              <fa icon="heartbeat" class="mr-2"></fa> {{ day.rhr || "N/A" }} <span class="unit ml-2"> BPM </span>
+        <div class="row mb-4 mb-lg-auto">
+          <div class="mt-auto mb-auto col-6 col-lg-12">
+            <div v-if="day.run" class="mt-auto">
+              <div class="mileage"> {{ day.run.distance || 0 }} <span class="unit"> mi </span> </div>
+              <div class="pace"> {{ day.run.pace }} <span class="unit"> min / mi </span> </div>
             </div>
-
-            <div> 
-              <fa icon="bed" class="mr-2"></fa> {{ day.sleep || "N/A" }} <span class="unit ml-2"> hrs </span>
+            <div v-else-if="day.rhr || day.sleep">
+              <nuxt-link :to="'/user/log/' + day.url" class="placeholder"> 
+                <div class="mb-2"> Edit <fa icon="pencil-alt"></fa> </div>
+              </nuxt-link>
+            </div>
+            <div v-else class="mt-3 mb-5">
+              <nuxt-link :to="'/user/log/' + day.url" class="placeholder"> 
+                <div class="mb-2"> Edit </div>
+                <fa icon="pencil-alt"></fa> 
+              </nuxt-link>
             </div>
           </div>
-        </div>
 
-        <div v-if="!day.rhr && !day.sleep && day.run" class="mx-auto mb-auto">
-          <nuxt-link :to="'/user/log/' + day.url"> Add more <fa icon="pencil-alt"></fa> </nuxt-link>
+          <div class="col-6 col-lg-12">
+
+            <div v-if="day.rhr || day.sleep" class="mt-2">
+              <div class="stats mb-3">
+                <div> 
+                  <fa icon="heartbeat" class="mr-2"></fa> {{ day.rhr || "N/A" }} <span class="unit ml-2"> BPM </span>
+                </div>
+
+                <div> 
+                  <fa icon="bed" class="mr-2"></fa> {{ day.sleep || "N/A" }} <span class="unit ml-2"> hrs </span>
+                </div>
+              </div>
+            </div>
+
+            <div v-if="!day.rhr && !day.sleep && day.run" class="mx-auto mb-auto">
+              <nuxt-link :to="'/user/log/' + day.url"> Add more <fa icon="pencil-alt"></fa> </nuxt-link>
+            </div>
+
+          </div>
         </div>
 
         <div class="feel mt-1" :class="'f' + (day.run ? day.run.feel : '')"> </div>
@@ -289,11 +312,11 @@ h4 input, .schedule input {
       </div>
     </div>
 
-    <div class="schedule row d-flex align-items-center mb-3">
-      <h4 class="col mb-0"> Scheduled </h4>
-      <div class="col row" v-for="day in days"> 
-        <div class="col-6 label">{{ day.dow }}</div>
-        <div class="col-6 mileage">
+    <div class="schedule row align-items-center mb-3">
+      <h4 class="col-12 col-lg mb-2 mb-lg-0"> Scheduled </h4>
+      <div class="col row item" v-for="day in days"> 
+        <div class="col-12 col-lg-6 label px-0">{{ day.dow }}</div>
+        <div class="col-12 col-lg-6 mileage px-0">
           <input 
             class="form-control" 
             v-model="day.mileageGoal" 
@@ -302,15 +325,15 @@ h4 input, .schedule input {
           />
         </div>
       </div>
-      <div class="col d-flex align-items-center"> 
+      <div class="col-12 col-lg d-flex align-items-center mt-3 mt-lg-0"> 
         <h4 class="d-inline-block mb-0"> Goal </h4>
         <div class="d-inline-block goal ml-3"> {{ totalGoal }} mi</div>
       </div>
     </div>
 
-    <div class="row align-items-start">
+    <div class="stats row align-items-start">
       
-      <div class="box col p-0">
+      <div class="box col-lg p-0">
         <div class="row mb-2 px-3 pt-3 pb-0">
           <h2 class="col"> Total </h2>
           <div class="data col mb-2"><span class="num">{{ totalMileage }}</span> mi</div>
@@ -325,12 +348,12 @@ h4 input, .schedule input {
         </no-ssr>
       </div>
 
-      <div class="sleep box col p-0">
+      <div class="sleep box col-lg p-0">
         <div>
           <div class="row mb-2 pt-3 px-3 pb-0">
             <h2 class="col"> Avg Sleep </h2>
             <div class="data col mb-2"><span class="num">{{ avgSleep }}</span> hrs</div>
-            <Stat value="5" unit="%" :comp="true"> than last week </Stat>
+            <Stat :value="sleepDifferential" unit="%" :comp="true"> than last week </Stat>
             <div class="mx-auto mt-3 placeholder" v-if="avgSleep == '0:00'"> 
               Add log entries to see stats
             </div>
@@ -341,15 +364,15 @@ h4 input, .schedule input {
         </div>
       </div>
 
-      <div class="box col">
+      <div class="box col-lg">
         <div class="row mb-2">
           <h2 class="col"> Core </h2>
-          <div class="data col"><span class="num">71%</span></div>
+          <div class="data col"><span class="num">{{ getCheckPercentage('core') }}%</span></div>
         </div>
 
         <div class="row">
           <h2 class="col"> Stretching </h2>
-          <div class="data col"><span class="num">86%</span> mi</div>
+          <div class="data col"><span class="num">{{ getCheckPercentage('stretching') }}%</span></div>
         </div>
       </div>
 
@@ -360,10 +383,10 @@ h4 input, .schedule input {
 
 <script> 
 
-Array.prototype.sum = function (prop) {
+Array.prototype.sum = function(prop) {
   var total = 0
   for ( var i = 0, _len = this.length; i < _len; i++ ) {
-      total += this[i][prop]
+    total += this[i][prop]
   }
   return total
 }
@@ -416,10 +439,14 @@ export default {
     let weekOf = moment(curDay).startOf('isoWeek').format('M/D/YY')
     let data = await $axios.$get('/log/list/week/' + dayUrl)
 
+    let lastWeekUrl = formatDateUrl(moment(curDay).subtract(7, 'days'))
+
+    let lastWeek = await $axios.$get('/log/list/week/' + lastWeekUrl)
+
     let days = await Array.apply(null, Array(7)).map(function (_, i) {
       let day = moment(getDateFromUrl(params.date)).startOf('week').weekday(i + 1)
       let dayOfWeek = day.format('ddd')
-      let dayOfMonth = day.format('D')
+      let dayOfMonth = day.format('DD')
       let curDayUrl = formatDateUrl(day)
 
       var today = false
@@ -437,7 +464,7 @@ export default {
 
         dayData.run.distance = sums.totalMileage
         dayData.run.time = sums.totalTime
-        
+
         dayData.sleepDecimal = timeStringToDecimal(dayData.sleep)
         dayData.run.pace = getPace(dayData.run.time, dayData.run.distance)
 
@@ -456,6 +483,7 @@ export default {
 
     return {
       days: days, 
+      lastWeek: lastWeek,
       weekOf: weekOf, 
       user: user, 
       date: params.date || formatDateUrl(moment())
@@ -495,6 +523,19 @@ export default {
         }
       }
       return timeDecimalToString(total / l)
+    }, 
+    sleepDifferential: function() {
+      let thisWeek = timeStringToDecimal(this.avgSleep)
+      var lastWeekTotal = 0
+      var l = 0
+      for (var i = 0; i < this.days.length; i++ ) {
+        if (this.days[i].sleep) {
+          lastWeekTotal += timeStringToDecimal(this.lastWeek[i].sleep)
+          l++
+        }
+      }
+      let lastWeek = (lastWeekTotal / l) || 0
+      return Math.round(((thisWeek - lastWeek) / lastWeek) * 1000) / 10 || 0
     }
   }, 
   methods: {
@@ -511,6 +552,19 @@ export default {
       .then((res) => {
         console.log(res)
       })
+    }, 
+    getCheckPercentage: function(prop) {
+      let l = 0, t = 0
+      for (var i = 0; i < this.days.length; i++ ) {
+        if (this.days[i].runs) {
+          if (this.days[i].checks[prop])
+            t++
+          if (this.days[i].runs[0]) {
+            if (this.days[i].runs[0].distance > 0) l++
+          }
+        }
+      }
+      return Math.round((t / l) * 100) || 0
     }
   },
   watch: {

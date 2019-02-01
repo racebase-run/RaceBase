@@ -5,6 +5,16 @@
 @import (reference) "~assets/less/colors.less";
 @import (reference) "~assets/less/basics.less";
 
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none !important; 
+  margin: 0; 
+}
+
+input[type=number] {
+  -moz-appearance: textfield !important;
+}
+
 h1 {
   font-size: 32px;
   font-weight: 500;
@@ -99,7 +109,7 @@ td .btn-default, .day .btn-default, .header.row .btn-default {
   }
 
   .runs-list {
-
+    border-top: 1px solid @ultra-light-grey;
     .tag {
       font-size: 15px;
       font-weight: 500;
@@ -125,7 +135,7 @@ td .btn-default, .day .btn-default, .header.row .btn-default {
   }
 
   .run-title {
-    border-top: 1px solid @light-grey;
+    border-top: 1px solid @ultra-light-grey;
     input {
       border: none;
       text-align: left;
@@ -194,7 +204,7 @@ td .btn-default, .day .btn-default, .header.row .btn-default {
   }
 
   .other {
-    border-top: 1px solid @light-grey;
+    border-top: 1px solid @ultra-light-grey;
   }
 
   .weights {
@@ -291,6 +301,7 @@ td .btn-default, .day .btn-default, .header.row .btn-default {
     font-size: 18px;
     font-weight: 500;
     margin-bottom: 0; 
+    text-align: left;
   }
 
   .num {
@@ -358,7 +369,7 @@ td .btn-default, .day .btn-default, .header.row .btn-default {
 
     <div class="row mt-4 mb-5">
 
-      <div class="col-md-8">
+      <div class="col-lg-8 col-md-12">
         <div class="header row mb-2">
           <div class="col d-flex">
             <h4 class="align-self-center mb-0">Log Entry <fa class="ml-1" icon="book-open"></fa> </h4>
@@ -370,7 +381,7 @@ td .btn-default, .day .btn-default, .header.row .btn-default {
 
         <form class="log-entry px-4 py-3">
           <div class="row">
-            <h2 class="col">
+            <h2 class="col-5">
               <input v-model="currentDay" class="d-inline-block" @keyup.enter="changeDate(currentDay)"/>
             </h2>
             <div class="col day">
@@ -388,7 +399,7 @@ td .btn-default, .day .btn-default, .header.row .btn-default {
           </div>
 
           <div class="row align-items-center mt-2">
-            <div class="col-6"> <h3 class="mb-0"> Runs </h3> </div>
+            <div class="col-3 col-lg-6"> <h3 class="mb-0"> Runs </h3> </div>
             <div class="col row align-items-center ml-auto">
               <label class="col-7"> Mileage Goal </label>
               <div class="col">
@@ -397,7 +408,7 @@ td .btn-default, .day .btn-default, .header.row .btn-default {
             </div>
           </div>
 
-          <div class="runs-list row mt-3"> 
+          <div class="runs-list row mt-3 pt-3"> 
             <div class="tag ml-2" v-for="(run, index) in entryData.runs">
               <span @click="curRun = index"> {{ run.name || 'Run ' + Number(index+1) }} </span>
               <fa icon="trash-alt" class="ml-2" @click="removeRun(index)"> </fa>
@@ -410,48 +421,48 @@ td .btn-default, .day .btn-default, .header.row .btn-default {
             <input 
               v-model="entryData.runs[curRun].name" 
               :placeholder="'Run ' + Number(curRun + 1)" 
-              class="form-control col-md-7"
+              class="form-control col-7"
             /> 
           </div>
 
           <div class="run row mt-2">
 
-            <div class="col-md row align-items-center">
-              <label class="col-md-5"> Dist </label>
+            <div class="col-6 col-lg row align-items-center mb-2 mb-lg-0">
+              <label class="col-5"> Dist </label>
               <input 
                 type="number" 
                 placeholder="0.0" 
                 v-model="entryData.runs[curRun].distance" 
-                class="form-control col-md-7"
+                class="form-control col-7"
               />
             </div>
 
-            <div class="col-md row align-items-center">
-              <label class="col-md-5"> Time </label>
+            <div class="col-6 col-lg row align-items-center mb-2 mb-lg-0">
+              <label class="col-5"> Time </label>
               <input 
                 type="text" 
                 placeholder="0:00" 
-                class="form-control col-md-7"
+                class="form-control col-7"
                 v-model="entryData.runs[curRun].time"
               />
             </div>
 
-            <div class="col-md row align-items-center">
-              <label class="col-md-5"> Pace </label>
+            <div class="col-6 col-lg row align-items-center mb-2 mb-lg-0">
+              <label class="col-5"> Pace </label>
               <input 
                 type="text" 
                 placeholder="0:00" 
-                class="form-control col-md-7"
+                class="form-control col-7"
                 v-model="pace"
               />
             </div>
 
-            <div class="col-md row align-items-center">
-              <label class="col-md-5"> Elev </label>
+            <div class="col-6 col-lg row align-items-center mb-2 mb-lg-0">
+              <label class="col-5"> Elev </label>
               <input 
                 type="number" 
                 placeholder="0" 
-                class="form-control col-md-7"
+                class="form-control col-7"
                 v-model="entryData.runs[curRun].elevationGain"
               />
             </div>
@@ -459,7 +470,7 @@ td .btn-default, .day .btn-default, .header.row .btn-default {
           </div>
 
           <div class="sliders row mt-3">
-            <div class="col">
+            <div class="col-12 col-lg-6 mb-3 mb-lg-0">
               <h4 class="mb-3"> Difficulty </h4>
               <input 
                 type="range" 
@@ -476,7 +487,7 @@ td .btn-default, .day .btn-default, .header.row .btn-default {
                 <div class="col five"> 5 </div>
               </div>
             </div>
-            <div class="col">
+            <div class="col-12 col-lg-6">
               <h4 class="mb-3"> Feel </h4>
               <input 
                 type="range" 
@@ -497,34 +508,34 @@ td .btn-default, .day .btn-default, .header.row .btn-default {
 
           <div class="other row mt-4 pt-4">
 
-            <div class="col row align-items-center">
-              <label class="col-md-6"> Sleep </label>
+            <div class="col-6 col-lg row align-items-center mb-3 mb-lg-0">
+              <label class="col-6"> Sleep </label>
               <input 
                 type="text" 
                 placeholder="0:00" 
-                class="form-control col-md-6"
+                class="form-control col-6"
                 v-model="entryData.sleep"
               />
             </div>
 
-            <div class="col row align-items-center">
-              <label class="col-md-7"> RHR <fa icon="heartbeat"></fa> </label>
+            <div class="col-6 col-lg row align-items-center mb-3 mb-lg-0">
+              <label class="col-7"> RHR <fa icon="heartbeat"></fa> </label>
               <input 
                 type="number" 
                 placeholder="0" 
-                class="form-control col-md-5"
+                class="form-control col-5"
                 v-model="entryData.rhr"
               />
             </div>
 
-            <div class="col-md-3 row align-items-center">
+            <div class="col-6 col-lg row align-items-center">
               <div class="mx-auto">
                 <label class="mr-2"> Core </label>
                 <input type="checkbox" v-model="entryData.checks.core"/>
               </div>
             </div>
 
-            <div class="col row align-items-center">
+            <div class="col-6 col-lg row align-items-center">
               <div class="mx-auto">
                 <label class="mr-2"> Stretching </label>
                 <input type="checkbox" v-model="entryData.checks.stretching" />
@@ -533,7 +544,7 @@ td .btn-default, .day .btn-default, .header.row .btn-default {
 
           </div>
 
-          <h3 class="mt-4"> Weights <input type="checkbox" v-model="didWeights" /></h3>
+          <h3 class="mt-5 mt-lg-4"> Weights <input type="checkbox" v-model="didWeights" /></h3>
 
           <div class="weights row mx-auto w-95" v-if="didWeights">
 
@@ -596,7 +607,7 @@ td .btn-default, .day .btn-default, .header.row .btn-default {
             <div class="col-md-8">
               <textarea placeholder="Add note..." class="form-control" v-model="entryData.note"></textarea>
             </div>
-            <div class="col-md-4 d-flex flex-row align-items-end">
+            <div class="col-md-4 d-flex flex-row align-items-end mt-3 mt-lg-0">
 
               <div class="btn btn-default mt-auto ml-auto" @click="revert()" v-if="modified">
                 Revert
@@ -613,9 +624,9 @@ td .btn-default, .day .btn-default, .header.row .btn-default {
         </form>
       </div>
 
-      <div class="col-md-4">
+      <div class="col-12 col-lg-4 mt-3 mt-lg-0">
         <h4> Trends <fa class="ml-1" icon="chart-line"></fa> </h4>
-        <div class="trends box">
+        <div class="trends box flat-box px-1 py-2">
           <div class="row"> <span class="stat"> {{ movingAvgs.sleep }} hr </span> 5 day avg sleep</div>
           <div class="row"> 
             <span class="stat" :class="'stat-' + (sleepTrend >= 0 ? 'up' : 'down')"> {{ sleepTrend }}% </span> 
@@ -626,7 +637,7 @@ td .btn-default, .day .btn-default, .header.row .btn-default {
         </div>
 
         <h4> Streaks <fa class="ml-1" icon="fire-alt"></fa> </h4>
-        <div class="streaks box py-2">
+        <div class="streaks box flat-box py-2">
 
           <div class="row flex align-items-center">
             <h2 class="col"> Core </h2>
@@ -640,16 +651,16 @@ td .btn-default, .day .btn-default, .header.row .btn-default {
         </div>
 
         <h4> Schedule <fa class="ml-1" icon="calendar-alt"></fa> </h4>
-        <div class="schedule box">
+        <div class="schedule box flat-box">
 
           <div class="day row flex align-items-center mb-2">
             <h2 class="col"> Today </h2>
-            <div class="data col"><span class="num">10.0</span> mi</div>
+            <div class="data col"><span class="num">{{ entryData.mileageGoal }}</span> mi</div>
           </div>
 
           <div class="row flex align-items-center">
             <h2 class="col"> Tomorrow </h2>
-            <div class="data col"><span class="num">11.0</span> mi</div>
+            <div class="data col"><span class="num">{{ goalTomorrow }}</span> mi</div>
           </div>
 
         </div>
@@ -728,6 +739,9 @@ export default {
 
     var didWeights = !!(entryData.weights)
 
+    let tomorrowUrl = formatDateUrl(moment(day).add(1, 'day'))
+    let goalTomorrow = (await $axios.$get('log/schedule/' + tomorrowUrl)).goal
+
     return {
       user: user, 
       id: user._id,
@@ -741,7 +755,8 @@ export default {
       day: day, 
       date: params.date, 
       streaks: streaks, 
-      curRun: 0
+      curRun: 0, 
+      goalTomorrow: goalTomorrow
     }
   },
   methods: {
