@@ -98,6 +98,43 @@ td .btn-default, .day .btn-default, .header.row .btn-default {
     color: @label-grey;
   }
 
+  .runs-list {
+
+    .tag {
+      font-size: 15px;
+      font-weight: 500;
+      vertical-align: middle;
+      border-radius: 4px; 
+      border: 1px solid #cccccc;
+      padding: 6px 12px;
+      display: inline-block;
+      white-space: nowrap;
+      margin-bottom: 9px;
+      cursor: pointer;
+
+      .fa-trash-alt {
+        color: @bright-blue;
+      }
+    }
+
+    .btn-primary {
+      font-weight: 400;
+      box-shadow: none; 
+      border: none;
+    }
+  }
+
+  .run-title {
+    border-top: 1px solid @light-grey;
+    input {
+      border: none;
+      text-align: left;
+    }
+    input::placeholder {
+      text-align: left;
+    }
+  }
+
   .sliders  {
 
     h4 {
@@ -154,6 +191,10 @@ td .btn-default, .day .btn-default, .header.row .btn-default {
       cursor: pointer;
     }
 
+  }
+
+  .other {
+    border-top: 1px solid @light-grey;
   }
 
   .weights {
@@ -346,7 +387,6 @@ td .btn-default, .day .btn-default, .header.row .btn-default {
             </div>
           </div>
 
-
           <div class="row align-items-center mt-2">
             <div class="col-6"> <h3 class="mb-0"> Runs </h3> </div>
             <div class="col row align-items-center ml-auto">
@@ -357,14 +397,31 @@ td .btn-default, .day .btn-default, .header.row .btn-default {
             </div>
           </div>
 
-          <div class="run row mt-4">
+          <div class="runs-list row mt-3"> 
+            <div class="tag ml-2" v-for="(run, index) in entryData.runs">
+              <span @click="curRun = index"> {{ run.name || 'Run ' + Number(index+1) }} </span>
+              <fa icon="trash-alt" class="ml-2" @click="removeRun(index)"> </fa>
+            </div>
+            <div class="btn btn-primary ml-2 tag" @click="newRun()"> Add Run </div>
+          </div>
+
+
+          <div class="run-title row mt-2 pt-2"> 
+            <input 
+              v-model="entryData.runs[curRun].name" 
+              :placeholder="'Run ' + Number(curRun + 1)" 
+              class="form-control col-md-7"
+            /> 
+          </div>
+
+          <div class="run row mt-2">
 
             <div class="col-md row align-items-center">
               <label class="col-md-5"> Dist </label>
               <input 
                 type="number" 
                 placeholder="0.0" 
-                v-model="entryData.run.distance" 
+                v-model="entryData.runs[curRun].distance" 
                 class="form-control col-md-7"
               />
             </div>
@@ -375,7 +432,7 @@ td .btn-default, .day .btn-default, .header.row .btn-default {
                 type="text" 
                 placeholder="0:00" 
                 class="form-control col-md-7"
-                v-model="entryData.run.time"
+                v-model="entryData.runs[curRun].time"
               />
             </div>
 
@@ -395,7 +452,7 @@ td .btn-default, .day .btn-default, .header.row .btn-default {
                 type="number" 
                 placeholder="0" 
                 class="form-control col-md-7"
-                v-model="entryData.run.elevationGain"
+                v-model="entryData.runs[curRun].elevationGain"
               />
             </div>
 
@@ -409,7 +466,7 @@ td .btn-default, .day .btn-default, .header.row .btn-default {
                 min="1" max="5" 
                 step="1" 
                 class="slider mb-2"
-                v-model="entryData.run.difficulty"
+                v-model="entryData.runs[curRun].difficulty"
               />
               <div class="numbers row">
                 <div class="col one"> 1 </div>
@@ -426,7 +483,7 @@ td .btn-default, .day .btn-default, .header.row .btn-default {
                 min="1" max="5" 
                 step="1" 
                 class="slider mb-2"
-                v-model="entryData.run.feel"
+                v-model="entryData.runs[curRun].feel"
               />
               <div class="numbers row">
                 <div class="col one"> 1 </div>
@@ -438,7 +495,7 @@ td .btn-default, .day .btn-default, .header.row .btn-default {
             </div>
           </div>
 
-          <div class="other row mt-3">
+          <div class="other row mt-4 pt-4">
 
             <div class="col row align-items-center">
               <label class="col-md-6"> Sleep </label>
@@ -611,13 +668,13 @@ import _ from 'underscore'
 let { timeStringToDecimal, formatDateUrl, getDateFromUrl, getPace } = require('~/utils/date.js')
 
 const emptyEntry = {
-  run: {
+  runs: [{
     distance: '', 
     time: "",
     elevationGain: '', 
     difficulty: 1, 
     feel: 5
-  }, 
+  }], 
   checks: {
     core: false,
     stretching: false
@@ -661,7 +718,8 @@ export default {
     streaks.stretching = (await $axios.$get('log/streak/stretching')).streak
     streaks.core = (await $axios.$get('log/streak/core')).streak
 
-    let entryData = typeof entry.run == 'undefined' ? emptyEntry : entry
+    let isEmpty = entry.runs ? typeof entry.runs[0] == 'undefined' : true
+    let entryData = isEmpty ? emptyEntry : entry
 
     let avgSleepDecimal = timeStringToDecimal(movingAvgs.sleep)
     let sleepTrend = ((timeStringToDecimal(entryData.sleep) - avgSleepDecimal) / avgSleepDecimal) * 100
@@ -682,13 +740,14 @@ export default {
       sleepTrend: sleepTrend, 
       day: day, 
       date: params.date, 
-      streaks: streaks
+      streaks: streaks, 
+      curRun: 0
     }
   },
   methods: {
     submitEntry: function() {
-      this.entryData.run.difficulty = parseInt(this.entryData.run.difficulty)
-      this.entryData.run.feel = parseInt(this.entryData.run.feel)
+      this.entryData.runs[this.curRun].difficulty = parseInt(this.entryData.runs[this.curRun].difficulty)
+      this.entryData.runs[this.curRun].feel = parseInt(this.entryData.runs[this.curRun].feel)
       if (!this.didWeights)
         this.$set(this.entryData, 'weights', null)
       this.$axios.$post('log/' + formatDateUrl(moment(this.currentDay)), this.entryData).then((res) => {
@@ -729,25 +788,40 @@ export default {
     },
     revert: function() {
       this.entryData = JSON.parse(JSON.stringify(this.originalData))
+    }, 
+    newRun: function() {
+      this.entryData.runs.push({})
+      this.curRun = this.entryData.runs.length - 1
+    }, 
+    removeRun: function(i) {
+      if (i <= this.entryData.runs.length - 1)
+        this.entryData.runs.splice(i, 1)
+
+      if (!this.entryData.runs[0])
+        this.entryData.runs.push({})
+      
+      this.curRun = 0
     }
   },
   computed: {
     pace: function() {
-      if (!this.entryData.run.time || !this.entryData.run.distance) 
+      if (!this.entryData.runs || !this.entryData.runs[this.curRun])
+        return "0:00"
+      else if (!this.entryData.runs[this.curRun].time || !this.entryData.runs[this.curRun].distance) 
         return "0:00"
 
-      let hms = this.entryData.run.time
+      let hms = this.entryData.runs[this.curRun].time
       let a = hms.split(':')
       let seconds = (+a[0]) * 60 + (+a[1])
 
-      let p = (seconds / this.entryData.run.distance) / 60
+      let p = (seconds / this.entryData.runs[this.curRun].distance) / 60
       let pm = Math.floor(p)
       let ps = Math.round((p - pm) * 60)
 
       ps = ("0" + ps).slice(-2)
 
       let pace = (pm == 'NaN' || ps == 'aN') ? "0:00" : pm + ":" + ps
-      return getPace(this.entryData.run.time, this.entryData.run.distance)
+      return getPace(this.entryData.runs[this.curRun].time, this.entryData.runs[this.curRun].distance)
     },
     modified: function() {
       return !_.isEqual(this.entryData, this.originalData)

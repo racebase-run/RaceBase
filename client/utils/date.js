@@ -2,6 +2,8 @@ import moment from 'moment'
 
 // hours and minutes or minutes and seconds to decimal
 export function timeStringToDecimal(st) {
+  if (!st)
+    return 0
   let a = st.split(':')
   let ts = (+a[0]) * 60 + (+a[1])
 
@@ -19,7 +21,7 @@ export function timeDecimalToString(d) {
     s -= mo * 60
   }
   s = ("0" + s).slice(-2)
-  
+
   let string = (m == 'NaN' || s == 'aN') ? "0:00" : m + ":" + s
 
   return string

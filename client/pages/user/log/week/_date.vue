@@ -373,7 +373,32 @@ const Chart = () => import('~/components/Chart')
 const LogPagers = () => import('~/components/LogPagers')
 const Stat = () => import('~/components/Stat')
 
-let { timeStringToDecimal, timeDecimalToString, formatDateUrl, getDateFromUrl, getPace } = require('~/utils/date.js')
+let { 
+  timeStringToDecimal, 
+  timeDecimalToString, 
+  formatDateUrl, 
+  getDateFromUrl, 
+  getPace 
+} = require('~/utils/date.js')
+
+let roundToHundredths = function(n) { return Math.round(n * 100) / 100 }
+
+let sumRuns = function(runs) {
+  var totalMileage = 0
+  var totalElev = 0
+  var totalTime = 0
+
+  for (var i = 0, l = runs.length; i < l; i++ ) {
+    totalMileage += runs[i].distance || 0
+    totalElev += runs[i].elevationGain || 0
+    totalTime += timeStringToDecimal(runs[i].time)
+  }
+  return { 
+    totalMileage: roundToHundredths(totalMileage), 
+    totalElev: roundToHundredths(totalElev), 
+    totalTime: timeDecimalToString(roundToHundredths(totalTime))
+  }
+}
 
 export default {
   components: {
@@ -407,8 +432,15 @@ export default {
         dayData.dom = dayOfMonth
         dayData.today = today,
         dayData.url = curDayUrl
+
+        let sums = sumRuns(dayData.runs)
+
+        dayData.run.distance = sums.totalMileage
+        dayData.run.time = sums.totalTime
+        
         dayData.sleepDecimal = timeStringToDecimal(dayData.sleep)
         dayData.run.pace = getPace(dayData.run.time, dayData.run.distance)
+
         if (dayData.run.distance == 0 || !dayData.run.distance)
           delete dayData.run
         return dayData
@@ -426,19 +458,7 @@ export default {
       days: days, 
       weekOf: weekOf, 
       user: user, 
-      date: params.date || formatDateUrl(moment()),
-      schedule: { 
-        days: [ 
-          { label: 'M', mileage: 10.0 }, 
-          { label: 'Tu', mileage: 14.0 },
-          { label: 'W', mileage: 12.0 },
-          { label: 'Th', mileage: 10.0 },
-          { label: 'Fr', mileage: 10.0 },
-          { label: 'Sa', mileage: 8.0 },
-          { label: 'Su', mileage: 15.0 }
-        ], 
-        goal: 80.0
-      }
+      date: params.date || formatDateUrl(moment())
     }
   },
   computed: {
@@ -461,7 +481,7 @@ export default {
     totalGoal: function() {
       var total = 0
       for (var i = 0, l = this.days.length; i < l; i++ ) {
-        total += this.days[i].mileageGoal
+        total += Number(this.days[i].mileageGoal)
       }
       return Math.round(total * 100) / 100
     },
