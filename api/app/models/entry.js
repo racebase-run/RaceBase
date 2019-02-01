@@ -9,8 +9,9 @@ var entrySchema = mongoose.Schema({
     time: String, 
     elevationGain: Number, 
     difficulty: { type: Number, min: 1, max: 5 }, 
-    feel: { type: Number, min: 1, max: 5 }
+    feel: { type: Number, min: 1, max: 5 }, 
   },
+  mileageGoal: Number,
   weights: [{
     name: String, 
     sets: Number, 

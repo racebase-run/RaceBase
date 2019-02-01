@@ -40,6 +40,26 @@ router.get('/list', authCheck, (req, res) => {
   })
 })
 
+router.get('/streak/:prop', authCheck, (req, res) => {
+  let day = moment(new Date()).subtract(1, 'days').startOf('day').toDate()
+  Entry.find({ userId: req.userId, date: { $lte: day }}).sort({ date: -1 }).exec((err, data) => {
+    if (err)
+      res.status(500).send(err)
+    else {
+      for (i in data) {
+        if (typeof data[i].checks.get(req.params.prop) == 'undefined') {
+          data.splice(i, 1)
+        }
+      }
+      let streak = 0
+      while (data[streak].checks.get(req.params.prop)) {
+        streak++
+      }
+      res.send({ streak: streak })
+    }
+  })
+})
+
 router.get('/:date?', authCheck, (req, res) => {
 
   let day  = createDay(req.params.date)
@@ -108,6 +128,18 @@ router.get('/avg/moving/sleep/:date?',authCheck, (req, res) => {
   })
 })
 
+router.post('/:date/goal', authCheck, (req, res) => {
+  let day  = createDay(req.params.date)
+
+  Entry.findOneAndUpdate({ userId: req.userId, date: day }, { mileageGoal : req.body.goal }, 
+    (err, data) => {
+      if (err)
+        res.status(500).send(err)
+      else 
+        res.send({ message: "Successfully updated goal.", entry: data })
+    })
+})
+
 router.post('/:date?', authCheck, (req, res) => {
   let entry = req.body
   let day  = createDay(req.params.date)
@@ -116,12 +148,12 @@ router.post('/:date?', authCheck, (req, res) => {
   entry.userId = req.userId
 
   Entry.findOneAndUpdate({ userId: req.userId, date: day }, entry, { upsert: true, new: true }, 
-  (err, data) => {
-    if (err)
-      res.status(500).send(err)
-    else 
-      res.send({ message: "Successfully created entry.", entry: data })
-  })
+    (err, data) => {
+      if (err)
+        res.status(500).send(err)
+      else 
+        res.send({ message: "Successfully created entry.", entry: data })
+    })
 })
 
 module.exports = router 
