@@ -40,6 +40,16 @@ router.get('/list', authCheck, (req, res) => {
   })
 })
 
+router.get('/schedule/:date?', authCheck, (req, res) => {
+  let day  = createDay(req.params.date)
+  Entry.findOne({ date: day, userId: req.userId }, (err, data) => {
+    if (err)
+      res.status(500).send(err)
+    else 
+      res.send({ goal: data.mileageGoal })
+  })
+})
+
 router.get('/streak/:prop', authCheck, (req, res) => {
   let day = moment(new Date()).subtract(1, 'days').startOf('day').toDate()
   Entry.find({ userId: req.userId, date: { $lte: day }}).sort({ date: -1 }).exec((err, data) => {
