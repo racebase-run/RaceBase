@@ -234,6 +234,7 @@
       </div>
       <div class="links pl-4">
         <nuxt-link to="/user/content">Content</nuxt-link>
+        <nuxt-link to="/user/log/week">Logs</nuxt-link>
         <nuxt-link to="/user/settings"><fa icon="sliders-h"></fa></nuxt-link>
         <a @click="logOut()" class="logout" href="#">Log Out</a>
       </div>
