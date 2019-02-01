@@ -323,7 +323,7 @@ td .btn-default, .day .btn-default, .header.row .btn-default {
             <h4 class="align-self-center mb-0">Log Entry <fa class="ml-1" icon="book-open"></fa> </h4>
           </div>
           <div class="col d-flex flex-row align-items-end">
-            <LogPagers :date="date" interval="1" />
+            <LogPagers :date="date" interval="1" class="ml-auto"/>
           </div>
         </div>
 
@@ -334,8 +334,26 @@ td .btn-default, .day .btn-default, .header.row .btn-default {
             </h2>
             <div class="col day">
               <div class="btn btn-default mr-2 d-inline-block" @click="changeDate(currentDay)"> Go </div>
-              <div class="btn btn-default mr-3 d-inline-block today" @click="changeDate(new Date())"> Today </div>
+              <div class="btn btn-default mr-2 d-inline-block" @click="clear"> Clear </div>
+              <div 
+                class="btn btn-default mr-3 d-inline-block today" 
+                @click="changeDate(new Date())"
+                v-if="!isToday"
+              > 
+                Today 
+              </div>
               {{ dow }}
+            </div>
+          </div>
+
+
+          <div class="row align-items-center mt-2">
+            <div class="col-6"> <h3 class="mb-0"> Runs </h3> </div>
+            <div class="col row align-items-center ml-auto">
+              <label class="col-7"> Mileage Goal </label>
+              <div class="col">
+                <input type="text" class="form-control" placeholder="0.0" v-model="entryData.mileageGoal"/>
+              </div>
             </div>
           </div>
 
@@ -555,11 +573,11 @@ td .btn-default, .day .btn-default, .header.row .btn-default {
 
           <div class="row flex align-items-center">
             <h2 class="col"> Core </h2>
-            <div class="data col"><span class="num">7</span> day</div>
+            <div class="data col"><span class="num">{{ streaks.core }}</span> day</div>
           </div>
           <div class="row flex align-items-center">
             <h2 class="col"> Stretching </h2>
-            <div class="data col"><span class="num">10</span> day</div>
+            <div class="data col"><span class="num">{{ streaks.stretching }}</span> day</div>
           </div>
 
         </div>
@@ -591,6 +609,24 @@ import moment from 'moment'
 import _ from 'underscore'
 
 let { timeStringToDecimal, formatDateUrl, getDateFromUrl, getPace } = require('~/utils/date.js')
+
+const emptyEntry = {
+  run: {
+    distance: '', 
+    time: "",
+    elevationGain: '', 
+    difficulty: 1, 
+    feel: 5
+  }, 
+  checks: {
+    core: false,
+    stretching: false
+  },
+  sleep: '',
+  rhr: '', 
+  weight: 0, 
+  note: ""
+}
 const LogPagers = () => import('~/components/LogPagers')
 
 export default {
@@ -603,6 +639,7 @@ export default {
       title: "Training Log " + titleDate + " - RaceBase"
     }
   },
+  middleware: 'auth',
   async asyncData ({ store, $axios, params }) {
     let user = { ...store.state.auth.user }
     user.firstName = user.name.split(' ')[0]
@@ -620,23 +657,11 @@ export default {
     movingAvgs.rhr = Math.round((await $axios.$get('log/avg/moving/rhr/' + dayUrl)).avg * 10) / 10
     movingAvgs.sleep = (await $axios.$get('log/avg/moving/sleep/' + dayUrl)).avg
 
-    let entryData = typeof entry.run == 'undefined' ? {
-      run: {
-        distance: '', 
-        time: "",
-        elevationGain: '', 
-        difficulty: 1, 
-        feel: 5
-      }, 
-      checks: {
-        core: false,
-        stretching: false
-      },
-      sleep: '',
-      rhr: '', 
-      weight: 0, 
-      note: ""
-    } : entry
+    let streaks = {}
+    streaks.stretching = (await $axios.$get('log/streak/stretching')).streak
+    streaks.core = (await $axios.$get('log/streak/core')).streak
+
+    let entryData = typeof entry.run == 'undefined' ? emptyEntry : entry
 
     let avgSleepDecimal = timeStringToDecimal(movingAvgs.sleep)
     let sleepTrend = ((timeStringToDecimal(entryData.sleep) - avgSleepDecimal) / avgSleepDecimal) * 100
@@ -656,7 +681,8 @@ export default {
       movingAvgs: movingAvgs,
       sleepTrend: sleepTrend, 
       day: day, 
-      date: params.date
+      date: params.date, 
+      streaks: streaks
     }
   },
   methods: {
@@ -679,6 +705,9 @@ export default {
 
       this.$router.push("/user/log/" + formatDateUrl(m))
 
+    },
+    clear: function() {
+      this.entryData = emptyEntry
     },
     changeToPrev: function() {
       let prevDate = formatDateUrl(moment(this.currentDay).subtract(1, 'days'))
@@ -722,6 +751,9 @@ export default {
     },
     modified: function() {
       return !_.isEqual(this.entryData, this.originalData)
+    }, 
+    isToday: function() {
+      return formatDateUrl(moment()) == this.date
     }
   }, 
   watch: {
@@ -730,9 +762,8 @@ export default {
         this.$set(this.entryData, 'weights', [{}])
     },
     $route: function () {
-      console.log(this.$route.params.date)
       this.date = this.$route.params.date || this.date
-    } 
+    }
   }
 }
 </script>

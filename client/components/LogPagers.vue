@@ -1,19 +1,7 @@
-<style lang="less" scoped>
-@import (reference) "~assets/less/colors.less";
-.btn-default {
-  box-shadow: none;
-  border: 1px solid @light-grey;
-  padding: 3px 6px;
-  text-transform: uppercase;
-  color: @medium-grey;
-  font-size: 14px;
-  font-weight: 500;
-}
-</style>
 <template>
-<div class="d-flex ml-auto"> 
-  <div class="btn btn-default d-inline-block ml-auto mt-auto" @click="changeToPrev"> Prev </div>
-  <div class="btn btn-default d-inline-block ml-2" @click="changeToNext"> Next </div>
+<div class="d-flex"> 
+  <div class="btn btn-default log-pager d-inline-block mt-auto" @click="changeToPrev"> Prev </div>
+  <div class="btn btn-default log-pager d-inline-block ml-2" @click="changeToNext"> Next </div>
 </div>
 </template>
 

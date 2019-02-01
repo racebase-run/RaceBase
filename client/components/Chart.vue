@@ -44,6 +44,14 @@ export default {
   props: ['data', 'name', 'color'], 
   mounted () {
 
+    // Filter out null data
+
+    let data = this.data.filter(function (el) {
+      return (el != null && el != 0 && !isNaN(el))
+    });
+
+    let min = Math.min(...data)
+
     let chartOptions = {
       showArea: true,
       stretch: true,
@@ -63,14 +71,10 @@ export default {
         showLabel: false,
         offset: 0
       },
-      chartPadding: 0
+      chartPadding: 0, 
+      height: '90px', 
+      low: min - (.01 * min)
     }
-
-    // Filter out null data
-
-    let data = this.data.filter(function (el) {
-      return (el != null && el != 0 && !isNaN(el))
-    });
 
     let chartData = {
       series: [

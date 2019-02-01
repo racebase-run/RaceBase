@@ -8,6 +8,23 @@ export function timeStringToDecimal(st) {
   return ts / 60
 }
 
+// decimal to hrs and min (min and sec)
+export function timeDecimalToString(d) {
+  let m = Math.floor(d)
+  let s = Math.round((d - m) * 60)
+
+  if (s >= 60) {
+    let mo = Math.floor(s / 60)
+    m += mo
+    s -= mo * 60
+  }
+  s = ("0" + s).slice(-2)
+  
+  let string = (m == 'NaN' || s == 'aN') ? "0:00" : m + ":" + s
+
+  return string
+}
+
 // formats date (moment object) to MM-DD-YYYY
 export function formatDateUrl(m) {
   let dateFormat = "MM-DD-YYYY"
@@ -35,11 +52,5 @@ export function getPace(time, distance) {
   let seconds = (+a[0]) * 60 + (+a[1])
 
   let p = (seconds / distance) / 60
-  let pm = Math.floor(p)
-  let ps = Math.round((p - pm) * 60)
-
-  ps = ("0" + ps).slice(-2)
-
-  let pace = (pm == 'NaN' || ps == 'aN') ? "0:00" : pm + ":" + ps
-  return pace
+  return timeDecimalToString(p)
 }
