@@ -4,13 +4,14 @@ var mongoosePaginate = require('mongoose-paginate');
 
 var entrySchema = mongoose.Schema({
   userId: String,
-  run: {
+  runs: [{
     distance: Number, 
     time: String, 
     elevationGain: Number, 
     difficulty: { type: Number, min: 1, max: 5 }, 
     feel: { type: Number, min: 1, max: 5 }, 
-  },
+    name: String
+  }],
   mileageGoal: Number,
   weights: [{
     name: String, 

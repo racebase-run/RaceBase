@@ -67,8 +67,17 @@ router.get('/:date?', authCheck, (req, res) => {
   Entry.findOne({ date: day, userId: req.userId }, (err, data) => {
     if (err)
       res.status(500).send(err)
-    else 
-      res.send(data)
+    else if (data) {
+      if (data.runs) {
+        for (i in data.runs) {
+          if (data.runs[i] == null)
+            data.runs.splice(i, 1)
+        }
+        data.save(() => {
+          res.send(data)
+        })
+      } else res.send(data)
+    } else res.send({})
   })
 })
 
