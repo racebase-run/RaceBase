@@ -17,7 +17,7 @@ router.post('/login', function(req, res) {
     else if (!user) res.send({ error: 'User not found.' })
     else {
       bcrypt.compare(req.body.password, user.password).then(function(validPassword) {
-        if (!validPassword) res.send({ auth: false, error: 'Incorrect password.', token: null })
+        if (!validPassword) res.status(400).send({ auth: false, error: 'Incorrect password.', token: null })
         else {
           var token = jwt.sign({ 
             id: user._id
@@ -30,7 +30,7 @@ router.post('/login', function(req, res) {
       }).catch((err) => {
         console.log("Error  comparing passwords:")
         console.log(err)
-        res.send({ auth: false, error: 'Something went wrong on the server.', token: null })
+        res.status(500).send({ auth: false, error: 'Something went wrong on the server.', token: null })
       });
     }
   })

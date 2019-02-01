@@ -38,7 +38,7 @@ router.get('/claimed/:athlete_id', function(req,res) {
      { 'aliases': req.params.athlete_id }
     ]}, function(err, data) {
     if (err)
-      res.send(err);
+      res.status(500).send(err);
     else if (!data)
       res.send({ claimed: false });
     else 
@@ -166,7 +166,7 @@ router.post('/:id/profile_pic', parser.single("image"), authCheck, (req, res) =>
 
       user.save((err, data) => {
         if (err)
-          res.send(err)
+          res.status(500).send(err)
         else
           res.send(data)
       })
