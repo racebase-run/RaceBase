@@ -269,9 +269,9 @@ h4 input, .schedule input {
 
         <div class="row mb-4 mb-lg-auto">
           <div class="mt-auto mb-auto col-6 col-lg-12">
-            <div v-if="day.run" class="mt-auto">
-              <div class="mileage"> {{ day.run.distance || 0 }} <span class="unit"> mi </span> </div>
-              <div class="pace"> {{ day.run.pace }} <span class="unit"> min / mi </span> </div>
+            <div v-if="day.totalMileage > 0" class="mt-auto">
+              <div class="mileage"> {{ day.totalMileage || 0 }} <span class="unit"> mi </span> </div>
+              <div class="pace"> {{ day.avgPace || "0:00" }} <span class="unit"> min / mi </span> </div>
             </div>
             <div v-else-if="day.rhr || day.sleep">
               <nuxt-link :to="'/user/log/' + day.url" class="placeholder"> 
@@ -300,7 +300,7 @@ h4 input, .schedule input {
               </div>
             </div>
 
-            <div v-if="!day.rhr && !day.sleep && day.run" class="mx-auto mb-auto">
+            <div v-if="!day.rhr && !day.sleep && day.totalMileage > 0" class="mx-auto mt-3">
               <nuxt-link :to="'/user/log/' + day.url"> Add more <fa icon="pencil-alt"></fa> </nuxt-link>
             </div>
 
@@ -327,7 +327,7 @@ h4 input, .schedule input {
       </div>
       <div class="col-12 col-lg d-flex align-items-center mt-3 mt-lg-0"> 
         <h4 class="d-inline-block mb-0"> Goal </h4>
-        <div class="d-inline-block goal ml-3"> {{ totalGoal }} mi</div>
+        <div class="d-inline-block goal ml-3"> {{ totalGoal || 0 }} mi</div>
       </div>
     </div>
 
@@ -337,20 +337,20 @@ h4 input, .schedule input {
         <div class="row mb-2 px-3 pt-3 pb-0">
           <h2 class="col"> Total </h2>
           <div class="data col mb-2"><span class="num">{{ totalMileage }}</span> mi</div>
-          <Stat :value="Math.round((totalGoal - totalMileage) * 100) / 100 " unit=" mi"> left this week </Stat>
+          <Stat :value="Math.round((totalGoal - totalMileage) * 100) / 100 || 0" unit=" mi"> left this week </Stat>
           <Stat :value="totalElev" unit=" ft"> elev. gain this week </Stat>
           <div class="mx-auto mt-3 placeholder" v-if="totalMileage == 0">
             Add log entries to see stats
           </div>
         </div>
-        <no-ssr v-if="totalMileage > 0">
-          <Chart :data="days.map(a => a.run ? a.run.distance : 0)" name="mileage" color="blue"/>
+        <no-ssr v-if="totalMileage > 0 && mileageData.length > 1">
+          <Chart :data="mileageData" name="mileage" color="blue"/>
         </no-ssr>
       </div>
 
       <div class="sleep box col-lg p-0">
         <div>
-          <div class="row mb-2 pt-3 px-3 pb-0">
+          <div class="row pt-3 px-3 pb-0 mb-2">
             <h2 class="col"> Avg Sleep </h2>
             <div class="data col mb-2"><span class="num">{{ avgSleep }}</span> hrs</div>
             <Stat :value="sleepDifferential" unit="%" :comp="true"> than last week </Stat>
@@ -358,8 +358,8 @@ h4 input, .schedule input {
               Add log entries to see stats
             </div>
           </div>
-          <no-ssr v-if="avgSleep != '0:00'">
-            <Chart :data="days.map(a => a.sleepDecimal)" name="sleep" color="orange"/>
+          <no-ssr v-if="avgSleep != '0:00' && sleepData.length > 1" class="mt-2">
+            <Chart :data="sleepData" name="sleep" color="orange"/>
           </no-ssr>
         </div>
       </div>
@@ -423,6 +423,10 @@ let sumRuns = function(runs) {
   }
 }
 
+let getArrayOfProp = function(data, prop) {
+  return data.filter(a => a[prop] > 0).map(a => a[prop])
+}
+
 export default {
   components: {
     Chart, 
@@ -465,14 +469,12 @@ export default {
 
         let sums = sumRuns(dayData.runs)
 
-        dayData.run.distance = sums.totalMileage
-        dayData.run.time = sums.totalTime
+        dayData.totalMileage = sums.totalMileage
+        dayData.totalTime = sums.totalTime
 
         dayData.sleepDecimal = timeStringToDecimal(dayData.sleep)
-        dayData.run.pace = getPace(dayData.run.time, dayData.run.distance)
+        dayData.avgPace = getPace(dayData.totalTime, dayData.totalMileage)
 
-        if (dayData.run.distance == 0 || !dayData.run.distance)
-          delete dayData.run
         return dayData
       } else {
         return { 
@@ -496,8 +498,8 @@ export default {
     totalMileage: function() {
       var total = 0
       for (var i = 0, l = this.days.length; i < l; i++ ) {
-        if (this.days[i].run)
-          total += this.days[i].run.distance
+        if (this.days[i].totalMileage)
+          total += this.days[i].totalMileage || 0
       }
       return Math.round(total * 100) / 100
     }, 
@@ -512,7 +514,7 @@ export default {
     totalGoal: function() {
       var total = 0
       for (var i = 0, l = this.days.length; i < l; i++ ) {
-        total += Number(this.days[i].mileageGoal)
+        total += Number(this.days[i].mileageGoal) || 0
       }
       return Math.round(total * 100) / 100
     },
@@ -532,13 +534,19 @@ export default {
       var lastWeekTotal = 0
       var l = 0
       for (var i = 0; i < this.days.length; i++ ) {
-        if (this.days[i].sleep) {
+        if (this.days[i].sleep && this.lastWeek[i]) {
           lastWeekTotal += timeStringToDecimal(this.lastWeek[i].sleep)
           l++
         }
       }
       let lastWeek = (lastWeekTotal / l) || 0
       return Math.round(((thisWeek - lastWeek) / lastWeek) * 1000) / 10 || 0
+    }, 
+    sleepData: function() {
+      return getArrayOfProp(this.days, 'sleepDecimal')
+    }, 
+    mileageData: function() {
+      return getArrayOfProp(this.days, 'totalMileage')
     }
   }, 
   methods: {
@@ -559,7 +567,7 @@ export default {
     getCheckPercentage: function(prop) {
       let l = 0, t = 0
       for (var i = 0; i < this.days.length; i++ ) {
-        if (this.days[i].runs) {
+        if (this.days[i].runs && this.days[i].checks) {
           if (this.days[i].checks[prop])
             t++
           if (this.days[i].runs[0]) {

@@ -728,9 +728,9 @@ export default {
     movingAvgs.rhr = Math.round((await $axios.$get('log/avg/moving/rhr/' + dayUrl)).avg * 10) / 10
     movingAvgs.sleep = (await $axios.$get('log/avg/moving/sleep/' + dayUrl)).avg
 
-    let streaks = {}
-    streaks.stretching = (await $axios.$get('log/streak/stretching')).streak
-    streaks.core = (await $axios.$get('log/streak/core')).streak
+    let streaks = { stretching: 0, core: 0 }
+    // streaks.stretching = (await $axios.$get('log/streak/stretching')).streak
+    // streaks.core = (await $axios.$get('log/streak/core')).streak
 
     let isEmpty = entry.runs ? typeof entry.runs[0] == 'undefined' : true
     let entryData = isEmpty ? emptyEntry : entry
