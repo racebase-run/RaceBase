@@ -158,7 +158,7 @@ router.get('/avg/moving/sleep/:date?',authCheck, (req, res) => {
 router.post('/:date/goal', authCheck, (req, res) => {
   let day  = createDay(req.params.date)
 
-  Entry.findOneAndUpdate({ userId: req.userId, date: day }, { mileageGoal : req.body.goal }, 
+  Entry.findOneAndUpdate({ userId: req.userId, date: day }, { mileageGoal : req.body.goal }, { upsert: true, new: true},
     (err, data) => {
       if (err)
         res.status(500).send(err)
