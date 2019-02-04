@@ -30,7 +30,7 @@
     "moment": "^2.24.0",
     "nuxt": "^2.0.0",
     "nuxt-fontawesome": "^0.4.0",
-    "terser": "^3.14.1",
+    "terser": "3.14",
     "underscore": "^1.9.1",
     "universal-cookie": "^3.0.7",
     "words-to-numbers": "^1.5.1"
