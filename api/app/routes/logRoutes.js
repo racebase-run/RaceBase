@@ -61,12 +61,17 @@ router.get('/streak/:prop', authCheck, (req, res) => {
       res.send({ streak: 0 })
     else {
       for (i in data) {
-        if (!data[i].checks || typeof data[i].checks.get(req.params.prop) == 'undefined')
+        if (!data[i].checks 
+          || typeof data[i].check == 'undefined' 
+          || typeof data[i].checks.get(req.params.prop) == 'undefined') {
           data.splice(i, 1)
+        }
       }
       if (data) {
         let streak = 0
-        while (data[streak].checks.get(req.params.prop)) { streak++ }
+        while (data[streak]) {
+          while (data[streak].checks.get(req.params.prop)) { streak++ }
+        }
         res.send({ streak: streak })
       } else res.send({ streak: 0 })
     }
