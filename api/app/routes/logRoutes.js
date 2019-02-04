@@ -51,23 +51,25 @@ router.get('/schedule/:date?', authCheck, (req, res) => {
 })
 
 router.get('/streak/:prop', authCheck, (req, res) => {
-  let day = moment(new Date()).subtract(1, 'days').startOf('day').toDate()
-  Entry.find({ userId: req.userId, date: { $lte: day }}).sort({ date: -1 }).exec((err, data) => {
-    if (err)
-      res.status(500).send(err)
-    else {
-      for (i in data) {
-        if (typeof data[i].checks.get(req.params.prop) == 'undefined') {
-          data.splice(i, 1)
-        }
-      }
-      let streak = 0
-      while (data[streak].checks.get(req.params.prop)) {
-        streak++
-      }
-      res.send({ streak: streak })
-    }
-  })
+  // let day = moment(new Date()).subtract(1, 'days').startOf('day').toDate()
+  // Entry.find({ userId: req.userId, date: { $lte: day }}).sort({ date: -1 }).exec((err, data) => {
+  //   if (err)
+  //     res.status(500).send(err)
+  //   else {
+  //     for (i in data) {
+  //       if (typeof data[i].checks.get(req.params.prop) == 'undefined') {
+  //         data.splice(i, 1)
+  //       }
+  //     }
+  //     let streak = 0
+  //     while (data[streak].checks.get(req.params.prop)) {
+  //       streak++
+  //     }
+  //     res.send({ streak: streak })
+  //   }
+  // })
+
+  res.send({ streak: 0})
 })
 
 router.get('/:date?', authCheck, (req, res) => {
