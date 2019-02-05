@@ -444,7 +444,9 @@ export default {
     let dayUrl = params.date
     let curDay = getDateFromUrl(params.date)
     let weekOf = moment(curDay).startOf('isoWeek').format('M/D/YY')
+    console.log('/log/list/week/' + dayUrl)
     let data = await $axios.$get('/log/list/week/' + dayUrl)
+    console.log(data)
 
     let lastWeekUrl = formatDateUrl(moment(curDay).subtract(7, 'days'))
 
