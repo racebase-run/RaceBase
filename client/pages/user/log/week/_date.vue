@@ -462,6 +462,11 @@ export default {
       if (formatDateUrl(moment()) == formatDateUrl(day)) 
         today = true
 
+      if (data[i]) {
+        console.log(i, data.length)
+        console.log(moment(data[i].date).format('dddd'), dayOfWeekFull)
+      }
+
       if (i < data.length && moment(data[i].date).format('dddd') == dayOfWeekFull) {
         let dayData = data[i]
         dayData.dow = dayOfWeek
@@ -487,6 +492,8 @@ export default {
         }
       }
     });
+
+    console.log(days)
 
     return {
       days: days, 
