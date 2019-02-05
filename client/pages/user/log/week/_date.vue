@@ -444,7 +444,6 @@ export default {
     let dayUrl = params.date
     let curDay = getDateFromUrl(params.date)
     let weekOf = moment(curDay).startOf('isoWeek').format('M/D/YY')
-    console.log('/log/list/week/' + dayUrl)
     let data = await $axios.$get('/log/list/week/' + dayUrl)
     let lastWeekUrl = formatDateUrl(moment(curDay).subtract(7, 'days'))
 
@@ -459,6 +458,9 @@ export default {
       var today = false
       if (formatDateUrl(moment()) == formatDateUrl(day)) 
         today = true
+
+      console.log(i, data.length)
+      console.log(moment(data[i].date).format('ddd'), dayOfWeek)
 
       if (i < data.length && moment(data[i].date).format('ddd') == dayOfWeek) {
         let dayData = data[i]
