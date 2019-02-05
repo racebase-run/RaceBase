@@ -488,8 +488,6 @@ export default {
       }
     });
 
-    console.log(days)
-
     return {
       days: days, 
       lastWeek: lastWeek,
