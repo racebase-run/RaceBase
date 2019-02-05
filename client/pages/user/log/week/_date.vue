@@ -455,20 +455,21 @@ export default {
 
     let days = await Array.apply(null, Array(7)).map(function (_, i) {
       let day = moment(getDateFromUrl(params.date)).startOf('week').weekday(i + 1)
+      let dayOfWeekFull = day.format('dddd')
       let dayOfWeek = day.format('ddd')
       let dayOfMonth = day.format('DD')
       let curDayUrl = formatDateUrl(day)
 
       var today = false
-      if (formatDateUrl(moment()) == formatDateUrl(day)) 
+      if (formatDateUrl(moment().tz('America/Los_Angeles')) == formatDateUrl(day)) 
         today = true
 
       console.log(data[i].date)
       console.log(moment(data[i].date))
       console.log(i, data.length)
-      console.log(moment(data[i].date).format('ddd'), dayOfWeek)
+      console.log(moment(data[i].date).format('dddd'), dayOfWeekFull)
 
-      if (i < data.length && moment(data[i].date).format('ddd') == dayOfWeek) {
+      if (i < data.length && moment(data[i].date).format('dddd') == dayOfWeekFull) {
         let dayData = data[i]
         dayData.dow = dayOfWeek
         dayData.dom = dayOfMonth
