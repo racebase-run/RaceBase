@@ -449,6 +449,8 @@ export default {
 
     let lastWeek = await $axios.$get('/log/list/week/' + lastWeekUrl)
 
+    console.log(data)
+
     let days = await Array.apply(null, Array(7)).map(function (_, i) {
       let day = moment(getDateFromUrl(params.date)).startOf('week').weekday(i + 1)
       let dayOfWeek = day.format('ddd')
