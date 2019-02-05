@@ -1,5 +1,5 @@
 /*!
- * Vue.js v2.6.0
+ * Vue.js v2.6.1
  * (c) 2014-2019 Evan You
  * Released under the MIT License.
  */
@@ -78,3 +78,13 @@ object-assign
 (c) Sindre Sorhus
 @license MIT
 */
+
+//! moment-timezone.js
+
+//! version : 0.5.23
+
+//! Copyright (c) JS Foundation and other contributors
+
+//! license : MIT
+
+//! github.com/moment/moment-timezone
