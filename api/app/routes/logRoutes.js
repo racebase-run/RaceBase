@@ -5,7 +5,7 @@ var router = express.Router()
 var Entry = require('../models/entry')
 var authCheck = require('../auth')
 
-var moment = require('moment-timezone')
+const moment = require('moment-timezone')
 moment.tz.setDefault("America/Los_Angeles")
 
 let createDay = function(date) {
