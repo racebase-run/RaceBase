@@ -446,8 +446,6 @@ export default {
     let weekOf = moment(curDay).startOf('isoWeek').format('M/D/YY')
     console.log('/log/list/week/' + dayUrl)
     let data = await $axios.$get('/log/list/week/' + dayUrl)
-    console.log(data)
-
     let lastWeekUrl = formatDateUrl(moment(curDay).subtract(7, 'days'))
 
     let lastWeek = await $axios.$get('/log/list/week/' + lastWeekUrl)
@@ -487,6 +485,8 @@ export default {
         }
       }
     });
+
+    console.log(days)
 
     return {
       days: days, 
