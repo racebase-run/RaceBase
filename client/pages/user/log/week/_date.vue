@@ -391,7 +391,8 @@ Array.prototype.sum = function(prop) {
   return total
 }
 
-import moment from 'moment'
+import moment from 'moment-timezone'
+moment.tz.setDefault("America/Los_Angeles")
 const Chart = () => import('~/components/Chart')
 const LogPagers = () => import('~/components/LogPagers')
 const Stat = () => import('~/components/Stat')
@@ -435,7 +436,6 @@ export default {
   },
   middleware: 'auth',
   async asyncData({ store, params, $axios }) {
-    moment.locale('en-US');
 
     let user = { ...store.state.auth.user }
     if (user.name)
