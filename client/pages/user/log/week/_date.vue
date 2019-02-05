@@ -451,8 +451,6 @@ export default {
 
     let lastWeek = await $axios.$get('/log/list/week/' + lastWeekUrl)
 
-    console.log(data)
-
     let days = await Array.apply(null, Array(7)).map(function (_, i) {
       let day = moment(getDateFromUrl(params.date)).startOf('week').weekday(i + 1)
       let dayOfWeekFull = day.format('dddd')
@@ -463,9 +461,6 @@ export default {
       var today = false
       if (formatDateUrl(moment()) == formatDateUrl(day)) 
         today = true
-
-      console.log(data[i].date)
-      console.log(moment(data[i].date).format('dddd'), dayOfWeekFull)
 
       if (i < data.length && moment(data[i].date).format('dddd') == dayOfWeekFull) {
         let dayData = data[i]
