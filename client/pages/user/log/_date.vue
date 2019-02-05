@@ -673,7 +673,8 @@ td .btn-default, .day .btn-default, .header.row .btn-default {
 </template>
 
 <script> 
-import moment from 'moment'
+import moment from 'moment-timezone'
+moment.tz.setDefault("America/Los_Angeles")
 import _ from 'underscore'
 
 let { timeStringToDecimal, formatDateUrl, getDateFromUrl, getPace } = require('~/utils/date.js')
