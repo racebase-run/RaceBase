@@ -435,6 +435,8 @@ export default {
   },
   middleware: 'auth',
   async asyncData({ store, params, $axios }) {
+    moment.locale('en-US');
+
     let user = { ...store.state.auth.user }
     if (user.name)
       user.firstName = user.name.split(' ')[0]
@@ -461,6 +463,8 @@ export default {
       if (formatDateUrl(moment()) == formatDateUrl(day)) 
         today = true
 
+      console.log(data[i].date)
+      console.log(moment(data[i].date))
       console.log(i, data.length)
       console.log(moment(data[i].date).format('ddd'), dayOfWeek)
 
