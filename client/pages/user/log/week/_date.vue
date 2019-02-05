@@ -461,7 +461,7 @@ export default {
       let curDayUrl = formatDateUrl(day)
 
       var today = false
-      if (formatDateUrl(moment().tz('America/Los_Angeles')) == formatDateUrl(day)) 
+      if (formatDateUrl(moment()) == formatDateUrl(day)) 
         today = true
 
       console.log(data[i].date)
