@@ -9,9 +9,10 @@ const _053ce4b0 = () => interopDefault(import('../pages/login.vue' /* webpackChu
 const _01f47e67 = () => interopDefault(import('../pages/news/index.vue' /* webpackChunkName: "pages/news/index" */))
 const _2da14582 = () => interopDefault(import('../pages/press.vue' /* webpackChunkName: "pages/press" */))
 const _75662c87 = () => interopDefault(import('../pages/privacy.vue' /* webpackChunkName: "pages/privacy" */))
-const _09abd72e = () => interopDefault(import('../pages/signup.vue' /* webpackChunkName: "pages/signup" */))
+const _3685e82c = () => interopDefault(import('../pages/signup/index.vue' /* webpackChunkName: "pages/signup/index" */))
 const _4490ae74 = () => interopDefault(import('../pages/terms.vue' /* webpackChunkName: "pages/terms" */))
 const _fd5766e6 = () => interopDefault(import('../pages/races/notfound.vue' /* webpackChunkName: "pages/races/notfound" */))
+const _54aea296 = () => interopDefault(import('../pages/signup/claim.vue' /* webpackChunkName: "pages/signup/claim" */))
 const _252ca980 = () => interopDefault(import('../pages/team/notfound.vue' /* webpackChunkName: "pages/team/notfound" */))
 const _2d3343b4 = () => interopDefault(import('../pages/user/settings.vue' /* webpackChunkName: "pages/user/settings" */))
 const _3819db20 = () => interopDefault(import('../pages/user/log/week/_date.vue' /* webpackChunkName: "pages/user/log/week/_date" */))
@@ -116,7 +117,7 @@ export function createRouter() {
       name: "privacy"
     }, {
       path: "/signup",
-      component: _09abd72e,
+      component: _3685e82c,
       name: "signup"
     }, {
       path: "/terms",
@@ -126,6 +127,10 @@ export function createRouter() {
       path: "/races/notfound",
       component: _fd5766e6,
       name: "races-notfound"
+    }, {
+      path: "/signup/claim",
+      component: _54aea296,
+      name: "signup-claim"
     }, {
       path: "/team/notfound",
       component: _252ca980,

@@ -11,10 +11,10 @@ import { createStore } from './store.js'
 
 /* Plugins */
 
-import nuxt_plugin_googleanalytics_361674d6 from 'nuxt_plugin_googleanalytics_361674d6' // Source: ./google-analytics.js (mode: 'client')
-import nuxt_plugin_templatesplugin6e691094_5124a8b4 from 'nuxt_plugin_templatesplugin6e691094_5124a8b4' // Source: ./templates.plugin.6e691094.js (mode: 'all')
-import nuxt_plugin_bootstrapvue_af030102 from 'nuxt_plugin_bootstrapvue_af030102' // Source: ./bootstrap-vue.js (mode: 'all')
-import nuxt_plugin_axios_7203f150 from 'nuxt_plugin_axios_7203f150' // Source: ./axios.js (mode: 'all')
+import nuxt_plugin_googleanalytics_0a632f19 from 'nuxt_plugin_googleanalytics_0a632f19' // Source: ./google-analytics.js (mode: 'client')
+import nuxt_plugin_templatesplugin6e691094_447c6c5e from 'nuxt_plugin_templatesplugin6e691094_447c6c5e' // Source: ./templates.plugin.6e691094.js (mode: 'all')
+import nuxt_plugin_bootstrapvue_7452b7c8 from 'nuxt_plugin_bootstrapvue_7452b7c8' // Source: ./bootstrap-vue.js (mode: 'all')
+import nuxt_plugin_axios_b1f5fa26 from 'nuxt_plugin_axios_b1f5fa26' // Source: ./axios.js (mode: 'all')
 import nuxt_plugin_axios_3566aa80 from 'nuxt_plugin_axios_3566aa80' // Source: ../plugins/axios (mode: 'all')
 
 // Component: <NoSsr>
@@ -154,13 +154,13 @@ async function createApp(ssrContext) {
 
   // Plugin execution
 
-  if (typeof nuxt_plugin_templatesplugin6e691094_5124a8b4 === 'function') await nuxt_plugin_templatesplugin6e691094_5124a8b4(app.context, inject)
-  if (typeof nuxt_plugin_bootstrapvue_af030102 === 'function') await nuxt_plugin_bootstrapvue_af030102(app.context, inject)
-  if (typeof nuxt_plugin_axios_7203f150 === 'function') await nuxt_plugin_axios_7203f150(app.context, inject)
+  if (typeof nuxt_plugin_templatesplugin6e691094_447c6c5e === 'function') await nuxt_plugin_templatesplugin6e691094_447c6c5e(app.context, inject)
+  if (typeof nuxt_plugin_bootstrapvue_7452b7c8 === 'function') await nuxt_plugin_bootstrapvue_7452b7c8(app.context, inject)
+  if (typeof nuxt_plugin_axios_b1f5fa26 === 'function') await nuxt_plugin_axios_b1f5fa26(app.context, inject)
   if (typeof nuxt_plugin_axios_3566aa80 === 'function') await nuxt_plugin_axios_3566aa80(app.context, inject)
 
   if (process.client) {
-    if (typeof nuxt_plugin_googleanalytics_361674d6 === 'function') await nuxt_plugin_googleanalytics_361674d6(app.context, inject)
+    if (typeof nuxt_plugin_googleanalytics_0a632f19 === 'function') await nuxt_plugin_googleanalytics_0a632f19(app.context, inject)
   }
 
   // If server-side, wait for async component to be resolved first
