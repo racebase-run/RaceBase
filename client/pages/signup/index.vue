@@ -9,10 +9,23 @@ form {
   }
 }
 
+ul {
+  list-style: square;
+}
+
 </style>
 
 <template>
-  <form @submit.prevent="signUp" class="mx-auto mx-md-0 w-90 pl-md-5">
+<div class="mx-auto mx-md-0 w-90 pl-md-5 mb-5"> 
+  <h2 class="mt-4"> Why sign up? </h2>
+  <p> When you sign up for a RaceBase account, you get these great benefits: </p>
+  <ul> 
+    <li> <strong>Profile customization</strong>, allowing you to claim results as your own, add photos and stories, and more </li>
+    <li> Access to our tried and true <strong>logging</strong> system </li>
+    <li> <strong>Race Feed</strong>, where you can see the results and workouts of people you care about </li>
+    <li> According to our independent study, signing up reduces your risk of getting eaten by a flying spaghetti monster by up to <strong>30%</strong></li>
+  </ul>
+  <form @submit.prevent="signUp">
     <h2 class="mt-4 mb-3">Sign Up</h2>
 
     <label for="inputName"> Name </label>
@@ -77,6 +90,7 @@ form {
 
   </form>
 
+</div>
 </template>
 
 <script>

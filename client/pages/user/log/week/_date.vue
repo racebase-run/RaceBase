@@ -53,7 +53,7 @@ h4 input, .schedule input {
   text-align: center; 
   padding: 0;
   min-height: 100%;
-  border-right: 2px solid @light-grey + #191919;
+  border-right: 1px solid @light-grey + #191919;
 
   .calendar {
     font-size: 16px;
@@ -237,9 +237,9 @@ h4 input, .schedule input {
         <span class="name" v-if="user.name">{{ user.firstName }}'s</span>
         Training Log
       </h1>
-      <div class="col d-flex align-items-center justify-content-end">
+<!--       <div class="col d-flex align-items-center justify-content-end">
         <div class="btn btn-primary">Monthly View</div>
-      </div>
+      </div> -->
     </div>
 
     
@@ -307,7 +307,7 @@ h4 input, .schedule input {
           </div>
         </div>
 
-        <div class="feel mt-1" :class="'f' + (day.run ? day.run.feel : '')"> </div>
+        <div class="feel mt-1" :class="'f' + (day.runs[0] ? day.runs[0].feel : '')"> </div>
 
       </div>
     </div>
