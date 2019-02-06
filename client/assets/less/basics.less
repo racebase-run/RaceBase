@@ -44,7 +44,7 @@
   font-weight: 700;
 }
 
-@shadow: 0px 3px 5px 1px rgba(200,200,200,.38);
+@shadow: 0px 3px 7px 2px rgba(190,190,190,.36);
 
 html, body {
   height: 100% !important;
@@ -79,10 +79,27 @@ p {
   }
 }
 
+input[type=range]::-moz-focus-outer {
+  border: 0;
+}
+
 h1 {
   text-align: left;
   font-size: 25px;
   font-weight: 500;
+}
+
+.box {
+  box-shadow: @shadow;
+  border-radius: 7px;
+  width: 100%;
+  padding: 15px;
+  margin-bottom: 25px;
+}
+
+.box.flat-box {
+  box-shadow: none; 
+  border: 1px solid @light-grey;
 }
 
 .nowrap {
@@ -108,6 +125,16 @@ h1 {
 .btn-default {
   background-color: white;
   color: black;
+}
+
+.btn-default.log-pager {
+  box-shadow: none;
+  border: 1px solid @light-grey;
+  padding: 3px 6px;
+  text-transform: uppercase;
+  color: @medium-grey;
+  font-size: 14px;
+  font-weight: 500;
 }
 
 .profile-pic {

@@ -104,26 +104,24 @@ export default {
     else 
       voteData = {}
 
-    let results = await $axios
-                        .$get(
-                              'result/list/' 
-                              + race._id 
-                              + '/' 
-                              + gender
-                              + '/'
-                              + encodeURI(events[eventNum])
+    let results = await $axios.$get(
+      'result/list/' 
+      + race._id 
+      + '/' 
+      + gender
+      + '/'
+      + encodeURI(events[eventNum])
     ).catch(() => {
       redirect('/races/notfound')
     })
 
-    let teamResults = await $axios
-                            .$get(
-                              'result/teamlist/' 
-                              + race._id 
-                              + '/' 
-                              + gender 
-                              + '/'
-                              + encodeURI(events[eventNum])
+    let teamResults = await $axios.$get(
+      'result/teamlist/' 
+      + race._id 
+      + '/' 
+      + gender 
+      + '/'
+      + encodeURI(events[eventNum])
     ).catch(() => {
       redirect('/races/notfound') 
     })
@@ -151,28 +149,26 @@ export default {
     loadResults: async function() {
 
       this.eventList = await this.$axios.$get('race/' + this.currentRace._id + '/' + this.gender + '/events')
-                                .catch(() => { console.log("Something went wrong getting the events list.") })
+        .catch(() => { console.log("Something went wrong getting the events list.") })
 
-      this.results = await this.$axios
-                          .$get(
-                                'result/list/' 
-                                + this.currentRace._id 
-                                + '/' 
-                                + this.gender 
-                                + '/'
-                                + encodeURI(this.eventList[this.eventNum])
+      this.results = await this.$axios.$get(
+        'result/list/' 
+        + this.currentRace._id 
+        + '/' 
+        + this.gender 
+        + '/'
+        + encodeURI(this.eventList[this.eventNum])
       ).catch(() => {
         console.log("Something went wrong.")
       })
 
-      this.teamResults = await this.$axios
-                          .$get(
-                                'result/teamlist/' 
-                                + this.currentRace._id 
-                                + '/' 
-                                + this.gender 
-                                + '/'
-                                + encodeURI(this.eventList[this.eventNum])   
+      this.teamResults = await this.$axios.$get(
+        'result/teamlist/' 
+        + this.currentRace._id 
+        + '/' 
+        + this.gender 
+        + '/'
+        + encodeURI(this.eventList[this.eventNum])   
       ).catch(() => {
         console.log("Something went wrong.")
       })
