@@ -53,7 +53,7 @@ h4 input, .schedule input {
   text-align: center; 
   padding: 0;
   min-height: 100%;
-  border-right: 2px solid @light-grey + #191919;
+  border-right: 1px solid @light-grey + #191919;
 
   .calendar {
     font-size: 16px;
