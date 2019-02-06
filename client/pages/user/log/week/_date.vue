@@ -237,9 +237,9 @@ h4 input, .schedule input {
         <span class="name" v-if="user.name">{{ user.firstName }}'s</span>
         Training Log
       </h1>
-      <div class="col d-flex align-items-center justify-content-end">
+<!--       <div class="col d-flex align-items-center justify-content-end">
         <div class="btn btn-primary">Monthly View</div>
-      </div>
+      </div> -->
     </div>
 
     
