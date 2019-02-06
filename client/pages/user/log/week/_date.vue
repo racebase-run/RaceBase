@@ -307,7 +307,7 @@ h4 input, .schedule input {
           </div>
         </div>
 
-        <div class="feel mt-1" :class="'f' + (day.run ? day.run.feel : '')"> </div>
+        <div class="feel mt-1" :class="'f' + (day.runs[0] ? day.runs[0].feel : '')"> </div>
 
       </div>
     </div>
