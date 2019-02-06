@@ -63,7 +63,8 @@ td .btn-default, .day .btn-default, .header.row .btn-default {
 }
 
 .log-entry {
-  box-shadow: @shadow;
+  // box-shadow: @shadow;
+  border: 1px solid @light-grey;
   border-radius: 7px;
 
   .day {
