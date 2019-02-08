@@ -23,6 +23,7 @@ export const actions = {
     }
 
     await dispatch('auth/fetchUser')
+    await dispatch('races/fetchRecentRaces')
 
   }
 }

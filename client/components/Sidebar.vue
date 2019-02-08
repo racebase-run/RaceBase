@@ -48,10 +48,15 @@
 
 }
 
-.stories {
+.races {
   width: 80%;
   margin: 0 auto;
   margin-top: 20px;
+
+  .votes {
+    text-align: center;
+  }
+
   h3 {
     font-size: 12px;
     font-weight: 500;
@@ -60,8 +65,8 @@
   }
 
   h4 {
-    font-size: 18px;
-    font-weight: 500;
+    font-size: 17px;
+    font-weight: 400;
     line-height: 25px;
 
     a {
@@ -82,8 +87,8 @@
     font-size: 12px;
     text-transform: uppercase;
     text-decoration: underline;
-    font-style: italic;
     color: @bright-blue;
+    text-align: right;
   }
 }
 
@@ -181,26 +186,31 @@
       </form>
     </div>
 
-    <div class="stories mt-auto mb-3 d-none d-md-block">
-      <h3 class="mb-3"> Top Stories </h3>
+    <div class="races mt-auto mb-3 d-none d-md-block">
+      <h3 class="mb-3"> Recent Races </h3>
 
-      <div v-for="(post, index) in posts" class="mb-2">
-        <h4>
-          <nuxt-link :to="'/news/post/' + post.link" class="mb-2">
-            {{ post.title }}
-          </nuxt-link>
-        </h4>
-        <div class="metadata mb-1">
-          <span class="date mr-2">{{ post.date }}</span>
-          <span class="author">
-            <fa icon="user-circle"></fa>
-            {{ post.author }}
-          </span>
+      <div v-for="race in races" class="race row mb-2">
+        <div class="col-2 pr-0 votes">
+          <div class="mb-1"> {{ race.upvotes }} </div>
+          <div><fa :icon="['far', 'thumbs-up']"></fa></div>
         </div>
-        <div class="subtitle">{{ post.subtitle }}</div>
-      </div>
+        <div class="col-10 pr-0">
+          <h4 class="mb-1">
+            <nuxt-link :to="'/races/' + race._id"> 
+              {{ race.name }} 
+            </nuxt-link>
+          </h4>
+          <div class="metadata">
+            <span class="date mr-2"> 
+              <fa icon="calendar-alt" class="mr-2"></fa>{{ race.date }}
+            </span>
+          </div>
+        </div>
 
-      <nuxt-link to="/news" class="more">More Stories</nuxt-link>
+      </div>
+      <nuxt-link class="more mt-3 w-100 d-block" to="/races/all">
+        More Races
+      </nuxt-link>
     </div>
 
     <div class="user mt-3 mt-md-auto mx-md-0 mx-auto" v-if="isLoggedIn">
@@ -264,8 +274,8 @@ export default {
     }
   }, 
   computed: {
-    posts () {
-      return this.$store.state.posts.posts.slice(0,2)
+    races () {
+      return this.$store.state.races.recentRaces
     }, 
     user () {
       return this.$store.state.auth.user
