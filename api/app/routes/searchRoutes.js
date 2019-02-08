@@ -54,15 +54,21 @@ router.get('/races/:query', function(req, res) {
       score: {
         $meta: 'textScore'
       }
-    }).lean().exec( 
-    function(err, results) {
+    }).sort({
+      score: {
+        $meta: 'textScore'
+      }
+    }).lean().exec((err, results) => {
       if (err)
         res.send(err);
-      for (x in results) {
-        results[x].date = moment(results[x].date).format('MMMM D YYYY');
+      else if (results) {
+        for (x in results) {
+          results[x].date = moment(results[x].date).format('MMMM D YYYY');
+        }
+        res.json(results);
+      } else {
+        res.send("No results")
       }
-      results.sort({ score : { $meta: 'textScore' } });
-      res.json(results);
     });
   }
 });

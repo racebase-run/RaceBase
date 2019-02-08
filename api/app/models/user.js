@@ -20,7 +20,8 @@ var userSchema = mongoose.Schema({
   brandPicUrl: {type: String},
   brandPic_id: {type: String},
   featuredPicUrl: {type: String},
-  featuredPic_id: {type: String}
+  featuredPic_id: {type: String}, 
+  premium: Boolean
 });
 
 module.exports = mongoose.model('User', userSchema);
