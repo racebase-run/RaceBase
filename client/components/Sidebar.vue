@@ -120,9 +120,12 @@
   }
 
   .profile-pic {
-    width: 45px;
-    height: 45px;
+    @size: 50px;
+    width: @size;
+    height: @size;
     margin: 0 auto;
+    border-radius: 7px;
+    overflow: hidden;
   }
 
 }
@@ -235,16 +238,7 @@
 
       <div class="profile row mb-1 pl-3">
         <div class="col-3 pl-4">
-          <img 
-            v-if="!user.profilePicUrl"
-            class="profile-pic mr-3 d-inline-block" 
-            src="/images/default.png"
-          />
-          <img 
-            v-if="user.profilePicUrl"
-            class="profile-pic mr-3 d-inline-block"
-            :src="user.profilePicUrl.replace('http', 'https')"
-          />
+          <ProfilePic :url="user.profilePicUrl" class="profile-pic mr-2"/>
         </div>
         <div class="col-9">
           <h3 class="mb-2"> {{ user.name }} </h3>
@@ -285,7 +279,9 @@
 </template>
 
 <script>
+const ProfilePic = () => import('~/components/User/ProfilePic')
 export default {
+  components: { ProfilePic },
   data () {
     return {
       searchText: ""

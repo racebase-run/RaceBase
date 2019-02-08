@@ -29,6 +29,14 @@
 
 }
 
+.profile-pic {
+  border-radius: 7px;
+  overflow: hidden;
+  display: inline-block;
+  @size: 58px;
+  width: @size; height: @size;
+}
+
 .profile-info {
 
   .shoe {
@@ -169,19 +177,10 @@ h3.event-header {
 
     <div class="profile mt-4 mb-4 w-90 mx-auto" itemscope itemtype="http://schema.org/Person">
 
-      <div class="profile-header mb-3">
-        <img 
-          v-if="!athlete.profilePicUrl"
-          class="profile-pic mr-3 d-inline-block" 
-          src="/images/default.png"
-          itemprop="image"
-        />
-        <img 
-          v-if="athlete.profilePicUrl"
-          class="profile-pic mr-3 d-inline-block"
-          :src="athlete.profilePicUrl.replace('http', 'https')"
-          itemprop="image"
-        />
+      <div class="profile-header d-flex align-items-start mb-3">
+        <div class="profile-pic mr-3">
+          <ProfilePic :url="athlete.profilePicUrl" />
+        </div>
         <div class="d-inline-block mr-3">
           <h1 itemprop="name"> {{ name }} </h1>
           <h2 class="mb-0">
@@ -396,7 +395,7 @@ h3.event-header {
 <script>
 import _ from 'underscore' 
 import wordsToNumbers from 'words-to-numbers'
-
+const ProfilePic = () => import('~/components/User/ProfilePic')
 let format = async function(x) {
   try {
     x = wordsToNumbers(x.toLowerCase()) || 0; 
@@ -450,6 +449,7 @@ let getMiles = async function(x) {
 }
 
 export default {
+  components: { ProfilePic },
   head () {
     return {
       title: this.name + ' - RaceBase', 
