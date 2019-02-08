@@ -1,7 +1,6 @@
 <style lang="less" scoped>
 
 form {
-  @media (min-width: 992px) { width: 45%; }
   label {
     text-transform: uppercase;
     font-size: 13px;
@@ -16,80 +15,83 @@ ul {
 </style>
 
 <template>
-<div class="mx-auto mx-md-0 w-90 pl-md-5 mb-5"> 
-  <h2 class="mt-4"> Why sign up? </h2>
-  <p> When you sign up for a RaceBase account, you get these great benefits: </p>
-  <ul> 
-    <li> <strong>Profile customization</strong>, allowing you to claim results as your own, add photos and stories, and more </li>
-    <li> Access to our tried and true <strong>logging</strong> system </li>
-    <li> <strong>Race Feed</strong>, where you can see the results and workouts of people you care about </li>
-    <li> According to our independent study, signing up reduces your risk of getting eaten by a flying spaghetti monster by up to <strong>30%</strong></li>
-  </ul>
-  <form @submit.prevent="signUp">
-    <h2 class="mt-4 mb-3">Sign Up</h2>
+<div class="mx-auto w-95 mb-5 row"> 
+  <div class="why col">
+    <h2 class="mt-4"> Why sign up? </h2>
+    <p> When you sign up for a RaceBase account, you get these great benefits: </p>
+    <ul> 
+      <li> <strong>Profile customization</strong>, allowing you to claim results as your own, add photos and stories, and more </li>
+      <li> Access to our tried and true <strong>Logging</strong> system </li>
+      <li> <strong>Race Feed</strong>, where you can see the results and workouts of people you care about </li>
+      <li> According to our independent study, signing up reduces your risk of getting eaten by a flying spaghetti monster by up to <strong>30%</strong></li>
+    </ul>
+  </div>
+  <div class="signup col">
+    <form @submit.prevent="signUp">
+      <h2 class="mt-4 mb-3">Sign Up</h2>
 
-    <label for="inputName"> Name </label>
-    <input 
-      name="name" 
-      type="text" 
-      class="form-control mb-3" 
-      v-model="input.name" 
-      placeholder="Name" 
-      required
-    />
+      <label for="inputName"> Name </label>
+      <input 
+        name="name" 
+        type="text" 
+        class="form-control mb-3" 
+        v-model="input.name" 
+        placeholder="Name" 
+        required
+      />
 
-    <label for="inputEmail"> Email </label>
-    <input 
-      type="email" 
-      v-model="input.email" 
-      name="email" 
-      class="form-control mb-3" 
-      placeholder="Email" 
-      required autofocus
-    />
+      <label for="inputEmail"> Email </label>
+      <input 
+        type="email" 
+        v-model="input.email" 
+        name="email" 
+        class="form-control mb-3" 
+        placeholder="Email" 
+        required autofocus
+      />
 
-    <label for="inputPassword"> Password </label>
+      <label for="inputPassword"> Password </label>
 
-    <input 
-      name="password" 
-      v-model="input.password" 
-      type="password" 
-      class="form-control mb-3" 
-      placeholder="Password" 
-      required
-    />
+      <input 
+        name="password" 
+        v-model="input.password" 
+        type="password" 
+        class="form-control mb-3" 
+        placeholder="Password" 
+        required
+      />
 
-    <label for="inputConfirm"> Confirm Password </label>
-    <input 
-      name="password" 
-      type="password" 
-      class="form-control mb-3" 
-      v-model="input.confirm" 
-      placeholder="Confirm Password" 
-      required
-    />
+      <label for="inputConfirm"> Confirm Password </label>
+      <input 
+        name="password" 
+        type="password" 
+        class="form-control mb-3" 
+        v-model="input.confirm" 
+        placeholder="Confirm Password" 
+        required
+      />
 
-    <div class="mb-3">
-      <input type="checkbox" required name="terms">
-        I agree to the 
-        <nuxt-link 
-          to="terms" 
-          target="_blank"
-        > Terms and Conditions
-        </nuxt-link>
-    </div>
+      <div class="mb-3">
+        <input type="checkbox" required name="terms">
+          I agree to the 
+          <nuxt-link 
+            to="terms" 
+            target="_blank"
+          > Terms and Conditions
+          </nuxt-link>
+      </div>
 
-    <div 
-    v-if="message" 
-    :class="'d-block alert alert-' + (error ? 'danger' : 'success')"
-    >
-      {{ message }}
-    </div>
+      <div 
+      v-if="message" 
+      :class="'d-block alert alert-' + (error ? 'danger' : 'success')"
+      >
+        {{ message }}
+      </div>
 
-    <button type="submit" class="btn btn-primary">Sign Up</button>
+      <button type="submit" class="btn btn-primary">Sign Up</button>
 
-  </form>
-
+    </form>
+  </div>
 </div>
 </template>
 
@@ -136,7 +138,7 @@ export default {
               email: this.input.email, 
               password: this.input.password
             })
-            // this.$store.dispatch('auth/fetchUser')
+            this.$router.push('/signup/claim')
           }
         })
       }

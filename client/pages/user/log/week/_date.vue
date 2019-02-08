@@ -153,7 +153,7 @@ h4 input, .schedule input {
 
   .feel {
     width: 100%;
-    height: 7px;
+    height: 3.5px;
     background: @medium-grey;
   }
 
@@ -306,8 +306,12 @@ h4 input, .schedule input {
 
           </div>
         </div>
-
-        <div class="feel mt-1" :class="'f' + (day.runs[0] ? day.runs[0].feel : '')"> </div>
+        
+        <div 
+          v-if="day.runs"
+          class="feel mt-1" 
+          :class="'f' + (day.runs[0] ? day.runs[0].feel : '')"> 
+        </div>
 
       </div>
     </div>

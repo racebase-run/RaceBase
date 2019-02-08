@@ -35,10 +35,6 @@
     width: 25px;
   }
 
-  .location .icon {
-    color: @pink;
-  }
-
 }
 
 h2.year {
@@ -81,10 +77,6 @@ h3.event-header {
     font-weight: 500;
   }
 
-  .team, .team a {
-    color: @purple;
-  }
-
   .time {
     font-family: 'DS Digital', 'Helvetica', sans-serif;
     font-size: 27px;
@@ -93,7 +85,7 @@ h3.event-header {
     padding-right: 15px;
 
     .star {
-      color: @orange;
+      color: @blue;
     }
   }
 

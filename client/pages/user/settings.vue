@@ -482,7 +482,7 @@ export default {
         else if (res.success) {
           this.claimFailure = null
           this.claimSuccess = res.success
-          this.$set(this.user, 'athlete_id', athlete_id)
+          this.loadUser()
         }
       })
     },
@@ -498,7 +498,7 @@ export default {
         else if (res.success) {
           this.claimSuccess = res.success
           this.claimFailure = null
-          this.$set(this.user, 'athlete_id', '')
+          this.loadUser()
         }
       })
     },

@@ -19,15 +19,15 @@ strong {
   Click <nuxt-link to="/races/all"> here </nuxt-link>
 </div>
 
-<SearchResults :searchInput="searchInput" :currentPage="currentPage"/>
+<ResultsSearch v-model="searchInput" :currentPage="currentPage"/>
 
 </div>
 </template>
 
 <script>
-const SearchResults = () => import('~/components/SearchResults')
+const ResultsSearch = () => import('~/components/Search/ResultsSearch')
 export default {
-  components: { SearchResults },
+  components: { ResultsSearch },
   data () {
     return {
       results: {}, 
@@ -39,38 +39,7 @@ export default {
   asyncData ({ params }) {
     let query = params.query ? decodeURI(params.query) : ""
     return {
-      query : query, 
       searchInput: query
-    }
-  },
-  created () {
-    if (this.query)
-      this.search()
-  }, 
-  methods : {
-    search: async function() {
-      if (this.searchInput != "") {
-
-        let page = await this.$axios.get('search/results/' 
-                                          + this.searchInput 
-                                          + '/' 
-                                          + this.currentPage 
-                                          + '/10')
-
-
-        this.results = page.data.docs
-        this.lastPage = page.data.lastPage
-      } 
-      else
-        this.results = {}
-    }, 
-    next: function() {
-      this.currentPage++
-      this.search()
-    },
-    prev: function() {
-      this.currentPage--
-      this.search()
     }
   }
 }
