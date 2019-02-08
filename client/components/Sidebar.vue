@@ -48,6 +48,18 @@
 
 }
 
+.nav {
+  margin: 0 auto;
+  text-align: center;
+  .link {
+    color: @bright-blue;
+    font-size: 17px;
+    text-align: center;
+    padding: 0 18px;
+    display: inline-block;
+  }
+}
+
 .races {
   width: 80%;
   margin: 0 auto;
@@ -184,6 +196,12 @@
           </div>
         </div>
       </form>
+    </div>
+
+    <div class="nav">
+      <nuxt-link class="link" to="/about"> About </nuxt-link>
+      <nuxt-link class="link" to="/news"> News </nuxt-link>
+      <nuxt-link class="link" to="/donate"> Donate </nuxt-link>
     </div>
 
     <div class="races mt-auto mb-3 d-none d-md-block">
