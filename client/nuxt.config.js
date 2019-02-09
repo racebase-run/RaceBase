@@ -17,7 +17,8 @@ module.exports = {
         content: 'For runners, by runners. We believe that people are more important than any race, or time, or championship. Join us now!'
       },
       { property: 'og:type', content: 'website' }, 
-      { name: 'google-site-verification', content: 'geBi-OI3u5aN15krO_W0_IF9zr0d-N1NNcF1PMOhafk' }
+      { name: 'google-site-verification', content: 'geBi-OI3u5aN15krO_W0_IF9zr0d-N1NNcF1PMOhafk' },
+      { name: 'google-site-verification', content: 'VZJIxi0RVW3oOKK8sasKKw8R-kaIu6xUTBuQln0ExLQ' }  
     ],
     link: [
       { rel: 'icon', type: 'image/png', href: '/images/favicon-320.png' }, 

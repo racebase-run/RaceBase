@@ -217,28 +217,28 @@ h3.event-header {
       <div class="profile-info mb-2" v-if="athlete">
 
         <div class="shoes mb-2">
-          <span class="trainer mr-3 d-block d-lg-inline-block" v-if="user.trainer">
+          <span class="trainer mr-3 d-block d-lg-inline-block" v-if="athlete.trainer">
             <object type="image/svg+xml" data="/images/trainer-blue.svg" class="shoe mr-1">
             </object>
-            {{ user.trainer }}
+            {{ athlete.trainer }}
           </span>
 
-          <span class="racer" v-if="user.racer">
+          <span class="racer" v-if="athlete.racer">
             <object type="image/svg+xml" data="/images/racer.svg" class="shoe mr-1">
             </object>
-            {{ user.racer }}
+            {{ athlete.racer }}
           </span>
         </div>
 
         <div class="personal">
-          <span class="mileage mr-3" v-if="user.mileage">
+          <span class="mileage mr-3" v-if="athlete.mileage">
             <fa icon="calendar-alt" class="icon mr-1"></fa>
-            {{ user.mileage }} MPW
+            {{ athlete.mileage }} MPW
           </span>
 
-          <span class="location" v-if="user.location">
+          <span class="location" v-if="athlete.location">
             <fa icon="map-marker-alt" class="icon mr-1"></fa>
-            <span itemprop="homeLocation"> {{ user.location }} </span>
+            <span itemprop="homeLocation"> {{ athlete.location }} </span>
           </span>
         </div>
 
