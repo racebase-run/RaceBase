@@ -35,6 +35,7 @@
       text-align: center;
       .fa-trophy {
         font-size: 12px;
+        padding-bottom: 3px;
       }
     }
   }
@@ -60,6 +61,35 @@
   .social {
     text-transform: uppercase;
     font-size: 13px;
+    .comments {
+      .fa-comment-dots {
+        color: @blue;
+      }
+      cursor: pointer;
+    }
+  }
+
+  .comments-header {
+    border-top: 1px solid @light-grey;
+    text-transform: uppercase; 
+    font-size: 12px;
+    background: @ultra-light-grey;
+    .close-comments {
+      color: @bright-blue;
+      cursor: pointer;
+      font-weight: 500;
+    }
+  }
+
+  .comment {
+    border-bottom: 1px solid @light-grey; 
+    .comment-meta {
+      text-transform: uppercase;
+      font-size: 13px;
+      a, .date {
+        font-weight: 500; 
+      }
+    }
   }
 }
 </style>
@@ -80,13 +110,19 @@
     <h3 class="title">{{ post.title }}</h3>
 
     <div class="result p-2 mb-2" v-if="post.result">
-      <div class="place d-inline-block">
+      <div class="place d-inline-block mr-3">
         <fa icon="trophy"></fa>
         {{ post.result.place }}
       </div>
       <div class="time d-inline-block mr-2"> {{ post.result.time }} </div>
-      <div class="d-inline-block mr-2"> {{ post.result.race }} </div>
-      <div class="d-inline-block mr-2"> {{ post.result.distance }} </div>
+      <div class="d-inline-block mr-1">for 
+        <strong>{{ post.result.distance }}</strong>
+      </div>
+      <div class="d-inline-block mr-2">at&nbsp;
+        <nuxt-link :to="'/races/' + post.result.race_id">
+          {{ post.result.race }} 
+        </nuxt-link>
+      </div>
     </div>
 
     <p class="body">{{ post.body }}</p>
@@ -94,11 +130,32 @@
       <div class="likes mr-3">
         <fa icon="heart" class="mr-1"></fa> {{ post.likes }} Likes
       </div>
-      <div class="comments mr-3">
+      <div class="comments mr-3" @click="showComments = true">
         <fa icon="comment-dots" class="mr-1"></fa> {{ post.comments.length }} Comments
       </div>
       <div class="share">
         <fa icon="share" class="mr-1"></fa> Share
+      </div>
+    </div>
+  </div>
+  <div v-if="showComments" class="comments">
+    <div class="comments-header pl-2 py-1 row mx-auto">
+      <div>Comments</div>
+      <div class="ml-auto mr-2 close-comments" @click="showComments = false"> 
+        Close
+      </div>
+    </div>
+    <div class="comment p-2" v-for="comment in post.comments"> 
+      <div class="comment-meta"> 
+        <div class="d-inline-block">
+          <!-- DUMMY LINK!! DON'T FORGET TO CHANGE!! --> 
+          <nuxt-link to="/user">{{ comment.user }}</nuxt-link>
+        </div>
+        posted on 
+        <div class="date d-inline-block">{{ comment.date }}</div>
+      </div>
+      <div class="comment-body mt-1">
+        {{ comment.body }}
       </div>
     </div>
   </div>
@@ -109,6 +166,11 @@
 const ProfilePic = () => import('~/components/User/ProfilePic')
 export default {
   props: ['post'],
-  components: { ProfilePic }
+  components: { ProfilePic }, 
+  data () {
+    return {
+      showComments: false
+    }
+  }
 }
 </script>

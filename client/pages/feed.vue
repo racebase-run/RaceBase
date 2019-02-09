@@ -33,10 +33,23 @@ export default {
           distance: "10k", 
           race: "Mt. SAC Invitational", 
           place: 8, 
-          date: "April 10, 2019"
+          date: "April 10, 2019", 
+          race_id: "5c428c978c7f9d24d2248024"
         },
         _id: "12345",
-        comments: [ 'hello world', 'foo bar baz', 'i like this post' ]
+        comments: [{
+          body: 'This is great!',
+          user: "John Smith", 
+          date: "April 11 2019 at 10:03"
+        }, {
+          body: 'Awesome job.', 
+          user: "Steve Appleseed", 
+          date: "April 13 2019 at 13:14"
+        }, {
+          body: 'I like this post' , 
+          user: "Joe Doe", 
+          date: "April 14 2019 at 9:55"
+        }]
       }]
     }
   }
