@@ -7,5 +7,6 @@ router.use('/auth', require('./authRoutes.js'));
 router.use('/result', require('./resultRoutes.js'));
 router.use('/search', require('./searchRoutes.js'));
 router.use('/log', require('./logRoutes.js'));
+router.use('/post', require('./postRoutes.js'));
 
 module.exports = router; 

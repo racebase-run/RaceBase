@@ -46,6 +46,29 @@ router.get('/claimed/:athlete_id', function(req,res) {
   });
 });
 
+router.get('/following', authCheck, async (req, res) => {
+  let curUser = User.findOne({ _id: req.userId })
+  if (!curUser) res.send("Error")
+  else res.send(curUser.following)
+})
+
+// Route for getting public data of user based on Athlete ID
+router.get('/athlete/:athlete_id', function(req, res) {
+  User.findOne({ 'athlete_id' : req.params.athlete_id }, function(err, user) {
+    if (err)
+      res.send(err)
+
+    else if (user) {
+      user.password = null;
+      user.email = null;
+      res.send(user)
+    }
+
+    else 
+      res.send(null)
+
+  })
+})
 
 router.get('/:id/races/:page?/:length?', function(req, res) {
   User.findOne({ '_id' : req.params.id}).lean().exec(function(err, user) {
@@ -76,24 +99,6 @@ router.get('/:id/races/:page?/:length?', function(req, res) {
   })
 
 });
-
-// Route for getting public data of user based on Athlete ID
-router.get('/athlete/:athlete_id', function(req, res) {
-  User.findOne({ 'athlete_id' : req.params.athlete_id }, function(err, user) {
-    if (err)
-      res.send(err)
-
-    else if (user) {
-      user.password = null;
-      user.email = null;
-      res.send(user)
-    }
-
-    else 
-      res.send(null)
-
-  })
-})
 
 router.get('/:id', authCheck, function(req, res) {
   if (req.params.id == req.userId) {
@@ -220,39 +225,41 @@ router.post('/:id/featured_pic', parser.single("image"), authCheck, (req, res) =
   })
 })
 
-router.post('/follow/:id', authCheck, function(req, res) {
-  if (req.session.user) {
-    User.findOne({ 'athlete_id' : req.params.id }, function(err, data) {
-      if (err)
-        res.send(err);
-      else {
-        if (!data || data == null)
-          res.send({ message : "No athlete with that ID exists." });
-        else if (data.followers.includes(req.session.user.athlete_id) || req.session.user.following.includes(req.params.id)) {
-          res.send({ message : "You are already following this user." });
-        }
-        else {
-          data.followers.push(req.session.user.athlete_id);
-          data.save(function(err, following) {
-            if (err)
-              res.send(err);
-            else {
-              req.session.user.following.push(req.params.id)
-              User.findByIdAndUpdate(req.session.user._id, { 'following' : req.session.user.following }, function(err, follower) {
-                if (err)
-                  res.send(err);
-                else {
-                  req.session.user = follower;
-                  res.send({ message : "Successfully followed." });
-                }
-              })
-            }
-          })
-        }
+router.post('/follow/:id', authCheck, async (req, res) => {
+  let curUser = await User.findOne({ _id: req.userId })
+  User.findOne({ 'athlete_id' : req.params.id }, function(err, data) {
+    if (err) res.send(err);
+    else {
+      if (!data || data == null)
+        res.send({ message : "No athlete with that ID exists." });
+      else if (curUser.following.includes(req.params.id)) {
+        res.send({ message : "You are already following this user." });
       }
-    }); 
-  }
+      else {
+        curUser.following.push(req.params.id)
+        curUser.save((err, data) =>  {
+          if (err) res.send(err);
+          else 
+            res.send({ message : "Successfully followed." });
+        })
+      }
+    }
+  }); 
 })
+
+router.post('/unfollow/:id', authCheck, async (req, res) => {
+  let curUser = await User.findOne({ _id: req.userId })
+  for (i in curUser.following) { 
+    if (curUser.following[i] == req.params.id) {
+      curUser.following.splice(i, 1); 
+    }
+  }
+  curUser.save((err, data) => {
+    if (err) res.send(err)
+    else res.send("Successfully unfollowed " + req.params.id)
+  })
+})
+
 
 router.post('/claim/:id/:athlete_id', authCheck, function(req, res) {
   if (req.params.id == req.userId) {
