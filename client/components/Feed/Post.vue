@@ -97,13 +97,15 @@
 <div class="post p-0 container-fluid">
   <div class="meta row align-items-center mb-2 mx-auto p-2">
     <div class="author d-flex align-items-center mr-3">
-      <ProfilePic class="mr-2 profile-pic d-inline-block" />
-      <nuxt-link :to="'/athlete/' + post.athlete_id">
-        {{ post.author }}
+      <ProfilePic 
+        class="mr-2 profile-pic d-inline-block" 
+        :url="poster.profilePicUrl"/>
+      <nuxt-link :to="'/athlete/' + poster.athlete_id">
+        {{ poster.name }}
       </nuxt-link>
     </div>
     <div class="date">
-      <fa icon="calendar-alt" class="mr-2"></fa>{{ post.date }}
+      <fa icon="calendar-alt" class="mr-2"></fa>{{ formatDate(post.date) }}
     </div>
   </div>
   <div class="post-content pt-2 px-3 pb-2">
@@ -128,7 +130,7 @@
     <p class="body">{{ post.body }}</p>
     <div class="social row align-items-center mx-auto">
       <div class="likes mr-3">
-        <fa icon="heart" class="mr-1"></fa> {{ post.likes }} Likes
+        <fa icon="heart" class="mr-1"></fa> {{ post.likes.length }} Likes
       </div>
       <div class="comments mr-3" @click="showComments = true">
         <fa icon="comment-dots" class="mr-1"></fa> {{ post.comments.length }} Comments
@@ -138,7 +140,7 @@
       </div>
     </div>
   </div>
-  <div v-if="showComments" class="comments">
+  <div v-if="showComments && post.comments.length > 0" class="comments">
     <div class="comments-header pl-2 py-1 row mx-auto">
       <div>Comments</div>
       <div class="ml-auto mr-2 close-comments" @click="showComments = false"> 
@@ -163,13 +165,23 @@
 </template>
 
 <script> 
+import moment from 'moment'
 const ProfilePic = () => import('~/components/User/ProfilePic')
 export default {
   props: ['post'],
   components: { ProfilePic }, 
   data () {
     return {
-      showComments: false
+      showComments: false, 
+      poster: {}
+    }
+  }, 
+  async mounted () {
+    this.poster = await this.$axios.$get('/user/athlete/' + this.post.user_id)
+  },
+  methods: {
+    formatDate: function(date) {
+      return moment(date).format('MMMM D YYYY')
     }
   }
 }

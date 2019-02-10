@@ -39,8 +39,11 @@
 }
 
 .profile-pic {
-  width: 81px;
-  height: 81px;
+  border-radius: 7px;
+  overflow: hidden;
+  display: inline-block;
+  @size: 80px;
+  width: @size; height: @size;
 }
 
 .profile-pic, .brand-pic, .featured-pic {
@@ -219,17 +222,8 @@ form {
       <div class="settings-section card p-3 mt-0">
         <div class="settings-label mb-3"> Profile Picture </div>
         <div class="row">
-          <div class="col-6 align-items-center align-content-center d-flex flex-wrap">
-            <img 
-              v-if="user.profilePicUrl" 
-              :src="user.profilePicUrl" 
-              class="profile-pic" 
-            />
-            <img 
-              v-if="!user.profilePicUrl" 
-              src="/images/default.png" 
-              class="profile-pic" 
-            />
+          <div class="profile-pic">
+            <ProfilePic :url="user.profilePicUrl" />
           </div>
           <div class="col-6">
             <div>
@@ -410,7 +404,7 @@ form {
 </div>
 </template>
 <script>
-
+const ProfilePic = () => import('~/components/User/ProfilePic')
 export default {
   data () {
     return {
@@ -431,6 +425,7 @@ export default {
       imageMessage: ""
     }
   },
+  components: { ProfilePic },
   head () {
     return {
       title: "Settings - RaceBase"

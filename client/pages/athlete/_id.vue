@@ -16,13 +16,13 @@
 
   .btn.follow {
     vertical-align: top;
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 500;
     text-transform: uppercase;
     height: 25px;
-    padding: 5px 7px; 
+    padding: 3px 6px; 
   }
-
+  
   .strava {
     color: @orange;
   }
@@ -208,8 +208,19 @@ h3.event-header {
 
           </h2>
         </div>
-        <button class="btn btn-primary follow mt-3 mt-lg-0 d-none" v-if="isLoggedIn">
+        <button 
+          class="btn btn-primary follow mt-3 mt-lg-0" 
+          v-if="isLoggedIn && !following" @click="follow()"
+        >
           Follow
+        </button>
+
+        <button 
+          class="btn btn-default follow mt-3 mt-lg-0" 
+          v-if="isLoggedIn && following"
+          @click="unfollow()"
+        >
+          Following <fa icon="check" class="ml-2"></fa>
         </button>
 
       </div>
@@ -478,6 +489,7 @@ export default {
   },
   async asyncData ({ store, params, $axios, redirect}) {
     let user = store.state.auth.user
+    let following = user.following.includes(params.id)
     let athlete = await $axios.$get('user/athlete/' + params.id)
 
     let results = await $axios.$get('result/list/athlete/' + params.id)
@@ -528,7 +540,8 @@ export default {
       claimed: claimed, 
       claimedBy: claimedBy, 
       name: name, 
-      id: params.id
+      id: params.id, 
+      following: following
     }
 
   },
@@ -559,6 +572,16 @@ export default {
       let claimData = await this.$axios.$get('user/claimed/' + this.id)
       this.claimed = claimData.claimed
       this.claimedBy = claimData.user
+    }, 
+    follow: async function() {
+      await this.$axios.$post('user/follow/' + this.id)
+      this.following = true
+      this.$store.dispatch('auth/fetchUser')
+    },
+    unfollow: async function() {
+      await this.$axios.$post('user/unfollow/' + this.id)
+      this.following = false
+      this.$store.dispatch('auth/fetchUser')
     }
   }
 };
