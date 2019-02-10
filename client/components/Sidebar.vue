@@ -60,6 +60,14 @@
   }
 }
 
+.actions {
+  .btn {
+    text-transform: uppercase;
+    font-size: 13px;
+    padding: 3px 6px; 
+  }
+}
+
 .races {
   width: 80%;
   margin: 0 auto;
@@ -205,6 +213,15 @@
       <nuxt-link class="link" to="/about"> About </nuxt-link>
       <nuxt-link class="link" to="/news"> News </nuxt-link>
       <nuxt-link class="link" to="/donate"> Donate </nuxt-link>
+    </div>
+
+    <div class="actions mt-4">
+      <div class="btn btn-default d-inline-block"> 
+        New Post <fa icon="pencil-alt"></fa>
+      </div>
+      <div class="ml-2 btn btn-default d-inline-block">
+        Add Result <fa icon="plus"></fa>
+      </div>
     </div>
 
     <div class="races mt-auto mb-3 d-none d-md-block">

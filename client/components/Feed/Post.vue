@@ -58,17 +58,6 @@
     display: inline-block;
   }
 
-  .social {
-    text-transform: uppercase;
-    font-size: 13px;
-    .comments {
-      .fa-comment-dots {
-        color: @blue;
-      }
-      cursor: pointer;
-    }
-  }
-
   .comments-header {
     border-top: 1px solid @light-grey;
     text-transform: uppercase; 
@@ -80,30 +69,21 @@
       font-weight: 500;
     }
   }
-
-  .comment {
-    border-bottom: 1px solid @light-grey; 
-    .comment-meta {
-      text-transform: uppercase;
-      font-size: 13px;
-      a, .date {
-        font-weight: 500; 
-      }
-    }
-  }
 }
 </style>
 <template>
 <div class="post p-0 container-fluid">
   <div class="meta row align-items-center mb-2 mx-auto p-2">
     <div class="author d-flex align-items-center mr-3">
-      <ProfilePic class="mr-2 profile-pic d-inline-block" />
-      <nuxt-link :to="'/athlete/' + post.athlete_id">
-        {{ post.author }}
+      <ProfilePic 
+        class="mr-2 profile-pic d-inline-block" 
+        :url="poster.profilePicUrl"/>
+      <nuxt-link :to="'/athlete/' + poster.athlete_id">
+        {{ poster.name }}
       </nuxt-link>
     </div>
     <div class="date">
-      <fa icon="calendar-alt" class="mr-2"></fa>{{ post.date }}
+      <fa icon="calendar-alt" class="mr-2"></fa>{{ formatDate(post.date) }}
     </div>
   </div>
   <div class="post-content pt-2 px-3 pb-2">
@@ -126,50 +106,51 @@
     </div>
 
     <p class="body">{{ post.body }}</p>
-    <div class="social row align-items-center mx-auto">
-      <div class="likes mr-3">
-        <fa icon="heart" class="mr-1"></fa> {{ post.likes }} Likes
-      </div>
-      <div class="comments mr-3" @click="showComments = true">
-        <fa icon="comment-dots" class="mr-1"></fa> {{ post.comments.length }} Comments
-      </div>
-      <div class="share">
-        <fa icon="share" class="mr-1"></fa> Share
-      </div>
-    </div>
+    <Social 
+      :post="post" 
+      @showComments="showComments = true"
+      :poster_id="poster._id"
+    />
+
   </div>
-  <div v-if="showComments" class="comments">
+
+  <div v-if="showComments && post.comments.length > 0" class="comments">
     <div class="comments-header pl-2 py-1 row mx-auto">
       <div>Comments</div>
       <div class="ml-auto mr-2 close-comments" @click="showComments = false"> 
         Close
       </div>
     </div>
-    <div class="comment p-2" v-for="comment in post.comments"> 
-      <div class="comment-meta"> 
-        <div class="d-inline-block">
-          <!-- DUMMY LINK!! DON'T FORGET TO CHANGE!! --> 
-          <nuxt-link to="/user">{{ comment.user }}</nuxt-link>
-        </div>
-        posted on 
-        <div class="date d-inline-block">{{ comment.date }}</div>
-      </div>
-      <div class="comment-body mt-1">
-        {{ comment.body }}
-      </div>
-    </div>
+    <Comments 
+      :comments="post.comments"  
+      @hideComments="showComments = false"
+    />
   </div>
+
 </div>
 </template>
 
 <script> 
+import moment from 'moment'
 const ProfilePic = () => import('~/components/User/ProfilePic')
+const Social = () => import('~/components/Feed/Social')
+const Comments = () => import('~/components/Feed/Comments')
+
 export default {
   props: ['post'],
-  components: { ProfilePic }, 
+  components: { ProfilePic, Social, Comments }, 
   data () {
     return {
-      showComments: false
+      showComments: false, 
+      poster: {}
+    }
+  }, 
+  async mounted () {
+    this.poster = await this.$axios.$get('/user/athlete/' + this.post.user_id)
+  },
+  methods: {
+    formatDate: function(date) {
+      return moment(date).format('MMMM D YYYY')
     }
   }
 }
