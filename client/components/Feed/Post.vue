@@ -21,25 +21,6 @@
     overflow: hidden;
   }
 
-  .result {
-    display: table;
-    border-radius: 5px;
-    border: 1px solid @light-grey;
-    .time {
-      font-family: 'DS Digital', 'Helvetica', sans-serif;
-      color: @bright-blue;
-      font-size: 21px;
-    }
-
-    .place  {
-      text-align: center;
-      .fa-trophy {
-        font-size: 12px;
-        padding-bottom: 3px;
-      }
-    }
-  }
-
   .body {
     font-size: 13px;
     line-height: 17px;
@@ -89,21 +70,7 @@
   <div class="post-content pt-2 px-3 pb-2">
     <h3 class="title">{{ post.title }}</h3>
 
-    <div class="result p-2 mb-2" v-if="post.result">
-      <div class="place d-inline-block mr-3">
-        <fa icon="trophy"></fa>
-        {{ post.result.place }}
-      </div>
-      <div class="time d-inline-block mr-2"> {{ post.result.time }} </div>
-      <div class="d-inline-block mr-1">for 
-        <strong>{{ post.result.distance }}</strong>
-      </div>
-      <div class="d-inline-block mr-2">at&nbsp;
-        <nuxt-link :to="'/races/' + post.result.race_id">
-          {{ post.result.race }} 
-        </nuxt-link>
-      </div>
-    </div>
+    <Result class="mb-2" :result="post.result" v-if="post.result" />
 
     <p class="body">{{ post.body }}</p>
     <Social 
@@ -135,10 +102,11 @@ import moment from 'moment'
 const ProfilePic = () => import('~/components/User/ProfilePic')
 const Social = () => import('~/components/Feed/Social')
 const Comments = () => import('~/components/Feed/Comments')
+const Result = () => import('~/components/Feed/Result')
 
 export default {
   props: ['post'],
-  components: { ProfilePic, Social, Comments }, 
+  components: { ProfilePic, Social, Comments, Result }, 
   data () {
     return {
       showComments: false, 

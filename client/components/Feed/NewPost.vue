@@ -52,8 +52,25 @@ form {
       </div>
       <fa class="ml-4" icon="times-circle" @click="$emit('close')"></fa>
     </div>
-    <div class="btn btn-default mb-2 mr-auto">
-      Link a result <fa icon="plus"></fa>
+    <Result :result="input.result" v-if="input.result" class="mb-2"/>
+    <div class="btn btn-default mb-2 mr-auto" 
+      @click="selectResult()" v-if="!linking">
+      <span v-if="input.result">Change <fa icon="pencil-alt"></fa></span>
+      <span v-else>Link a result <fa icon="plus"></fa></span>
+      
+    </div>
+    <div class="results-search mb-2" v-else>
+      <h4> Your Recent Results </h4>
+      <div v-for="result in yourResults" class="d-flex align-items-center mb-1">
+        
+        <div class="btn btn-outline-primary btn-small mr-2" 
+          @click="linkResult(result)">
+          Link <fa icon="link"></fa>
+        </div>
+
+        <Result :result="result" />
+
+      </div>
     </div>
     <textarea 
       v-model="input.body" 
@@ -66,9 +83,11 @@ form {
 </template>
 
 <script>
+const Result = () => import('~/components/Feed/Result')
 import moment from 'moment'
 export default {
-  props: ['close'],
+  props: ['close', 'user'],
+  components: { Result },
   data () {
     let date = new Date()
     let formattedDate = moment(date).format('MMMM D YYYY')
@@ -78,7 +97,9 @@ export default {
         body: "", 
         date: date
       }, 
-      formattedDate: formattedDate
+      linking: false, 
+      formattedDate: formattedDate, 
+      yourResults: []
     }
   },
   methods: {
@@ -87,6 +108,16 @@ export default {
       .then((res) => {
         console.log(res); 
       })
+    }, 
+    selectResult: async function() {
+      this.linking = true;
+      let yourResults = await this.$axios.$get('/result/list/athlete/' + this.user.athlete_id); 
+      this.yourResults = yourResults.slice(-5); 
+    }, 
+    linkResult: function(result) {
+      this.input.result = result
+      this.input.result_id = result._id
+      this.linking = false
     }
   }
 }

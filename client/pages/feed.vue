@@ -19,7 +19,7 @@ h4 {
       New Post <fa icon="pencil-alt"></fa>
     </div>
   </div>
-  <NewPost v-if="addingPost" @close="closeAddWindow" class="mb-3"/>
+  <NewPost v-if="addingPost" @close="closeAddWindow" :user="user" class="mb-3"/>
   <div class="feed">
     <Post :post="post" v-for="post in posts" :key="post._id" class="mb-3"/>
   </div>
@@ -41,6 +41,11 @@ export default {
   async asyncData ({ $axios, store }) {
     let user = store.state.auth.user
     let feed = (await $axios.$get('/post/feed')).feed
+
+    for (const post of feed) {
+      if (post.result_id)
+        post.result = await $axios.$get('/result/' + post.result_id)
+    }
 
     feed = feed.concat([{
         title: "Hello world, this is my first post",  
@@ -74,7 +79,8 @@ export default {
 
     return {
       addingPost: false,
-      posts: feed 
+      posts: feed, 
+      user: user
     }
   }
 }

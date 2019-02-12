@@ -25,9 +25,9 @@
   }
 
   h1 {
-    font-size: 35px;
+    font-size: 30px;
     .logo {
-      width: 39px;
+      width: 35px;
     }
   }
 
