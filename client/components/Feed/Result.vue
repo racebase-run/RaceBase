@@ -28,7 +28,7 @@
   </div>
   <div class="time d-inline-block mr-2"> {{ result.time }} </div>
   <div class="d-inline-block mr-1">for 
-    <strong>{{ result.distance }}</strong>
+    <strong>{{ distance }}</strong>
   </div>
   <div class="d-inline-block mr-2">at&nbsp;
     <nuxt-link :to="'/races/' + result.race_id">
@@ -39,7 +39,13 @@
 </template>
 
 <script>
+let { format } = require('~/utils/distance.js') 
 export default {
-  props: ['result']
+  props: ['result'], 
+  computed: {
+    distance: function() {
+      return format(this.result.event)
+    }
+  }
 }
 </script>

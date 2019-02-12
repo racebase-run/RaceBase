@@ -34,18 +34,16 @@ h3 {
   <div class="post mb-3 p-3">
 
     <h2> {{ post.title }} </h2>
-    <div class="meta d-flex align-items-center">
-      <div class="profile-pic d-inline-block mr-2">
-        <ProfilePic :url="user.profilePicUrl" />
-      </div>
-      <div class="author d-inline-block">{{ user.name }}</div>
-      <div class="date d-inline-block ml-3">
-        <fa icon="calendar-alt" class="mr-2"></fa>{{ formatDate(post.date) }}
-      </div>
-    </div>
+    <ByLine 
+      :author="poster.name" 
+      :date="formatDate(post.date)"
+      :athleteId="poster.athlete_id" 
+      :authorized="false" 
+      :profilePicUrl="poster.profilePicUrl"
+    />
     <p> {{ post.body }}</p>
 
-    <Social :post="post" :poster_id="user._id"/>
+    <Social :post="post" :poster_id="poster._id"/>
 
   </div>
 
@@ -60,22 +58,22 @@ h3 {
 </template>
 
 <script>
-const ProfilePic = () => import('~/components/User/ProfilePic')
 const Social = () => import('~/components/Feed/Social')
 const Comments = () => import('~/components/Feed/Comments')
+const ByLine = () => import('~/components/Feed/ByLine')
 
 import moment from 'moment'
 export default {
   async asyncData ({ $axios, params }) {
     let id = params.id
     let post = await $axios.$get('/post/' + id)
-    let user = await $axios.$get('/user/athlete/' + post.user_id)
+    let poster = await $axios.$get('/user/athlete/' + post.athlete_id)
     return {
       post: post, 
-      user: user, 
+      poster: poster
     }
   }, 
-  components: { ProfilePic, Social, Comments },
+  components: { ByLine, Social, Comments },
   methods: {
     formatDate: function(date) {
       return moment(date).format("MMMM D YYYY")

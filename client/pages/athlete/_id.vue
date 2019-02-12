@@ -333,9 +333,20 @@ h3.event-header {
                       <span v-if="!result.team_id">{{ result.team }}</span>
                     </span>
 
-                    <div class="btn btn-outline-primary btn-small my-1"> 
-                      Add Story <fa icon="plus"></fa>
+                    <div 
+                      class="btn btn-outline-primary btn-small my-1"
+                      v-if="!result.post_id"
+                    > 
+                      Create Post <fa icon="plus"></fa>
                     </div>
+
+                    <nuxt-link
+                      class="btn btn-outline-primary btn-small my-1" 
+                      :to="'/post/' + result.post_id"
+                      v-if="result.post_id"
+                    >
+                      View Post
+                    </nuxt-link>
 
                   </div>
 
@@ -416,59 +427,8 @@ h3.event-header {
 
 <script>
 import _ from 'underscore' 
-import wordsToNumbers from 'words-to-numbers'
+let { format } = require('~/utils/distance.js')
 const ProfilePic = () => import('~/components/User/ProfilePic')
-let format = async function(x) {
-  try {
-    x = wordsToNumbers(x.toLowerCase()) || 0; 
-    if (x.match(/(\d\s?k|\d\s?km|(meter)(s)?|00\s?m)/g)) {
-      var meters = await getMeters(x);
-      if (meters > 3000 && Number.isInteger(meters / 1000))
-        return (meters / 1000) + " km"; 
-      else 
-        return meters + "m"; 
-    } else if (x.match(/(mi)/g)) {
-      var miles = await getMiles(x); 
-      return miles + " mi";
-    } else {
-      return "Unknown"
-    }
-  } catch (err) {
-    console.log(err)
-    return "Unknown"
-  }
-}
-
-let getMeters = async function(x) {
-  try {
-    return parseInt(x
-    .toLowerCase()
-    .replace(',', '')
-    .replace(/\s?(k)(m)?(ilometers)?/g, '000m')
-    .replace(/\s?(meter)[s]?/g, 'm')
-    .replace(' ', '')
-    .match(/\d+(m)/g)[0]
-    .replace('m', '')) || 0  
-  } catch (err) {
-    console.log(err)
-    return 0
-  }
-}
-
-let getMiles = async function(x) {
-  try {
-    return parseFloat(x
-      .toLowerCase()
-      .replace(',', '')
-      .replace(' ', '')
-      .replace(/(mi)(le)?(s)?/g, 'mi')
-      .match(/\d+(.)?\d*(mi)/g)[0]
-      .replace('mi', '')) || 0    
-  } catch (err) {
-    console.log(err)
-    return 0
-  }
-}
 
 export default {
   components: { ProfilePic },
@@ -514,7 +474,7 @@ export default {
     for (var index in results) {
       try {      
         var result = results[index]
-        result.distance = await format(result.event)
+        result.distance = format(result.event)
         let d = new Date(result.date)
         result.year = d.getFullYear()
       } catch (err) {

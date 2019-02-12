@@ -45,7 +45,7 @@
     <span v-if="!sharing" @click="sharing = true">
       <fa icon="share" class="mr-1"></fa> Share
     </span>
-    <span v-if="sharing">
+    <div class="d-flex align-items-center" v-if="sharing">
       <div class="input-group">
         <input type="text" id="copy" class="form-control" placeholder="URL" :value="url">
         <div class="input-group-append">
@@ -57,7 +57,8 @@
           </button>
         </div>
       </div>
-    </span>
+      <fa icon="times" class="ml-2" @click="sharing = false"></fa>
+    </div>
   </div>
   <div class="ml-auto">
     <nuxt-link :to="'/post/' + post._id">More...</nuxt-link>
