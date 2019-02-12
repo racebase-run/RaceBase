@@ -18,11 +18,22 @@ router.get('/feed', authCheck, async (req, res) => {
   res.send({ feed: feed })
 })
 
+router.get('/:id', async (req, res) => {
+  let post = await Post.findById(req.params.id)
+  if (!post) res.send("No post with that ID")
+  else res.send(post)
+})
+
 router.post('/like/:id', authCheck, async (req, res) => {
-  let post = Post.findById(req.params.id)
+  let post = await Post.findById(req.params.id)
   if (!post) res.send("Post not found")
   else {
-    post.likes.push(req.userId)
+    let likes = post.likes || []
+
+    if (!likes.includes(req.userId))
+      likes.push(req.userId)
+
+    post.likes = likes
     post.save((err, data) => {
       if (err) res.send(err)
       else res.send("Successfully liked post")

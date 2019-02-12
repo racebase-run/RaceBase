@@ -208,6 +208,16 @@ router.get('/list/:id/:gender?/:event?', (req, res) => {
   
 })
 
+// Get results for a specified race (gender and event are optional)
+router.get('/:id', async (req, res) => {
+  if (req.params.id == 'undefined') res.send("Please submit a valid ID")
+
+  let result = await Result.findById(req.params.id) 
+  if (result) res.send(result)
+  else res.send("That result doesn't exist")
+  
+})
+
 // route to handle creating a result
 router.post('/', authCheck, function(req, res) {
 
