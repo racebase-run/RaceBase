@@ -78,7 +78,11 @@ h3.event-header {
   }
 
   .metadata {
-    font-size: 14px;
+    font-size: 14px; 
+
+    .btn-small {
+      padding: 2px 4px;
+    }
   }
 
   .distance {
@@ -306,19 +310,22 @@ h3.event-header {
 
                 <td class="race">
 
-                  <nuxt-link class="title mr-2" :to="'/races/' + result.race_id">
-                    {{ result.race }}
-                  </nuxt-link>
+                  <div class="d-flex flex-wrap align-items-center">
+                    <nuxt-link class="title mr-2 flex-grow" :to="'/races/' + result.race_id">
+                      {{ result.race }}
+                    </nuxt-link>
 
-                  <div class="distance d-inline-block"> {{ result.distance }} </div>
+                    <div class="distance mr-3"> {{ result.distance }} </div>
 
-                  <div class="metadata mt-2">
-                    <span class="date mr-2">
+                  </div>
+
+                  <div class="metadata d-flex flex-wrap align-items-center mt-0 w-100">
+                    <span class="date mr-2 my-1">
                       <fa icon="calendar-alt" class="icon mr-1"></fa>
                       {{ result.date }}
                     </span> 
 
-                    <span class="team no-wrap">
+                    <span class="team no-wrap mr-3 my-1">
                       <fa :icon="['fab', 'font-awesome-flag']" class="icon mr-1"></fa>
                       <nuxt-link to v-if="result.team_id" :to="'/team/' + result.team_id">
                         {{ result.team }}
@@ -326,11 +333,15 @@ h3.event-header {
                       <span v-if="!result.team_id">{{ result.team }}</span>
                     </span>
 
+                    <div class="btn btn-outline-primary btn-small my-1"> 
+                      Add Story <fa icon="plus"></fa>
+                    </div>
+
                   </div>
 
                 </td>
 
-                <td class="time">
+                <td class="time ml-auto">
                   {{ result.time }}<span class="star" v-if="recordsArray.includes(result)">*</span>
                 </td>
 

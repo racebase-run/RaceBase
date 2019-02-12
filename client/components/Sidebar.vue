@@ -61,6 +61,7 @@
 }
 
 .actions {
+  text-align: center;
   .btn {
     text-transform: uppercase;
     font-size: 13px;
@@ -145,7 +146,7 @@
   @media (min-width: 768px) { text-align: left; }
   
   a {
-    margin: 5px;
+    margin: 0 10px;
     font-size: 14px;
     color: @blue;
     cursor: pointer !important;
@@ -156,10 +157,6 @@
     color: black;
   }
 
-  .logout {
-    font-weight: 600;
-  }
-
 }
 
 .site-links {
@@ -167,13 +164,14 @@
   width: 100%;
   a {
     font-size: 11px;
+    margin: 0 5px;
     color: grey;
     text-transform: uppercase;
     font-weight: 500;
   }
 }
 
-.actions {
+.account-actions {
   text-align: center;
 }
 
@@ -215,7 +213,7 @@
       <nuxt-link class="link" to="/donate"> Donate </nuxt-link>
     </div>
 
-    <div class="actions mt-4">
+    <div class="actions mt-4 mb-4" v-if="isLoggedIn">
       <div class="btn btn-default d-inline-block"> 
         New Post <fa icon="pencil-alt"></fa>
       </div>
@@ -271,16 +269,19 @@
           </h4>
         </div>
       </div>
-      <div class="links pl-4">
-        <nuxt-link to="/user/content">Content</nuxt-link>
+      <div class="links d-flex align-items-center justify-content-center">
+        <nuxt-link to="/feed">Feed</nuxt-link>
         <nuxt-link to="/user/log/week">Logs</nuxt-link>
-        <nuxt-link to="/user/settings"><fa icon="sliders-h"></fa></nuxt-link>
-        <a @click="logOut()" class="logout" href="#">Log Out</a>
+        <nuxt-link to="/user/settings"><fa icon="cogs"></fa></nuxt-link>
+        <div @click="logOut()" 
+          class="ml-2 btn btn-outline-primary btn-small" href="#">
+          Log Out
+        </div>
       </div>
 
     </div>
 
-    <div class="actions links mt-auto" v-if="!isLoggedIn">
+    <div class="account-actions links mt-auto" v-if="!isLoggedIn">
       <nuxt-link class="btn btn-default" to="/login">Log In</nuxt-link>
       <nuxt-link class="btn btn-primary" to="/signup">Sign Up</nuxt-link>
     </div>

@@ -12,6 +12,12 @@ h4 {
   cursor: pointer;
 }
 
+.btn {
+  font-size: 14px;
+  padding: 3px 6px;
+  text-transform: uppercase;
+}
+
 form {
   border: 1px solid @light-grey;
   border-radius: 5px;
@@ -22,12 +28,6 @@ form {
 
   .title, .title::placeholder {
     font-size: 20px;
-  }
-
-  .btn-primary {
-    font-size: 14px;
-    padding: 3px 6px;
-    text-transform: uppercase;
   }
 
   .date {
@@ -43,7 +43,7 @@ form {
     <div class="d-flex align-items-start">
       <input 
         type="text" v-model="input.title" 
-        class="title form-control mb-2 pl-2" 
+        class="title form-control mb-2 pl-2 w-50" 
         placeholder="Enter your title..." 
       />
       <div class="date ml-auto">
@@ -51,6 +51,9 @@ form {
         {{ formattedDate }}
       </div>
       <fa class="ml-4" icon="times-circle" @click="$emit('close')"></fa>
+    </div>
+    <div class="btn btn-default mb-2 mr-auto">
+      Link a result <fa icon="plus"></fa>
     </div>
     <textarea 
       v-model="input.body" 
