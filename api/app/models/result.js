@@ -17,7 +17,8 @@ var resultSchema = mongoose.Schema({
   team_id: {type: String, default: ''},
   place: {type: Number},
   event: {type: String},
-  date: {type: Date}
+  date: {type: Date}, 
+  post_id: {type: String}
 });
 
 resultSchema.plugin(mongoosePaginate);
