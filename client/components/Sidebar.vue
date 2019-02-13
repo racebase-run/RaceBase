@@ -195,16 +195,10 @@
         </nuxt-link>
       </h1>
 
-      <form class="search-form mb-3 mt-3" @submit.prevent="search()">
-        <div class="input-group input-group-sm">
-          <input type="text" placeholder="Search..." v-model="searchText" class="form-control">
-          <div class="input-group-append">
-            <span class="input-group-text">
-              <fa icon="search" @click="search()"></fa>
-            </span>
-          </div>
-        </div>
-      </form>
+      <SearchBar
+        v-model="searchText" 
+        @search="search"         
+      />
     </div>
 
     <div class="nav">
@@ -217,9 +211,9 @@
       <div class="btn btn-default d-inline-block"> 
         New Post <fa icon="pencil-alt"></fa>
       </div>
-      <div class="ml-2 btn btn-default d-inline-block">
+      <nuxt-link class="ml-2 btn btn-default d-inline-block" to="/new/result">
         Add Result <fa icon="plus"></fa>
-      </div>
+      </nuxt-link>
     </div>
 
     <div class="races mt-auto mb-3 d-none d-md-block">
@@ -298,8 +292,9 @@
 
 <script>
 const ProfilePic = () => import('~/components/User/ProfilePic')
+const SearchBar = () => import('~/components/Search/SearchBar')
 export default {
-  components: { ProfilePic },
+  components: { ProfilePic, SearchBar },
   data () {
     return {
       searchText: ""
@@ -320,8 +315,9 @@ export default {
     logOut: async function() {
       this.$store.dispatch('auth/logout')
     }, 
-    search: function() {
-      this.$router.push({ path: '/search/' + encodeURI(this.searchText) })
+    search: function(notTyping) {
+      if (notTyping)
+        this.$router.push({ path: '/search/' + encodeURI(this.searchText) })
     }
   }
 }

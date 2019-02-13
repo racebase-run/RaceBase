@@ -135,6 +135,7 @@ export default {
       this.$axios.$post('/post/', this.input)
       .then((res) => {
         this.$emit('loadFeed')
+        this.$emit('createdPost')
       })
     }, 
     selectResult: async function() {

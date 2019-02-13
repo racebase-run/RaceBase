@@ -10,6 +10,16 @@ h4 {
   text-transform: uppercase;
 }
 
+.alert {
+  padding: 4px 10px;
+  .close {
+    padding: 0px;
+    margin-top: 1px;
+    margin-right: 10px;
+    height: 100%;
+  }
+}
+
 </style>
 <template>
 <div class="w-95 mx-auto mt-4">
@@ -19,10 +29,22 @@ h4 {
       New Post <fa icon="pencil-alt"></fa>
     </div>
   </div>
+
+  <div class="alert alert-primary alert-dismissible align-items-center mt-3" v-if="alert">
+    {{ alert }}
+
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">
+        <fa icon="times"></fa>
+      </span>
+    </button>
+  </div>
+
   <NewPost 
     v-if="addingPost" 
     @close="closeAddWindow" 
     @loadFeed="loadFeed" 
+    @createdPost="alert = 'Successfully created post!'"
     :user="user" 
     class="mb-3"
   />
@@ -34,6 +56,7 @@ h4 {
         :userId="user._id" 
         v-if="post.title || post.body"
         @loadFeed="loadFeed"
+        @deletedPost="alert = 'Successfully deleted post!'"
       />
       <div v-else-if="post.athlete || post.time">
         <ByLine 
@@ -69,7 +92,7 @@ export default {
       return moment(date).format('MMMM D YYYY')
     }, 
     loadFeed: async function() {
-
+      this.addingPost = false
       let feed = (await this.$axios.$get('/post/feed')).feed
 
       for (const post of feed) {

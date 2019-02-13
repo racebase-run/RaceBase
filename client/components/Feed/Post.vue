@@ -95,6 +95,7 @@ export default {
     deletePost: async function() {
       await this.$axios.$delete('/post/' + this.post._id)
       this.$emit('loadFeed')
+      this.$emit('deletedPost')
     }
   }
 }

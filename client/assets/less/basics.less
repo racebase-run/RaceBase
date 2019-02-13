@@ -114,6 +114,12 @@ h1 {
   width: 95%;
 }
 
+.alert-primary {
+  background: @light-blue;
+  color: @blue;
+  border: 1px solid @blue + #444;
+}
+
 .btn {
   // box-shadow: @shadow;
 }
@@ -175,10 +181,13 @@ h1 {
 
   th {
     font-weight: 500;
-    border: none !important;
+    // border: none !important;
+    border-bottom: 1px solid @light-grey;
     font-size: 14px;
     text-transform: uppercase;
     color: @light-grey - #222;
+    @py: 6px;
+    padding-top: @py; padding-bottom: @py;
   }
 
   td, tr {

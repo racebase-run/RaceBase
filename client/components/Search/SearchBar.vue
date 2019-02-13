@@ -6,11 +6,11 @@
         placeholder="Search..." 
         v-model="interface" 
         class="form-control"
-        @keyup="$emit('search')"
+        @keyup="$emit('search', false)"
       />
       <div class="input-group-append">
         <span class="input-group-text">
-          <fa icon="search" @click="$emit('search')"></fa>
+          <fa icon="search" @click="$emit('search', true)"></fa>
         </span>
       </div>
     </div>
