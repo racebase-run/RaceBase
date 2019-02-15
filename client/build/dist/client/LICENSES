@@ -52,12 +52,6 @@
  * @license  MIT
  */
 
-/*!
- * vue-no-ssr v1.1.1
- * (c) 2018-present egoist <0x142857@gmail.com>
- * Released under the MIT License.
- */
-
 /**!
  * @fileOverview Kickass library to create and place poppers near their reference elements.
  * @version 1.14.7
@@ -83,8 +77,16 @@
  * SOFTWARE.
  */
 
+/*!
+ * vue-no-ssr v1.1.1
+ * (c) 2018-present egoist <0x142857@gmail.com>
+ * Released under the MIT License.
+ */
+
 /*
 object-assign
 (c) Sindre Sorhus
 @license MIT
 */
+
+/*! https://mths.be/punycode v1.4.1 by @mathias */

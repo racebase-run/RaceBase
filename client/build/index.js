@@ -12,6 +12,7 @@ import { createStore } from './store.js'
 /* Plugins */
 
 import nuxt_plugin_googleanalytics_0a632f19 from 'nuxt_plugin_googleanalytics_0a632f19' // Source: ./google-analytics.js (mode: 'client')
+import nuxt_plugin_markdownit_54f61aba from 'nuxt_plugin_markdownit_54f61aba' // Source: ./markdown-it.js (mode: 'all')
 import nuxt_plugin_templatesplugin6e691094_447c6c5e from 'nuxt_plugin_templatesplugin6e691094_447c6c5e' // Source: ./templates.plugin.6e691094.js (mode: 'all')
 import nuxt_plugin_bootstrapvue_7452b7c8 from 'nuxt_plugin_bootstrapvue_7452b7c8' // Source: ./bootstrap-vue.js (mode: 'all')
 import nuxt_plugin_axios_b1f5fa26 from 'nuxt_plugin_axios_b1f5fa26' // Source: ./axios.js (mode: 'all')
@@ -154,6 +155,7 @@ async function createApp(ssrContext) {
 
   // Plugin execution
 
+  if (typeof nuxt_plugin_markdownit_54f61aba === 'function') await nuxt_plugin_markdownit_54f61aba(app.context, inject)
   if (typeof nuxt_plugin_templatesplugin6e691094_447c6c5e === 'function') await nuxt_plugin_templatesplugin6e691094_447c6c5e(app.context, inject)
   if (typeof nuxt_plugin_bootstrapvue_7452b7c8 === 'function') await nuxt_plugin_bootstrapvue_7452b7c8(app.context, inject)
   if (typeof nuxt_plugin_axios_b1f5fa26 === 'function') await nuxt_plugin_axios_b1f5fa26(app.context, inject)

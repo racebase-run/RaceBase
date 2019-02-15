@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import { interopDefault } from './utils'
 
 const _14020fcc = () => interopDefault(import('../pages/about.vue' /* webpackChunkName: "pages/about" */))
+const _0927d6d3 = () => interopDefault(import('../pages/changelog.vue' /* webpackChunkName: "pages/changelog" */))
 const _ca9b4a84 = () => interopDefault(import('../pages/contribute.vue' /* webpackChunkName: "pages/contribute" */))
 const _667a3f8c = () => interopDefault(import('../pages/developers.vue' /* webpackChunkName: "pages/developers" */))
 const _6b54b02f = () => interopDefault(import('../pages/feed.vue' /* webpackChunkName: "pages/feed" */))
@@ -97,6 +98,10 @@ export function createRouter() {
       path: "/about",
       component: _14020fcc,
       name: "about"
+    }, {
+      path: "/changelog",
+      component: _0927d6d3,
+      name: "changelog"
     }, {
       path: "/contribute",
       component: _ca9b4a84,
