@@ -204,7 +204,7 @@
     <div class="nav">
       <nuxt-link class="link" to="/about"> About </nuxt-link>
       <nuxt-link class="link" to="/news"> News </nuxt-link>
-      <nuxt-link class="link" to="/donate"> Donate </nuxt-link>
+      <a class="link" target="_blank" href="https://donorbox.org/racebase"> Donate </a>
     </div>
 
     <div class="actions mt-4 mb-4" v-if="isLoggedIn">

@@ -59,13 +59,14 @@
 
   </div>
 
-  <div v-if="showComments && post.comments.length > 0" class="comments">
-    <div class="comments-header pl-2 py-1 row mx-auto">
-      <div>Comments</div>
-      <div class="ml-auto mr-2 close-comments" @click="showComments = false"> 
-        Close
-      </div>
+  <div v-if="showComments" class="comments-header pl-2 py-1 row mx-auto">
+    <div>Comments</div>
+    <div class="ml-auto mr-2 close-comments" @click="showComments = false"> 
+      Close
     </div>
+  </div>
+
+  <div v-if="showComments && post.comments.length > 0" class="comments">
     <Comments 
       :comments="post.comments"  
       @hideComments="showComments = false"

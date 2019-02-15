@@ -68,9 +68,11 @@ const ByLine = () => import('~/components/Feed/ByLine')
 
 import moment from 'moment'
 export default {
-  async asyncData ({ $axios, params, store }) {
+  async asyncData ({ $axios, params, store, redirect }) {
     let id = params.id
     let post = await $axios.$get('/post/' + id)
+    if (!post.athlete_id)
+      redirect('/notfound')
     let user = await store.state.auth.user
     let poster = await $axios.$get('/user/athlete/' + post.athlete_id)
     return {

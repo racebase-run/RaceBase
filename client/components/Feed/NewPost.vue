@@ -118,12 +118,15 @@ export default {
   data () {
     let date = new Date()
     let formattedDate = moment(date).format('MMMM D YYYY')
+    let result = this.result || null
+    let result_id = this.result ? this.result._id : null
     return {
       input: {
         title: "",
         body: "", 
         date: date, 
-        result: this.result
+        result: result, 
+        result_id: result_id
       }, 
       linking: false, 
       formattedDate: formattedDate, 
@@ -132,6 +135,9 @@ export default {
   },
   methods: {
     createPost: function() {
+      console.log(this.input)
+      if (this.input.result)
+        this.input.result_id = this.input.result._id
       this.$axios.$post('/post/', this.input)
       .then((res) => {
         this.$emit('callback')
