@@ -11,6 +11,7 @@ const _053ce4b0 = () => interopDefault(import('../pages/login.vue' /* webpackChu
 const _01f47e67 = () => interopDefault(import('../pages/news/index.vue' /* webpackChunkName: "pages/news/index" */))
 const _2da14582 = () => interopDefault(import('../pages/press.vue' /* webpackChunkName: "pages/press" */))
 const _75662c87 = () => interopDefault(import('../pages/privacy.vue' /* webpackChunkName: "pages/privacy" */))
+const _493ce13b = () => interopDefault(import('../pages/roadmap.vue' /* webpackChunkName: "pages/roadmap" */))
 const _3685e82c = () => interopDefault(import('../pages/signup/index.vue' /* webpackChunkName: "pages/signup/index" */))
 const _4490ae74 = () => interopDefault(import('../pages/terms.vue' /* webpackChunkName: "pages/terms" */))
 const _1b912761 = () => interopDefault(import('../pages/welcome.vue' /* webpackChunkName: "pages/welcome" */))
@@ -130,6 +131,10 @@ export function createRouter() {
       path: "/privacy",
       component: _75662c87,
       name: "privacy"
+    }, {
+      path: "/roadmap",
+      component: _493ce13b,
+      name: "roadmap"
     }, {
       path: "/signup",
       component: _3685e82c,
