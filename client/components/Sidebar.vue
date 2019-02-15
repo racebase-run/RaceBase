@@ -56,7 +56,7 @@
     color: @bright-blue;
     font-size: 17px;
     text-align: center;
-    padding: 0 18px;
+    padding: 0 13px;
     display: inline-block;
   }
 }
@@ -204,11 +204,11 @@
 
     <div class="nav">
       <nuxt-link class="link" to="/about"> About </nuxt-link>
-      <nuxt-link class="link" to="/news"> News </nuxt-link>
+      <nuxt-link class="link" to="/roadmap"> Roadmap </nuxt-link>
       <a class="link" target="_blank" href="https://donorbox.org/racebase"> Donate </a>
     </div>
 
-    <div class="actions mt-4 mb-4" v-if="isLoggedIn">
+    <div class="actions mt-4 mb-3" v-if="isLoggedIn">
       <nuxt-link class="btn btn-default d-inline-block" to="/new/post"> 
         New Post <fa icon="pencil-alt"></fa>
       </nuxt-link>
