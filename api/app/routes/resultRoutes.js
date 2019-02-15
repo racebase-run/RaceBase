@@ -9,10 +9,9 @@ var authCheck = require('../auth')
 
 const moment = require('moment')
 
-router.get('/count', function(req, res) {
-  Result.countDocuments({}, function(err, count){
-    res.status(200).send({ count: count });
-  })
+router.get('/count', async function(req, res) {
+  let count = await Result.find({}).count()
+  res.send({count: count})
 })
 
 // Get team scores for specified race, gender, and event
