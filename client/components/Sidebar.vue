@@ -202,7 +202,7 @@
       />
     </div>
 
-    <div class="nav">
+    <div class="nav mb-3">
       <nuxt-link class="link" to="/about"> About </nuxt-link>
       <nuxt-link class="link" to="/roadmap"> Roadmap </nuxt-link>
       <a class="link" target="_blank" href="https://donorbox.org/racebase"> Donate </a>
