@@ -5,6 +5,7 @@ import { interopDefault } from './utils'
 const _14020fcc = () => interopDefault(import('../pages/about.vue' /* webpackChunkName: "pages/about" */))
 const _ca9b4a84 = () => interopDefault(import('../pages/contribute.vue' /* webpackChunkName: "pages/contribute" */))
 const _667a3f8c = () => interopDefault(import('../pages/developers.vue' /* webpackChunkName: "pages/developers" */))
+const _6b54b02f = () => interopDefault(import('../pages/feed.vue' /* webpackChunkName: "pages/feed" */))
 const _053ce4b0 = () => interopDefault(import('../pages/login.vue' /* webpackChunkName: "pages/login" */))
 const _01f47e67 = () => interopDefault(import('../pages/news/index.vue' /* webpackChunkName: "pages/news/index" */))
 const _2da14582 = () => interopDefault(import('../pages/press.vue' /* webpackChunkName: "pages/press" */))
@@ -16,12 +17,16 @@ const _fd5766e6 = () => interopDefault(import('../pages/races/notfound.vue' /* w
 const _54aea296 = () => interopDefault(import('../pages/signup/claim.vue' /* webpackChunkName: "pages/signup/claim" */))
 const _252ca980 = () => interopDefault(import('../pages/team/notfound.vue' /* webpackChunkName: "pages/team/notfound" */))
 const _2d3343b4 = () => interopDefault(import('../pages/user/settings.vue' /* webpackChunkName: "pages/user/settings" */))
+const _7ae0ae31 = () => interopDefault(import('../pages/new/result/success.vue' /* webpackChunkName: "pages/new/result/success" */))
 const _3819db20 = () => interopDefault(import('../pages/user/log/week/_date.vue' /* webpackChunkName: "pages/user/log/week/_date" */))
+const _370e2768 = () => interopDefault(import('../pages/new/post/_resultId.vue' /* webpackChunkName: "pages/new/post/_resultId" */))
+const _e9c2c9ce = () => interopDefault(import('../pages/new/result/_raceId.vue' /* webpackChunkName: "pages/new/result/_raceId" */))
 const _7bbed076 = () => interopDefault(import('../pages/news/post/_name.vue' /* webpackChunkName: "pages/news/post/_name" */))
 const _5f332bf2 = () => interopDefault(import('../pages/races/all/_page.vue' /* webpackChunkName: "pages/races/all/_page" */))
 const _23a0fee5 = () => interopDefault(import('../pages/user/content/_page.vue' /* webpackChunkName: "pages/user/content/_page" */))
 const _ddd457e2 = () => interopDefault(import('../pages/user/log/_date.vue' /* webpackChunkName: "pages/user/log/_date" */))
 const _d7b3442e = () => interopDefault(import('../pages/athlete/_id.vue' /* webpackChunkName: "pages/athlete/_id" */))
+const _b6044148 = () => interopDefault(import('../pages/post/_id.vue' /* webpackChunkName: "pages/post/_id" */))
 const _e1b6b462 = () => interopDefault(import('../pages/search/_query.vue' /* webpackChunkName: "pages/search/_query" */))
 const _5bdb17c6 = () => interopDefault(import('../pages/races/_id/_gender/_event.vue' /* webpackChunkName: "pages/races/_id/_gender/_event" */))
 const _727679b7 = () => interopDefault(import('../pages/team/_id/_gender/_year.vue' /* webpackChunkName: "pages/team/_id/_gender/_year" */))
@@ -101,6 +106,10 @@ export function createRouter() {
       component: _667a3f8c,
       name: "developers"
     }, {
+      path: "/feed",
+      component: _6b54b02f,
+      name: "feed"
+    }, {
       path: "/login",
       component: _053ce4b0,
       name: "login"
@@ -145,9 +154,21 @@ export function createRouter() {
       component: _2d3343b4,
       name: "user-settings"
     }, {
+      path: "/new/result/success",
+      component: _7ae0ae31,
+      name: "new-result-success"
+    }, {
       path: "/user/log/week/:date?",
       component: _3819db20,
       name: "user-log-week-date"
+    }, {
+      path: "/new/post/:resultId?",
+      component: _370e2768,
+      name: "new-post-resultId"
+    }, {
+      path: "/new/result/:raceId?",
+      component: _e9c2c9ce,
+      name: "new-result-raceId"
     }, {
       path: "/news/post/:name?",
       component: _7bbed076,
@@ -168,6 +189,10 @@ export function createRouter() {
       path: "/athlete/:id?",
       component: _d7b3442e,
       name: "athlete-id"
+    }, {
+      path: "/post/:id?",
+      component: _b6044148,
+      name: "post-id"
     }, {
       path: "/search/:query?",
       component: _e1b6b462,
