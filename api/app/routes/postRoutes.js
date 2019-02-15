@@ -47,12 +47,42 @@ router.post('/like/:id', authCheck, async (req, res) => {
   }
 })
 
+router.post('/comment/:id', authCheck, async (req, res) => {
+  let post = await Post.findById(req.params.id)
+  let user = await User.findById(req.userId)
+  if (!post) res.send("Post not found")
+  else {
+
+    let date = new Date()
+    post.comments.push({
+      body: req.body.body, 
+      date: date,
+      user: {
+        name: user.name, 
+        athlete_id: user.athlete_id, 
+        profilePicUrl: user.profilePicUrl,
+        id: req.userId
+      }
+    })
+
+    post.save((err, data) => {
+      if (err) res.send(err)
+      else res.send("Successfully added comment")
+    })
+  }
+})
+
 router.post('/', authCheck, async (req, res) => {
   let p = new Post(req.body)
   let user = await User.findById(req.userId)
 
   p.athlete_id = user.athlete_id
   p.user_id = req.userId
+
+  if (!user.following.includes(user.athlete_id)) {
+    user.following.push(user.athlete_id)
+    await user.save()
+  }
 
   let newPost = await p.save()
   let newResult = {}
@@ -76,7 +106,7 @@ router.delete('/:id', authCheck, async (req, res) => {
     await p.remove()
     res.send("Successfully deleted")
   } else res.send("You don't own that post")
-  
+
 })
 
 module.exports = router;

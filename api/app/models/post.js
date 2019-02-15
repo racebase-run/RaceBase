@@ -13,8 +13,12 @@ var postSchema = mongoose.Schema({
   comments: [{
     body: String, 
     date: Date, 
-    author: String, 
-    user_id: String
+    user: {
+      name: String, 
+      athlete_id: String, 
+      profilePicUrl: String,
+      id: String
+    }
   }], 
   result_id: String, 
   photo_url: String

@@ -1,5 +1,4 @@
 var jwt = require('jsonwebtoken')
-var jwks = require('jwks-rsa')
 var config = require('./config.js')
 
 function authCheck(req, res, next) {

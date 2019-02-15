@@ -1,6 +1,5 @@
 var express = require('express')
 var router = express.Router()
-var cors = require('cors')
 
 var User = require('../models/user')
 
