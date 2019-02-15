@@ -74,10 +74,14 @@ module.exports = {
     'bootstrap-vue/nuxt', 
     'nuxt-fontawesome', 
     '@nuxtjs/dotenv',
+    '@nuxtjs/markdownit',
     ['@nuxtjs/google-analytics', {
       id: 'UA-117937173-1'
     }]
   ],
+  markdownit: {
+    injected: true
+  },
   /*
   ** Axios module configuration
   */

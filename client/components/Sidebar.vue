@@ -6,6 +6,7 @@
   border-right: 1px solid @light-grey;
   height: auto;
   overflow: auto;
+  overflow-x: hidden;
   border-bottom: 1px solid @light-grey;
 }
 

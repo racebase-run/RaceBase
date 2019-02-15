@@ -13,6 +13,13 @@ h2 {
 <h1 class="mt-4 mb-3"> For Developers <fa icon="code"></fa> </h1>
 <h2 class="mb-3"> RaceBase API </h2>
 
+<div class="mb-3 d-flex align-items-center"> 
+  <a class="mr-3 btn btn-outline-dark" href="https://github.com/racebase-io" target="_blank"> 
+    View on GitHub
+  </a>
+  <nuxt-link class="btn btn-outline-primary" to="/changelog">Changelog</nuxt-link>
+</div>
+
 <p class="w-lg-75 w-100"> 
   RaceBase was designed upon an extensible and maintanable API 
   that we built from the ground up to be used by the community. 
