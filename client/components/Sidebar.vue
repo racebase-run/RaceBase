@@ -245,33 +245,7 @@
 
     <div class="user mt-3 mt-md-auto mx-md-0 mx-auto" v-if="isLoggedIn">
 
-      <div class="profile row mb-1 pl-3">
-        <div class="col-3 pl-4">
-          <ProfilePic :url="user.profilePicUrl" class="profile-pic mr-2"/>
-        </div>
-        <div class="col-9">
-          <h3 class="mb-2"> {{ user.name }} </h3>
-          <h4> 
-            <span v-if="user.athlete_id">
-              <nuxt-link :to="'/athlete/' + user.athlete_id">
-                @{{ user.athlete_id }} 
-              </nuxt-link>
-            </span>
-            <span v-if="!user.athlete_id">
-              <nuxt-link to="/user/settings">Claim an ID</nuxt-link>
-            </span>
-          </h4>
-        </div>
-      </div>
-      <div class="links d-flex align-items-center justify-content-center">
-        <nuxt-link to="/feed">Feed</nuxt-link>
-        <nuxt-link to="/user/log/week">Logs</nuxt-link>
-        <nuxt-link to="/user/settings"><fa icon="cogs"></fa></nuxt-link>
-        <div @click="logOut()" 
-          class="ml-2 btn btn-outline-primary btn-small" href="#">
-          Log Out
-        </div>
-      </div>
+      <UserWidget :user="user" @logOut="logOut"/>
 
     </div>
 
@@ -291,10 +265,10 @@
 </template>
 
 <script>
-const ProfilePic = () => import('~/components/User/ProfilePic')
+const UserWidget = () => import('~/components/User/UserWidget')
 const SearchBar = () => import('~/components/Search/SearchBar')
 export default {
-  components: { ProfilePic, SearchBar },
+  components: { UserWidget, SearchBar },
   data () {
     return {
       searchText: ""

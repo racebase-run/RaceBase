@@ -206,40 +206,7 @@ h4 {
     </div>
 
     <div class="user p-3" v-if="isLoggedIn">
-      <div class="row">
-        <div class="col-3">
-          <img 
-            v-if="user.profilePicUrl" 
-            :src="user.profilePicUrl.replace('http', 'https')" 
-            class="profile-pic" 
-          />
-          <img 
-            v-if="!user.profilePicUrl" 
-            src="/images/default.png" 
-            class="profile-pic" 
-          />
-        </div>
-        <div class="col-9">
-          <span class="name"> {{ user.name }} </span>
-          <span class="username w-100">
-            <div v-if="user.athlete_id" class="w-100">
-              <nuxt-link :to="'/athlete/' + user.athlete_id"> 
-                @{{ user.athlete_id }} 
-              </nuxt-link>
-            </div>
-            <div v-if="!user.athlete_id">
-              <nuxt-link to="/user/settings"> Claim an ID </nuxt-link>
-            </div>
-          </span>
-        </div>
-      </div>
-
-      <div class="links mt-1">
-        <nuxt-link to="/user/content">Content</nuxt-link>
-        <nuxt-link to="/user/settings">Settings</nuxt-link>
-        <a @click="logOut()" href="#">Log Out</a>
-      </div>
-
+      <UserWidget :user="user" @logOut="logOut"/>
     </div>
       
   </div>
@@ -312,12 +279,13 @@ h4 {
 </template>
 
 <script>
+const UserWidget = () => import('~/components/User/UserWidget')
 const NewsItem = () => import('~/components/NewsItem.vue')
 import auth from '~~/utils/auth'
 export default {
   layout: 'home',
   components: {
-    NewsItem
+    NewsItem, UserWidget
   },
   head () {
     return {

@@ -131,6 +131,7 @@ h3.event-header {
       font-size: 16px;
       color: grey;
       padding-bottom: 0;
+      border-bottom: none !important;
     }
   }
 
