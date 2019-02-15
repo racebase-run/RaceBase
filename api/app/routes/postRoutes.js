@@ -25,9 +25,11 @@ router.get('/feed', authCheck, async (req, res) => {
 })
 
 router.get('/:id', async (req, res) => {
-  let post = await Post.findById(req.params.id)
-  if (!post) res.send("No post with that ID")
-  else res.send(post)
+  try { 
+    let post = await Post.findById(req.params.id)
+    res.send(post)
+  }
+  catch (err) { res.send("No post with that ID") }
 })
 
 router.post('/like/:id', authCheck, async (req, res) => {
@@ -89,10 +91,8 @@ router.post('/', authCheck, async (req, res) => {
 
   if (newPost.result_id) {
     let r = await Result.findById(newPost.result_id)
-    if (r && r.user_id == req.userId) {
-      r.post_id = newPost._id; 
-      newResult = await r.save()
-    }
+    r.post_id = newPost._id
+    newResult = await r.save()
   }
 
   res.send(newPost)
@@ -101,6 +101,11 @@ router.post('/', authCheck, async (req, res) => {
 
 router.delete('/:id', authCheck, async (req, res) => {
   let p = await Post.findById(req.params.id)
+  if (p.result_id) {
+    let r = await Result.findById(p.result_id)
+    r.post_id = null
+    await r.save()
+  }
 
   if (p.user_id == req.userId) {
     await p.remove()
