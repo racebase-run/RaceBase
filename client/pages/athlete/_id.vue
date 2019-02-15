@@ -333,12 +333,13 @@ h3.event-header {
                       <span v-if="!result.team_id">{{ result.team }}</span>
                     </span>
 
-                    <div 
+                    <nuxt-link
+                      :to="'/new/post/' + result._id" 
                       class="btn btn-outline-primary btn-small my-1"
                       v-if="!result.post_id"
                     > 
                       Create Post <fa icon="plus"></fa>
-                    </div>
+                    </nuxt-link>
 
                     <nuxt-link
                       class="btn btn-outline-primary btn-small my-1" 

@@ -51,7 +51,9 @@
     <p class="body mt-3">{{ post.body }}</p>
     <Social 
       :post="post" 
+      :user_id="userId"
       @showComments="showComments = true"
+      @loadPost="loadPost"
       :poster_id="poster._id"
     />
 
@@ -70,6 +72,15 @@
     />
   </div>
 
+  <div v-if="showComments" class="p-3">
+    <textarea 
+      v-model="newComment" 
+      class="form-control mb-2"
+      placeholder="Your comment..."> 
+    </textarea>
+    <div class="btn btn-primary btn-small" @click="submitComment()">Add Comment</div>
+  </div>
+
 </div>
 </template>
 
@@ -85,7 +96,8 @@ export default {
   components: { ByLine, Social, Comments, Result }, 
   data () {
     return {
-      showComments: false
+      showComments: false, 
+      newComment: ""
     }
   }, 
   methods: {
@@ -96,6 +108,13 @@ export default {
       await this.$axios.$delete('/post/' + this.post._id)
       this.$emit('loadFeed')
       this.$emit('deletedPost')
+    }, 
+    submitComment: async function() {
+      await this.$axios.$post('/post/comment/' + this.post._id, { body: this.newComment })
+      this.$emit('loadFeed')
+    }, 
+    loadPost: async function() {
+      this.post = await this.$axios.$get('/post/' + this.post._id)
     }
   }
 }

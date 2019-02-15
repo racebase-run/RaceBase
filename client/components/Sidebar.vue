@@ -208,9 +208,9 @@
     </div>
 
     <div class="actions mt-4 mb-4" v-if="isLoggedIn">
-      <div class="btn btn-default d-inline-block"> 
+      <nuxt-link class="btn btn-default d-inline-block" to="/new/post"> 
         New Post <fa icon="pencil-alt"></fa>
-      </div>
+      </nuxt-link>
       <nuxt-link class="ml-2 btn btn-default d-inline-block" to="/new/result">
         Add Result <fa icon="plus"></fa>
       </nuxt-link>

@@ -120,6 +120,16 @@ h1 {
   border: 1px solid @blue + #444;
 }
 
+.alert {
+  padding: 4px 10px;
+  .close {
+    padding: 0px;
+    margin-top: 1px;
+    margin-right: 10px;
+    height: 100%;
+  }
+}
+
 .btn {
   // box-shadow: @shadow;
 }
@@ -180,12 +190,12 @@ h1 {
   // box-shadow: @shadow;
 
   th {
-    font-weight: 500;
-    // border: none !important;
-    border-bottom: 1px solid @light-grey;
+    font-weight: 400;
+    border-top: none !important; 
+    border-bottom: 1px solid @light-grey !important;
     font-size: 14px;
     text-transform: uppercase;
-    color: @light-grey - #222;
+    color: @medium-grey;
     @py: 6px;
     padding-top: @py; padding-bottom: @py;
   }
@@ -214,6 +224,10 @@ h1 {
         vertical-align: middle;
       }
     }
+  }
+
+  tbody {
+    border-top: 0px;
   }
 
   .race-title {
@@ -306,12 +320,12 @@ label {
 
 .dropdown-menu {
   box-shadow: @shadow;
-  border: none;
+  border: 1px solid @light-grey;
   min-width: 0px;
   margin-top: 10px;
   li {
     a {
-      line-height: 28p; 
+      line-height: 24px; 
     }
   }
 }

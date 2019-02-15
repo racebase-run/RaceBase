@@ -43,7 +43,11 @@ h3 {
     />
     <p> {{ post.body }}</p>
 
-    <Social :post="post" :poster_id="poster._id"/>
+    <Social 
+      :post="post" 
+      :poster_id="poster._id" 
+      :user_id="user._id"
+      @loadPost="loadPost"/>
 
   </div>
 
@@ -64,19 +68,25 @@ const ByLine = () => import('~/components/Feed/ByLine')
 
 import moment from 'moment'
 export default {
-  async asyncData ({ $axios, params }) {
+  async asyncData ({ $axios, params, store }) {
     let id = params.id
     let post = await $axios.$get('/post/' + id)
+    let user = await store.state.auth.user
     let poster = await $axios.$get('/user/athlete/' + post.athlete_id)
     return {
       post: post, 
-      poster: poster
+      poster: poster, 
+      user: user, 
+      id: id
     }
   }, 
   components: { ByLine, Social, Comments },
   methods: {
     formatDate: function(date) {
       return moment(date).format("MMMM D YYYY")
+    }, 
+    loadPost: async function() {
+      this.post = await this.$axios.$get('/post/' + this.id)
     }
   }
 }

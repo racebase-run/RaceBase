@@ -1,4 +1,9 @@
 <style lang="less" scoped>
+@import (reference) '~assets/less/colors.less';
+
+h3 {
+  color: @medium-grey;
+}
 h4 {
   font-size: 18px;
   text-transform: uppercase;
@@ -8,16 +13,6 @@ h4 {
   font-size: 14px;
   padding: 3px 6px;
   text-transform: uppercase;
-}
-
-.alert {
-  padding: 4px 10px;
-  .close {
-    padding: 0px;
-    margin-top: 1px;
-    margin-right: 10px;
-    height: 100%;
-  }
 }
 
 </style>
@@ -43,12 +38,12 @@ h4 {
   <NewPost 
     v-if="addingPost" 
     @close="closeAddWindow" 
-    @loadFeed="loadFeed" 
-    @createdPost="alert = 'Successfully created post!'"
+    @callback="createdPost" 
     :user="user" 
     class="mb-3"
   />
-  <div class="feed">
+
+  <div class="feed" v-if="posts.length > 0">
     <div v-for="post in posts" :key="post._id" class="mb-4">
       <Post 
         :post="post" 
@@ -69,6 +64,10 @@ h4 {
         <Result :result="post" />
       </div>
     </div>
+  </div>
+
+  <div v-else>
+    <h3 class="mt-5"> Follow some athletes to get content on your feed! </h3>
   </div>
 </div>
 </template>
@@ -105,6 +104,10 @@ export default {
 
       this.posts = feed
 
+    }, 
+    createdPost: function() {
+      this.alert = "Successfully created post!"
+      this.loadFeed()
     }
   },
   middleware: 'auth',
@@ -126,7 +129,8 @@ export default {
       addingPost: false,
       posts: feed, 
       user: user, 
-      following: following
+      following: following, 
+      alert: ""
     }
   }
 }

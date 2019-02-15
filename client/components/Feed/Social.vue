@@ -9,6 +9,11 @@
     cursor: pointer;
   }
 
+  .liked {
+    color: @bright-blue;
+    cursor: auto;
+  }
+
   .comments {
     .fa-comment-dots {
       color: @blue;
@@ -34,7 +39,11 @@
 </style>
 <template>
 <div class="social row align-items-center mx-auto">
-  <div class="likes mr-3" @click="like()">
+  <div 
+    class="likes mr-3" 
+    :class="liked ? 'liked' : ''" 
+    @click="user_id && !liked ? like() : ''"
+  >
     <fa icon="heart" class="mr-1"></fa> {{ post.likes.length }} 
     Like<span v-if="post.likes.length != 1">s</span>
   </div>
@@ -68,7 +77,7 @@
 
 <script> 
 export default {
-  props: ['post', 'poster_id'], 
+  props: ['post', 'poster_id', 'user_id'], 
   data () {
     return {
       sharing: false,
@@ -78,15 +87,23 @@ export default {
   },
   methods: {
     like: async function() {
-      await this.$axios.$post('post/like/' + this.post._id)
-      if (!this.post.likes.includes(this.poster_id))
-        this.post.likes.push("")
+      if (!this.liked) {
+        await this.$axios.$post('post/like/' + this.post._id)
+        this.$emit('loadPost')
+      }
     },
     addToClipboard: function() {
       let copyText = document.querySelector("#copy")
       copyText.select()
       document.execCommand("copy")
       this.copied = true; 
+    }
+  }, 
+  computed: {
+    liked: function() {
+      if (!this.user_id) return false
+      else if (this.post.likes.includes(this.user_id)) return true
+      else return false
     }
   }
 }
