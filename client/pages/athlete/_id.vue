@@ -462,7 +462,11 @@ export default {
   },
   async asyncData ({ store, params, $axios, redirect}) {
     let user = store.state.auth.user
-    let following = user.following.includes(params.id)
+    let following = {}
+    if (user) {
+      if (user.following)
+        following = user.following.includes(params.id)
+    }
     let athlete = await $axios.$get('user/athlete/' + params.id)
 
     let results = await $axios.$get('result/list/athlete/' + params.id)
