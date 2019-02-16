@@ -53,29 +53,32 @@ router.get('/schedule/:date?', authCheck, (req, res) => {
   })
 })
 
-router.get('/streak/:prop', authCheck, (req, res) => {
+router.get('/streaks', authCheck, (req, res) => {
   let day = moment(new Date()).subtract(1, 'days').startOf('day').toDate()
-  Entry.find({ userId: req.userId, date: { $lte: day }}).sort({ date: -1 }).exec((err, data) => {
+  let query = {
+    userId: req.userId, 
+    date: { $lte: day }, 
+  }
+  Entry.find(query).sort({ date: -1 }).exec((err, data) => {
     if (err)
       res.status(500).send(err)
     else if (!data)
       res.send({ streak: 0 })
     else {
-      for (i in data) {
-        if (!data[i].checks 
-          || typeof data[i].check == 'undefined' 
-          || typeof data[i].checks.get(req.params.prop) == 'undefined') {
-          data.splice(i, 1)
-        }
-      }
-      if (data) {
-        let streak = 0
-        while (data[streak]) {
-          while (data[streak].checks.get(req.params.prop)) { streak++ }
-        }
-        res.send({ streak: streak })
-      } else res.send({ streak: 0 })
-    }
+      let streaks = {}
+      if (data[0].checks) {
+        data[0].checks.forEach((val, key) => {
+          streaks[key] = 0
+          for (i in data) {
+            if (data[i].checks) {
+              if (data[i].checks.get(key)) streaks[key]++
+              else break
+            }
+          }
+        })
+        res.send(streaks)
+      } else res.send("No streak data available."); 
+    } 
   })
 })
 
