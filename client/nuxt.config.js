@@ -14,6 +14,7 @@ module.exports = {
       { name: 'apple-mobile-web-app-title', content: 'RaceBase' }, 
       { property: 'og:site_name', content: 'RaceBase - Community Sourced Running Results' }, 
       { name: 'description', 
+        hid: 'Default description',
         content: 'For runners, by runners. We believe that people are more important than any race, or time, or championship. Join us now!'
       },
       { property: 'og:type', content: 'website' }, 

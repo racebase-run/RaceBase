@@ -1,7 +1,15 @@
+<style lang="less" scoped>
+.rex {
+  width: 50%;
+  display: block;
+}
+</style>
 <template>
 <div class="mx-auto w-90 w-md-100 mx-md-0 pl-md-5 mt-4">
-<h1> Oops! This page could not be found. </h1>
+<h1> Oops! </h1>
+<h2> Rex couldn't reach your page. </h2>
 Click <router-link to="/">here</router-link> to go home
+<img class="rex mb-2 mt-5" src="/images/rex.svg">
 </div>
 </template>
 <script>

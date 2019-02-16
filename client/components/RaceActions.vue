@@ -12,13 +12,12 @@
 
 <template>
 <div class="race-info mt-3">
-
-  <a class="btn btn-default" 
-    @click="$emit('openAddWindow')" 
+  <nuxt-link class="btn btn-default" 
+    :to="'/new/result/' + race._id" 
     v-if="isLoggedIn">
       Add Result &nbsp;
       <fa icon="pencil-alt"></fa>
-  </a>
+  </nuxt-link>
 
   <a class="btn btn-default" 
     v-if="isLoggedIn && race.user_id == $store.state.auth.user._id" 

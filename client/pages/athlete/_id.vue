@@ -260,6 +260,12 @@ h3.event-header {
 
       </div>
 
+      <div v-if="isLoggedIn">
+        <nuxt-link class="mt-3 btn btn-default btn-small d-inline-block" to="/new/result">
+          Add Result <fa icon="plus"></fa>
+        </nuxt-link>
+      </div>
+
       <div class="claim-info" v-if="!claimed">
         <div>
           Is this you? 
@@ -450,7 +456,7 @@ export default {
         property: 'og:image',
         content: this.athlete.profilePicUrl
       }, {
-        hid: 'Description', 
+        hid: 'Athlete Page Description', 
         name: 'description', 
         content: "View " + this.name + "'s race results on RaceBase, the Internet's first community sourced results database"
       }, {

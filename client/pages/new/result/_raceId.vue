@@ -23,8 +23,8 @@ label {
     To create a result, follow the <strong>five simple steps</strong> below. 
   </div>
   <h4> 1. Find a race </h4>
-  <div class="mb-3"> Search for a race to add your result to. </div>
-  <SearchBar v-model="searchInput" @search="search"/>
+  <div class="mb-3" v-if="!idParam"> Search for a race to add your result to. </div>
+  <SearchBar v-model="searchInput" @search="search" v-if="!idParam"/>
   <div v-for="race in races" class="d-flex align-items-center mb-2">
     <div
       v-if="curRace._id == race._id" 
@@ -44,7 +44,18 @@ label {
     </nuxt-link>
     &nbsp; on {{ race.date }}
   </div>
-  <div> 
+  <div v-if="idParam" class="d-flex align-items-center mb-2 mt-3">
+    <div
+      class="btn btn-primary btn-small mr-3" 
+    >
+      Selected <fa icon="check"></fa>
+    </div>
+    <nuxt-link :to="'/races/' + curRace._id">
+      {{ curRace.name }}
+    </nuxt-link>
+    &nbsp; on {{ curRace.date }}
+  </div>
+  <div v-else> 
     Can't find the race you're looking for? Create one 
     <strong><nuxt-link to="/user/content"> here </nuxt-link></strong>
   </div>
@@ -250,6 +261,7 @@ export default {
       curRace: curRace,
       teamSearchInput: "",
       searchInput: "", 
+      idParam: params.raceId,
       races: {}, 
       teams: {},
       womens: false, 
