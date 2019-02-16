@@ -36,6 +36,6 @@ resultSchema.index({
 });
 resultSchema.index({ race_id: 1, gender: 1, event: 1 })
 resultSchema.index({ team_id: 1, date: 1 })
-resultSchema.index({ athlete_id: 1 })
+resultSchema.index({ athlete_id: 1, post_id: 1 })
 
 module.exports = mongoose.model('Result', resultSchema);
