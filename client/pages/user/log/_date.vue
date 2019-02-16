@@ -730,9 +730,7 @@ export default {
     movingAvgs.rhr = Math.round((await $axios.$get('log/avg/moving/rhr/' + dayUrl)).avg * 10) / 10
     movingAvgs.sleep = (await $axios.$get('log/avg/moving/sleep/' + dayUrl)).avg
 
-    let streaks = { stretching: 0, core: 0 }
-    // streaks.stretching = (await $axios.$get('log/streak/stretching')).streak
-    // streaks.core = (await $axios.$get('log/streak/core')).streak
+    let streaks = await $axios.$get('log/streaks')
 
     let isEmpty = entry.runs ? typeof entry.runs[0] == 'undefined' : true
     let entryData = isEmpty ? emptyEntry : entry
@@ -765,6 +763,11 @@ export default {
     }
   },
   methods: {
+    load: async function() {
+      this.movingAvgs.rhr = Math.round((await this.$axios.$get('log/avg/moving/rhr/' + dayUrl)).avg * 10) / 10
+      this.movingAvgs.sleep = (await this.$axios.$get('log/avg/moving/sleep/' + dayUrl)).avg
+      this.streaks = await this.$axios.$get('log/streaks')
+    },
     submitEntry: function() {
       this.entryData.runs[this.curRun].difficulty = parseInt(this.entryData.runs[this.curRun].difficulty)
       this.entryData.runs[this.curRun].feel = parseInt(this.entryData.runs[this.curRun].feel)
@@ -773,6 +776,7 @@ export default {
       this.$axios.$post('log/' + formatDateUrl(moment(this.currentDay)), this.entryData).then((res) => {
         this.entryData = res.entry
         this.originalData = JSON.parse(JSON.stringify(this.entryData))
+        this.load()
         console.log(res.message)
       })
     }, 

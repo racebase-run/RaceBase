@@ -1,7 +1,10 @@
 <style lang="less" scoped>
 .rex {
-  width: 50%;
+  width: 85%;
   display: block;
+  @media (min-width: 768px) { 
+    width: 60%;
+  }
 }
 </style>
 <template>

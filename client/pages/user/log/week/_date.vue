@@ -476,6 +476,7 @@ export default {
         let sums = sumRuns(dayData.runs)
 
         dayData.totalMileage = sums.totalMileage
+        dayData.totalElev = sums.totalElev
         dayData.totalTime = sums.totalTime
 
         dayData.sleepDecimal = timeStringToDecimal(dayData.sleep)
@@ -512,8 +513,8 @@ export default {
     totalElev: function() {
       var total = 0
       for (var i = 0, l = this.days.length; i < l; i++ ) {
-        if (this.days[i].run)
-          total += this.days[i].run.elevationGain
+        if (this.days[i].totalElev)
+          total += this.days[i].totalElev
       }
       return Math.round(total * 100) / 100
     }, 
