@@ -675,6 +675,7 @@ td .btn-default, .day .btn-default, .header.row .btn-default {
 
 <script> 
 import moment from 'moment-timezone'
+import deepmerge from 'deepmerge'
 moment.tz.setDefault("America/Los_Angeles")
 import _ from 'underscore'
 
@@ -687,7 +688,7 @@ const emptyEntry = {
     elevationGain: '', 
     difficulty: 1, 
     feel: 5
-  }], 
+  }],
   checks: {
     core: false,
     stretching: false
@@ -732,8 +733,10 @@ export default {
 
     let streaks = await $axios.$get('log/streaks')
 
-    let isEmpty = entry.runs ? typeof entry.runs[0] == 'undefined' : true
-    let entryData = isEmpty ? emptyEntry : entry
+    let entryData = deepmerge(emptyEntry, entry)
+    
+    if (entry.runs)
+      if (entry.runs.length > 0) entryData.runs = entry.runs
 
     let avgSleepDecimal = timeStringToDecimal(movingAvgs.sleep)
     let sleepTrend = ((timeStringToDecimal(entryData.sleep) - avgSleepDecimal) / avgSleepDecimal) * 100
@@ -829,7 +832,9 @@ export default {
   },
   computed: {
     pace: function() {
-      if (!this.entryData.runs || !this.entryData.runs[this.curRun])
+      if (!this.entryData.runs)
+        return "0:00"
+      else if (!this.entryData.runs[this.curRun])
         return "0:00"
       else if (!this.entryData.runs[this.curRun].time || !this.entryData.runs[this.curRun].distance) 
         return "0:00"

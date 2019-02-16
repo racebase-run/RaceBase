@@ -71,18 +71,23 @@ h4 input, .schedule input {
     }
 
     .dom.today {
-      border-radius: 100px;
-      background: @pink;
-      color: white;
-      padding: 2px 5px;
-      display: table;
-      width: auto;
-      height: auto;
-      margin-top: -5px !important;
-      margin-right: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 0px;
+      margin-right: 3px;
+      margin-top: -4px;
 
       a {
+        text-align: center;
+        border-radius: 100px;
         color: white;
+        background: @pink;
+        padding-bottom: 0px;
+        @size: 27px;
+        line-height: @size;
+        width: @size;
+        height: @size;
       }
     }
   }
