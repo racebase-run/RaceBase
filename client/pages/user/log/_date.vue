@@ -642,11 +642,11 @@ td .btn-default, .day .btn-default, .header.row .btn-default {
 
           <div class="row flex align-items-center">
             <h2 class="col"> Core </h2>
-            <div class="data col"><span class="num">{{ streaks.core }}</span> day</div>
+            <div class="data col"><span class="num">{{ streaks.core || 0 }}</span> day</div>
           </div>
           <div class="row flex align-items-center">
             <h2 class="col"> Stretching </h2>
-            <div class="data col"><span class="num">{{ streaks.stretching }}</span> day</div>
+            <div class="data col"><span class="num">{{ streaks.stretching || 0 }}</span> day</div>
           </div>
 
         </div>
