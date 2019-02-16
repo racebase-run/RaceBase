@@ -32,6 +32,11 @@ const storage = cloudinaryStorage({
 
 const parser = multer({ storage: storage });
 
+router.get('/count', async (req, res) => {
+  let count = await User.find({}).count()
+  res.send({ count: count })
+})
+
 router.get('/claimed/:athlete_id', function(req,res) {
   User.findOne({$or: [
      { 'athlete_id' : req.params.athlete_id },
