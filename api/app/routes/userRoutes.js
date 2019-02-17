@@ -194,6 +194,32 @@ router.post('/', async function(req, res) {
   })
 }); 
 
+router.post('/forgotPassword', async (req, res) => {
+  let user = await User.findOne({ email: req.body.email })
+  if (!user) res.send("User does not exist!")
+  let token = jwt.sign({ id: user._id }, config.secret, { expiresIn: 360 })
+  let link = "https://racebase.io/user/resetPassword/" + token
+  const msg = {
+    to: req.body.email, 
+    from: { email: 'donotreply@racebase.io', name: 'RaceBase Accounts' }, 
+    subject: 'Reset your RaceBase password', 
+    html: '<p> Use the link below to reset your password (expires in 10 minutes): <br> <a href="' + link + '">Reset password</a></p>'
+  }
+  sgMail.send(msg)
+  res.send("Email sent")
+})
+
+router.post('/resetPassword/:token', async (req, res) => {
+  jwt.verify(req.params.token, config.secret, async (err, decoded) => {
+    if (err) res.send("Token is invalid")
+    let user = await User.findById(decoded.id)
+    let hashedPassword = bcrypt.hashSync(req.body.newPassword, 8)
+    user.password = hashedPassword
+    await user.save()
+    res.send("Successfully reset password")
+  })
+})
+
 router.post('/resendVerification', authCheck, async function(req, res) {
   let user = await User.findById(req.userId)
   var emailVer = uuidv1()
@@ -209,8 +235,8 @@ router.post('/resendVerification', authCheck, async function(req, res) {
       from: { email: 'donotreply@racebase.io', name:'RaceBase Accounts' },
       subject: 'Verify your RaceBase account', 
       html: content
-    };
-    sgMail.send(msg);
+    }
+    sgMail.send(msg)
     let token = jwt.sign({ id: user._id }, config.secret, { expiresIn: 86400 })          
     res
       .cookie('csrf_token', token, { maxAge: 86400000, httpOnly: true })
