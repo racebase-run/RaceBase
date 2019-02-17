@@ -312,7 +312,14 @@ form {
 
   <div class="settings-section">
     <div class="settings-label">Email</div>
-    <div class="tag">{{ user.email }}</div>
+    <div class="tag">{{ user.email }} <fa v-if="user.active" icon="check"></fa></div>
+    <div v-if="!user.active">
+      Please verify your email! 
+      Click 
+      <a href="#" @click="resendVerification">here</a> 
+      to resend your verification email.
+      <p v-if="resent"><strong>Sent.</strong></p>
+    </div>
   </div>
 
   <div class="settings-section">
@@ -436,7 +443,8 @@ export default {
     let user = { ...store.state.auth.user }
     return {
       user: user, 
-      id: user._id
+      id: user._id, 
+      resent: false
     }
   },
   methods : {
@@ -525,6 +533,10 @@ export default {
         this.imageMessage = "Profile updated."
         this.loadUser()
       })
+    }, 
+    resendVerification: async function() {
+      await this.$axios.post('user/resendVerification')
+      this.resent = true
     },
     uploadBrandPic: function() {
       const formData = new FormData()
