@@ -20,6 +20,13 @@
   width: 90%;
 }
 
+.referral-code {
+  width: auto;
+  display: inline;
+  flex: none;
+  background: white;
+}
+
 .claim {
   display: inline-block;
   width: 270px;
@@ -124,6 +131,26 @@ form {
   <h1 class="mt-4"> 
     <fa icon="cog"></fa> Settings 
   </h1>
+
+  <div class="settings-section mt-4">
+    <div class="settings-label">Referral Code</div>
+    <div class="mb-2">
+      Refer 5 friends with this code and get a free RaceBase tee shirt!
+    </div>
+    <div class="input-group">
+      <input class="referral-code form-control" id="copy" :value="user.referralCode" readonly />
+      <span class="input-group-append">
+        <div class="btn btn-outline-dark" @click="addToClipboard">
+          <fa icon="clipboard"></fa> 
+        </div>
+      </span>
+    </div>
+    <div class="mt-2"> 
+      <strong> 
+        You have {{ referrals || 0 }} referral<span v-if="referrals != 1">s</span>. 
+      </strong> 
+    </div>
+  </div>
 
   <div class="settings-section" v-if="user.athlete_id">
     <div class="settings-label">Profile</div>
@@ -439,12 +466,14 @@ export default {
     }
   },
   middleware: 'auth',
-  asyncData ({ store }) {
+  async asyncData ({ store, $axios }) {
     let user = { ...store.state.auth.user }
+    let referrals = (await $axios.$get('/user/referrals')).referrals
     return {
       user: user, 
       id: user._id, 
-      resent: false
+      resent: false, 
+      referrals: referrals
     }
   },
   methods : {
@@ -555,6 +584,12 @@ export default {
         this.imageMessage = "Profile updated."
         this.loadUser()
       })
+    }, 
+    addToClipboard: function() {
+      let copyText = document.querySelector("#copy")
+      copyText.select()
+      document.execCommand("copy")
+      this.copied = true; 
     }
   }
 }; 

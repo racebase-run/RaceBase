@@ -71,6 +71,15 @@ ul {
         required
       />
 
+      <label for="referralCode"> Referral Code (Optional) </label>
+      <input 
+        name="referralCode" 
+        type="text" 
+        class="form-control mb-3" 
+        v-model="input.referralCode" 
+        placeholder="Referral Code" 
+      />
+
       <div class="mb-3">
         <input type="checkbox" required name="terms">
           I agree to the 
@@ -114,7 +123,8 @@ export default {
         email: "",
         password: "", 
         confirm: "",
-        name: ""
+        name: "", 
+        referralCode: ""
       },
       message: false,
       error: false
@@ -126,7 +136,8 @@ export default {
         this.$axios.post('user', { 
           email: this.input.email, 
           password: this.input.password, 
-          name: this.input.name
+          name: this.input.name, 
+          referralCode: this.input.referralCode
         }).then(async (res) => {
           if (res.data.error) {
             this.error = true
