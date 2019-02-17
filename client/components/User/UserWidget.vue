@@ -27,6 +27,10 @@
 
 }
 
+.fa-book-open {
+  font-size: 13px;
+}
+
 .links {
 
   text-align: center;
@@ -70,7 +74,9 @@
   </div>
   <div class="links d-flex align-items-center justify-content-center">
     <nuxt-link to="/feed">Feed</nuxt-link>
-    <nuxt-link to="/user/log/week">Logs</nuxt-link>
+    <nuxt-link to="/user/log/week">
+      <fa icon="book-open" class="mr-1"></fa> Logs
+    </nuxt-link>
     <nuxt-link to="/user/settings"><fa icon="cogs"></fa></nuxt-link>
     <div @click="$emit('logOut')" 
       class="ml-2 btn btn-outline-primary btn-small" href="#">
