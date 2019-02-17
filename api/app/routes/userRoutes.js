@@ -38,7 +38,7 @@ const storage = cloudinaryStorage({
 const parser = multer({ storage: storage })
 
 router.get('/count', async (req, res) => {
-  let count = await User.find({}).count()
+  let count = await User.find({ active: true }).count()
   res.send({ count: count })
 })
 
@@ -237,11 +237,7 @@ router.post('/resendVerification', authCheck, async function(req, res) {
       html: content
     }
     sgMail.send(msg)
-    let token = jwt.sign({ id: user._id }, config.secret, { expiresIn: 86400 })          
-    res
-      .cookie('csrf_token', token, { maxAge: 86400000, httpOnly: true })
-      .status(200)
-      .send({ auth: true, token: token });
+    res.send("Verification email sent");
   })
 })
 
