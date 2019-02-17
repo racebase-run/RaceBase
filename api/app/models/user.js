@@ -22,6 +22,8 @@ var userSchema = mongoose.Schema({
   featuredPicUrl: {type: String},
   featuredPic_id: {type: String}, 
   premium: Boolean, 
+  referralCode: String,
+  referrer: String, 
   active: { type: Boolean, default: false }, 
   emailVer: String
 });

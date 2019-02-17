@@ -42,6 +42,12 @@ router.get('/count', async (req, res) => {
   res.send({ count: count })
 })
 
+router.get('/referrals', authCheck, async (req, res) => {
+  let user = await User.findById(req.userId)
+  let referrals = await User.find({ referrer: user.referralCode, active: true }).count()
+  res.send({ referrals: referrals })
+})
+
 router.get('/claimed/:athlete_id', function(req,res) {
   User.findOne({$or: [
      { 'athlete_id' : req.params.athlete_id },
@@ -110,14 +116,18 @@ router.get('/:id/races/:page?/:length?', function(req, res) {
 
 });
 
-router.get('/:id', authCheck, function(req, res) {
+router.get('/:id', authCheck, async function(req, res) {
   if (req.params.id == req.userId) {
-    User.findOne({ '_id' : req.params.id }, function(err, user) {
+    User.findOne({ '_id' : req.params.id }, async function(err, user) {
       if (err)
         res.send(err);
-
-      else 
+      else {
+        if (!user.referralCode) {
+          user.referralCode = uuidv1()
+          await user.save()
+        }
         res.json(user);
+      }
     });
   } else {
     res.sendStatus(401)
@@ -148,16 +158,19 @@ router.post('/', async function(req, res) {
     else {
       var hashedPassword = bcrypt.hashSync(req.body.password, 8);
       var emailVer = uuidv1()
+      let newReferralCode = uuidv1()
       User.create({
         password: hashedPassword,
         email: req.body.email,
         name: req.body.name,
-        emailVer: emailVer
+        emailVer: emailVer, 
+        referrer: req.body.referralCode, 
+        referralCode: newReferralCode
       }, async function(err, user) {
         if (err)
           res.send(err);
         else {
-          let emailToken = jwt.sign({ id: req.userId, emailVer: emailVer }, config.secret, { expiresIn: 3600 })
+          let emailToken = jwt.sign({ id: user._id, emailVer: emailVer }, config.secret, { expiresIn: 3600 })
           fs.readFile('./mail_templates/verify.hbs', 'utf8', (err, source) => {
             let template = Handlebars.compile(source)
             let data = { emailToken: emailToken, firstname: user.name.split(' ')[0] }
@@ -216,7 +229,7 @@ router.post('/verify/:token', function(req, res) {
       user.active = true
       await user.save()
       res.send("Successfully verified email")
-    } else res.send("Failed to verify email")
+    } else res.send("Your verification token didn't match!")
   })
 })
 
