@@ -350,6 +350,16 @@ form {
   </div>
 
   <div class="settings-section">
+    <div class="settings-label">Reset Password</div>
+    <div>
+      Click 
+      <a href="#" @click="resetPassword">here</a> 
+      to send a reset link to your email.
+      <p v-if="sentReset"><strong>Sent.</strong></p>
+    </div>
+  </div>
+
+  <div class="settings-section">
     <div class="settings-label">Athlete ID</div>
     <span class="athlete-id" v-if="user.athlete_id">
       <div class="tag"> <fa icon="user"></fa> &nbsp; {{ user.athlete_id }}</div>
@@ -473,6 +483,7 @@ export default {
       user: user, 
       id: user._id, 
       resent: false, 
+      sentReset: false,
       referrals: referrals
     }
   },
@@ -590,6 +601,12 @@ export default {
       copyText.select()
       document.execCommand("copy")
       this.copied = true; 
+    },
+    resetPassword: async function() {
+      await this.$axios.$post('/user/forgotPassword', {
+        email: this.user.email
+      })
+      this.sentReset = true
     }
   }
 }; 

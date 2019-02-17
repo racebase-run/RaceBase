@@ -42,6 +42,12 @@ form {
     {{ message }}
   </div>
 
+  <div class="mt-2 mb-3"> 
+    Forgot your password? 
+    <br>Enter your email above and click
+    <a href="#" @click="forgotPassword"> here </a>
+  </div>
+
   <button type="submit" class="btn btn-primary">Log In</button>
 
 </form>
@@ -68,7 +74,8 @@ export default {
         password: ""
       },
       message: false,
-      error: false
+      error: false, 
+      sent: true
     }
   },
   methods: {
@@ -79,6 +86,18 @@ export default {
       }, { withCredentials: true })
       this.message = x.message
       this.error = x.error
+    }, 
+    forgotPassword: async function() {
+      if (this.formData.email) {
+        await this.$axios.$post('/user/forgotPassword', {
+          email: this.formData.email
+        })
+        this.error = false
+        this.message = "Password reset link sent to " + this.formData.email
+      } else {
+        this.error = true
+        this.message = "Please enter your email!"
+      }
     }
   }
 }
