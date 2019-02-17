@@ -9,6 +9,7 @@
   "author": "Remington Breeze",
   "license": "MIT",
   "dependencies": {
+    "@sendgrid/mail": "^6.3.1",
     "bcryptjs": "^2.4.3",
     "body-parser": "latest",
     "cloudinary": "^1.13.2",
@@ -21,6 +22,7 @@
     "express-jwt": "^5.3.1",
     "fs": "0.0.1-security",
     "gray-matter": "^4.0.1",
+    "handlebars": "^4.1.0",
     "jsonwebtoken": "^8.3.0",
     "jwks-rsa": "^1.2.1",
     "method-override": "latest",
@@ -40,7 +42,8 @@
     "showdown": "^1.8.6",
     "spdy": "^4.0.0",
     "underscore": "^1.9.1",
-    "util": "^0.11.1"
+    "util": "^0.11.1",
+    "uuid": "^3.3.2"
   },
   "devDependencies": {
     "nodemon": "^1.18.9"

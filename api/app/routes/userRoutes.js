@@ -1,17 +1,22 @@
-var express = require('express');
-var router = express.Router();
+var express = require('express')
+var router = express.Router()
 
-var Race = require('../models/race');
-var Result = require('../models/result');
-var User = require('../models/user');
+var Race = require('../models/race')
+var Result = require('../models/result')
+var User = require('../models/user')
 
-var moment = require('moment');
+var moment = require('moment')
 var bcrypt = require('bcryptjs')
 var jwt = require('jsonwebtoken')
 
-const multer = require("multer");
-const cloudinary = require("cloudinary");
-const cloudinaryStorage = require("multer-storage-cloudinary");
+const multer = require("multer")
+const cloudinary = require("cloudinary")
+const cloudinaryStorage = require("multer-storage-cloudinary")
+const uuidv1 = require('uuid/v1')
+const Handlebars = require('handlebars')
+const fs = require('fs')
+const sgMail = require('@sendgrid/mail')
+sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 
 var authCheck = require('../auth')
 
@@ -21,16 +26,16 @@ cloudinary.config({
   cloud_name: 'racebase',
   api_key: '517184396944314',
   api_secret: config.cloudinary_secret
-});
+})
 
 const storage = cloudinaryStorage({
   cloudinary: cloudinary,
   folder: "profiles",
   allowedFormats: ["jpg", "png"],
   transformation: [{ width: 450, crop: "limit" }]
-});
+})
 
-const parser = multer({ storage: storage });
+const parser = multer({ storage: storage })
 
 router.get('/count', async (req, res) => {
   let count = await User.find({}).count()
@@ -135,31 +140,85 @@ router.get('/:userId/isFollowing/:id', authCheck, function(req, res) {
   }
 })
 
-router.post('/', function(req, res) {
+router.post('/', async function(req, res) {
   User.findOne({ 'email' : req.body.email }, function(err, user) {
     if (user) {
       res.send({ error : "User already exists." })
     }
     else {
       var hashedPassword = bcrypt.hashSync(req.body.password, 8);
+      var emailVer = uuidv1()
       User.create({
         password: hashedPassword,
         email: req.body.email,
-        name: req.body.name
-      }, function(err, user) {
+        name: req.body.name,
+        emailVer: emailVer
+      }, async function(err, user) {
         if (err)
           res.send(err);
         else {
-          var token = jwt.sign({ id: user._id }, config.secret, { expiresIn: 86400 });
-          res
-            .cookie('csrf_token', token, { maxAge: 86400000, httpOnly: true })
-            .status(200)
-            .send({ auth: true, token: token });
+          let emailToken = jwt.sign({ id: req.userId, emailVer: emailVer }, config.secret, { expiresIn: 3600 })
+          fs.readFile('./mail_templates/verify.hbs', 'utf8', (err, source) => {
+            let template = Handlebars.compile(source)
+            let data = { emailToken: emailToken, firstname: user.name.split(' ')[0] }
+            let content = template(data)
+            const msg = {
+              to: user.email,
+              from: { email: 'donotreply@racebase.io', name:'RaceBase Accounts' },
+              subject: 'Verify your RaceBase account', 
+              html: content
+            };
+            sgMail.send(msg);
+            let token = jwt.sign({ id: user._id }, config.secret, { expiresIn: 86400 })          
+            res
+              .cookie('csrf_token', token, { maxAge: 86400000, httpOnly: true })
+              .status(200)
+              .send({ auth: true, token: token });
+          })
         }
       });
     }
   })
 }); 
+
+router.post('/resendVerification', authCheck, async function(req, res) {
+  let user = await User.findById(req.userId)
+  var emailVer = uuidv1()
+  user.emailVer = emailVer
+  await user.save()
+  let emailToken = jwt.sign({ id: req.userId, emailVer: emailVer }, config.secret, { expiresIn: 3600 })
+  fs.readFile('./mail_templates/verify.hbs', 'utf8', (err, source) => {
+    let template = Handlebars.compile(source)
+    let data = { emailToken: emailToken, firstname: user.name.split(' ')[0] }
+    let content = template(data)
+    const msg = {
+      to: user.email,
+      from: { email: 'donotreply@racebase.io', name:'RaceBase Accounts' },
+      subject: 'Verify your RaceBase account', 
+      html: content
+    };
+    sgMail.send(msg);
+    let token = jwt.sign({ id: user._id }, config.secret, { expiresIn: 86400 })          
+    res
+      .cookie('csrf_token', token, { maxAge: 86400000, httpOnly: true })
+      .status(200)
+      .send({ auth: true, token: token });
+  })
+})
+
+router.post('/verify/:token', function(req, res) {
+  jwt.verify(req.params.token, config.secret, async (err, decoded) => {
+    if (err)
+      return res.send("Failed to verify email")
+    let user = await User.findById(decoded.id)
+    if (!user) res.send("Failed to verify email")
+    else if (decoded.emailVer == user.emailVer) {
+      user.active = true
+      await user.save()
+      res.send("Successfully verified email")
+    } else res.send("Failed to verify email")
+  })
+})
 
 router.post('/:id/profile_pic', parser.single("image"), authCheck, (req, res) => {
   User.findOne({ '_id' : req.params.id }, (err, user) => {

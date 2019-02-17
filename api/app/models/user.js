@@ -21,7 +21,9 @@ var userSchema = mongoose.Schema({
   brandPic_id: {type: String},
   featuredPicUrl: {type: String},
   featuredPic_id: {type: String}, 
-  premium: Boolean
+  premium: Boolean, 
+  active: { type: Boolean, default: false }, 
+  emailVer: String
 });
 
 module.exports = mongoose.model('User', userSchema);
