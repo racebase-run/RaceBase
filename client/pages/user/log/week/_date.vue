@@ -255,7 +255,7 @@ h4 input, .schedule input {
         </h4>
       </div>
       <div class="col d-flex flex-row align-items-end">
-        <div class="btn btn-default log-pager ml-auto mr-2 today" @click="changeDate(new Date())"> Today </div>
+        <div class="btn btn-default log-pager ml-auto mr-2 today" @click="changeDate(now)"> Today </div>
         <LogPagers :date='date' interval="7" />
       </div>
     </div>
@@ -452,6 +452,7 @@ export default {
     else 
       user.firstName = ""
 
+    let now = moment()
     let dayUrl = params.date
     let curDay = getDateFromUrl(params.date)
     let weekOf = moment(curDay).startOf('isoWeek').format('M/D/YY')
@@ -461,7 +462,7 @@ export default {
     let lastWeek = await $axios.$get('/log/list/week/' + lastWeekUrl)
 
     let days = await Array.apply(null, Array(7)).map(function (_, i) {
-      let day = moment(getDateFromUrl(params.date)).startOf('week').weekday(i + 1)
+      let day = moment(getDateFromUrl(params.date)).startOf('isoWeek').weekday(i + 1)
       let dayOfWeekFull = day.format('dddd')
       let dayOfWeek = day.format('ddd')
       let dayOfMonth = day.format('DD')
@@ -493,7 +494,8 @@ export default {
           dow: dayOfWeek, 
           dom: dayOfMonth, 
           today: today, 
-          url: curDayUrl 
+          url: curDayUrl,
+          now: now
         }
       }
     });
