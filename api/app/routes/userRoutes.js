@@ -116,6 +116,12 @@ router.get('/:id/races/:page?/:length?', function(req, res) {
 
 });
 
+router.get('/:id/profilePic', async (req, res) => {
+  let user = await User.findOne({ athlete_id: req.params.id })
+  if (!user) res.send("Athlete ID isn't claimed")
+  else res.send(user.profilePicUrl)
+})
+
 router.get('/:id', authCheck, async function(req, res) {
   if (req.params.id == req.userId) {
     User.findOne({ '_id' : req.params.id }, async function(err, user) {
@@ -150,6 +156,22 @@ router.get('/:userId/isFollowing/:id', authCheck, function(req, res) {
   }
 })
 
+let sendVerificationEmail = async function(user, token, callback) {
+  fs.readFile('./mail_templates/verify.hbs', 'utf8', (err, source) => {
+    let template = Handlebars.compile(source)
+    let data = { emailToken: token, firstname: user.name.split(' ')[0] }
+    let content = template(data)
+    const msg = {
+      to: user.email,
+      from: { email: 'donotreply@racebase.io', name: 'RaceBase Accounts' },
+      subject: 'Verify your RaceBase account', 
+      html: content
+    };
+    sgMail.send(msg)
+    callback()
+  })
+}
+
 router.post('/', async function(req, res) {
   User.findOne({ 'email' : req.body.email }, function(err, user) {
     if (user) {
@@ -172,17 +194,7 @@ router.post('/', async function(req, res) {
           res.send(err);
         else {
           let emailToken = jwt.sign({ id: user._id, emailVer: emailVer }, config.secret, { expiresIn: 3600 })
-          fs.readFile('./mail_templates/verify.hbs', 'utf8', (err, source) => {
-            let template = Handlebars.compile(source)
-            let data = { emailToken: emailToken, firstname: user.name.split(' ')[0] }
-            let content = template(data)
-            const msg = {
-              to: user.email,
-              from: { email: 'donotreply@racebase.io', name:'RaceBase Accounts' },
-              subject: 'Verify your RaceBase account', 
-              html: content
-            };
-            sgMail.send(msg);
+          sendVerificationEmail(user, emailToken, () => {
             let token = jwt.sign({ id: user._id }, config.secret, { expiresIn: 86400 })          
             res
               .cookie('csrf_token', token, { maxAge: 86400000, httpOnly: true })
@@ -227,19 +239,7 @@ router.post('/resendVerification', authCheck, async function(req, res) {
   user.emailVer = emailVer
   await user.save()
   let emailToken = jwt.sign({ id: req.userId, emailVer: emailVer }, config.secret, { expiresIn: 3600 })
-  fs.readFile('./mail_templates/verify.hbs', 'utf8', (err, source) => {
-    let template = Handlebars.compile(source)
-    let data = { emailToken: emailToken, firstname: user.name.split(' ')[0] }
-    let content = template(data)
-    const msg = {
-      to: user.email,
-      from: { email: 'donotreply@racebase.io', name:'RaceBase Accounts' },
-      subject: 'Verify your RaceBase account', 
-      html: content
-    }
-    sgMail.send(msg)
-    res.send("Verification email sent");
-  })
+  sendVerificationEmail(user, emailToken, () => { res.send("Verification email sent") })
 })
 
 router.post('/verify/:token', function(req, res) {
@@ -444,6 +444,23 @@ router.post('/:id/alias/:alias', authCheck, function(req, res) {
     })
   }
 });
+
+router.put('/:id/email/:email', authCheck, async (req, res) => {
+  if (req.userId != req.params.id) res.send("You are not logged in as the specified user.")
+
+  let taken = await User.findOne({ email: req.params.email })
+  if (taken) res.send("Email already taken!")
+  else {
+    let user = await User.findById(req.params.id)
+    user.email = req.params.email
+    user.active = false
+    await user.save()
+    var emailVer = uuidv1()
+    let emailToken = jwt.sign({ id: user._id, emailVer: emailVer }, config.secret, { expiresIn: 3600 })
+    sendVerificationEmail(user, emailToken, () => { res.send("Email updated.") })
+  }  
+
+})
 
 router.put("/:id", authCheck, async (req, res) => {
   if (req.params.id == req.userId) {
