@@ -1,6 +1,6 @@
 {
   "name": "racebase-api",
-  "version": "1.4.7",
+  "version": "1.4.8",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
