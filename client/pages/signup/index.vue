@@ -90,6 +90,12 @@ ul {
           </nuxt-link>
       </div>
 
+      <div class="mb-3">
+        <span class="mr-2">Are you a coach?</span>
+        <input v-model="input.coach" type="checkbox" name="coach">
+        <strong>{{ input.coach ? "Yep!" : "No" }}</strong>
+      </div>
+
       <div 
       v-if="message" 
       :class="'d-block alert alert-' + (error ? 'danger' : 'success')"
@@ -124,7 +130,8 @@ export default {
         password: "", 
         confirm: "",
         name: "", 
-        referralCode: ""
+        referralCode: "", 
+        coach: false
       },
       message: false,
       error: false
@@ -137,7 +144,8 @@ export default {
           email: this.input.email, 
           password: this.input.password, 
           name: this.input.name, 
-          referralCode: this.input.referralCode
+          referralCode: this.input.referralCode, 
+          coach: this.input.coach
         }).then(async (res) => {
           if (res.data.error) {
             this.error = true
