@@ -165,7 +165,8 @@ router.post('/', async function(req, res) {
         name: req.body.name,
         emailVer: emailVer, 
         referrer: req.body.referralCode, 
-        referralCode: newReferralCode
+        referralCode: newReferralCode, 
+        coach: req.body.coach
       }, async function(err, user) {
         if (err)
           res.send(err);
@@ -444,7 +445,7 @@ router.post('/:id/alias/:alias', authCheck, function(req, res) {
   }
 });
 
-router.put("/:id", authCheck, function(req, res) {
+router.put("/:id", authCheck, async (req, res) => {
   if (req.params.id == req.userId) {
 
     let params = {}
@@ -454,11 +455,16 @@ router.put("/:id", authCheck, function(req, res) {
         params[prop] = req.body[prop]
     }
 
-    User.findOneAndUpdate({ _id: req.params.id }, params, (err, data) => {
+    User.findOneAndUpdate({ _id: req.params.id }, params, async (err, user) => {
       if (err)
         res.send(err)
-      else
-        res.send(data)
+      else {
+        if (req.body.email && user.email != req.body.email) {
+          user.active = false
+          user = await user.save()
+        }
+        res.send(user)
+      }
     })
   } else {
     res.status(403).send({ message: 'You are not logged in as the specified user.' })
