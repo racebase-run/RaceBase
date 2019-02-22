@@ -26,7 +26,9 @@ var userSchema = mongoose.Schema({
   referralCode: String,
   referrer: String, 
   active: { type: Boolean, default: false }, 
-  emailVer: String
+  emailVer: String, 
+  team_id: String, 
+  publicLogs: Boolean
 });
 
 module.exports = mongoose.model('User', userSchema);

@@ -119,7 +119,7 @@ router.get('/:id/races/:page?/:length?', function(req, res) {
 router.get('/:id/profilePic', async (req, res) => {
   let user = await User.findOne({ athlete_id: req.params.id })
   if (!user) res.send("Athlete ID isn't claimed")
-  else res.send(user.profilePicUrl)
+  else res.send({ url: user.profilePicUrl })
 })
 
 router.get('/:id', authCheck, async function(req, res) {
@@ -360,6 +360,32 @@ router.post('/unfollow/:id', authCheck, async (req, res) => {
   })
 })
 
+router.post('/claim/team/:team_id', authCheck, async (req, res) => {
+  let user = await User.findById(req.userId)
+  if (!user.coach) res.send("You are not a coach")
+  else if (user.team_id) res.send("You already own a team")
+  else {
+    let team_id = req.params.team_id
+    // check if there's a coach who owns this team already
+    let taken = await User.findOne({ team_id: team_id, coach: true })
+    if (taken) res.send("This team has already been claimed")
+    else {
+      user.team_id = team_id
+      await user.save()
+      res.send("Successfully claimed team")
+    }
+  }
+})
+
+router.post('/unclaim/team/', authCheck, async (req, res) => {
+  let user = await User.findById(req.userId)
+  if (!user.coach) res.send("You are not a coach")
+  else {
+    user.team_id = null
+    await user.save()
+    res.send("Successfully unclaimed team")
+  }
+})
 
 router.post('/claim/:id/:athlete_id', authCheck, function(req, res) {
   if (req.params.id == req.userId) {
@@ -466,6 +492,13 @@ router.put("/:id", authCheck, async (req, res) => {
   if (req.params.id == req.userId) {
 
     let params = {}
+
+    // make sure users aren't messing with things they shouldn't be
+    delete req.body.team_id
+    delete req.body.premium
+    delete req.body.referrer
+    delete req.body.referralCode
+    delete req.body.active
 
     for (let prop in req.body) {
       if (req.body[prop])

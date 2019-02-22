@@ -2,6 +2,7 @@
 var express = require('express')
 var router = express.Router()
 
+var User = require('../models/user')
 var Entry = require('../models/entry')
 var authCheck = require('../auth')
 
@@ -18,7 +19,7 @@ let createDay = function(date) {
   return day
 }
 
-router.get('/list/week/:date?',authCheck, (req, res) => {
+router.get('/list/week/:date?', authCheck, (req, res) => {
 
   let day = moment(createDay(req.params.date))
   let monday = day.startOf('isoWeek').toDate()
@@ -80,6 +81,21 @@ router.get('/streaks', authCheck, (req, res) => {
       } else res.send("No streak data available."); 
     } 
   })
+})
+
+router.get('/athlete/:id/:date?', authCheck, async (req, res) => {
+  let coach = await User.findById(req.userId)
+  let athlete = await User.findOne({ athlete_id: req.params.id })
+  if (!athlete) res.send("No user with that Athlete ID exists")
+  else {
+    // only send data if Coach is authorized to see athlete's data, or if athlete's data is public
+    if (athlete.publicLogs || athlete.team_id == coach.team_id) {
+      let day = createDay(req.params.date)
+      let entry = Entry.findOne({ date: day, userId: athlete._id })
+      if (entry) res.send(entry)
+      else res.send({})
+    } else res.send("You aren't authorized to access this entry")
+  }
 })
 
 router.get('/:date?', authCheck, (req, res) => {
