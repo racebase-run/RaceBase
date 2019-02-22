@@ -20,7 +20,7 @@
   width: 90%;
 }
 
-.referral-code {
+.auto-width-input {
   width: auto;
   display: inline;
   flex: none;
@@ -138,7 +138,7 @@ form {
       Refer 5 friends with this code and get a free RaceBase tee shirt!
     </div>
     <div class="input-group">
-      <input class="referral-code form-control" id="copy" :value="user.referralCode" readonly />
+      <input class="auto-width-input form-control" id="copy" :value="user.referralCode" readonly />
       <span class="input-group-append">
         <div class="btn btn-outline-dark" @click="addToClipboard">
           <fa icon="clipboard"></fa> 
@@ -339,7 +339,24 @@ form {
 
   <div class="settings-section">
     <div class="settings-label">Email</div>
-    <div class="tag">{{ user.email }} <fa v-if="user.active" icon="check"></fa></div>
+
+    <div>
+      <div class="input-group mb-2">
+        <input v-model="user.email" type="email" 
+          placeholder="Change your email..." class="form-control auto-width-input">
+        </input>
+
+        <span class="input-group-append">
+          <div class="btn btn-outline-dark" @click="updateEmail">
+            <fa :icon="user.email == currentEmail ? 'check' : 'save'"></fa>
+          </div>
+        </span>
+
+      </div>
+    </div>
+
+    <div v-if="emailMessage">{{ emailMessage }}</div>
+
     <div v-if="!user.active">
       Please verify your email! 
       Click 
@@ -347,6 +364,8 @@ form {
       to resend your verification email.
       <p v-if="resent"><strong>Sent.</strong></p>
     </div>
+    <div v-else> Your email has been verified. </div>
+
   </div>
 
   <div class="settings-section">
@@ -386,6 +405,34 @@ form {
     <div class="alert alert-danger" v-if="claimFailure"> 
       {{ claimFailure }}
     </div>
+  </div>
+
+  <div class="settings-section" v-if="!user.coach">
+    <div class="settings-label"> Team </div>
+    <div class="d-flex flex-shrink w-50" v-if="!team"> 
+      <input type="text" class="form-control mr-2" v-model="joinCode" placeholder="Join Code" /> 
+      <div class="btn btn-primary" @click="joinTeam"> Join </div>
+    </div>
+    <div v-else> 
+      Your team's id: {{ team.team_id }}
+    </div>
+  </div>
+
+  <div class="settings-section" v-if="user.coach">
+    <div class="settings-label"> Coaching </div>
+    <div v-if="user.team_id" class="d-flex align-items-center">  
+      <div> Your team: </div>
+      <nuxt-link :to="'/team/' + user.team_id" class="ml-2">
+        {{ user.team_id }}
+      </nuxt-link>
+      <div class="btn btn-outline-primary btn-small ml-3" @click="unclaimTeam">
+        Unclaim
+      </div>
+    </div>
+    <div v-else> 
+      <nuxt-link to="/signup/coach/claim">Claim a team</nuxt-link>
+    </div>
+    <div class="mt-2" v-if="team"><strong>Join Code:</strong> {{ team.join_code }}</div>
   </div>
 
   <div class="settings-section">
@@ -466,7 +513,8 @@ export default {
       brandPic: null,
       featuredPic: null, 
       message: "", 
-      imageMessage: ""
+      imageMessage: "", 
+      joinCode: ""
     }
   },
   components: { ProfilePic },
@@ -478,19 +526,33 @@ export default {
   middleware: 'auth',
   async asyncData ({ store, $axios }) {
     let user = { ...store.state.auth.user }
+    let team = null
+    if (user.team_id && user.coach)
+      team = await $axios.$get('/team/' + user.team_id)
+    else if (user.team_id)
+      team = await $axios.$get('/team/public/' + user.team_id)
+    let currentEmail = user.email
     let referrals = (await $axios.$get('/user/referrals')).referrals
     return {
       user: user, 
       id: user._id, 
       resent: false, 
       sentReset: false,
-      referrals: referrals
+      referrals: referrals, 
+      currentEmail: currentEmail,
+      emailMessage: "", 
+      team: team
     }
   },
   methods : {
     loadUser: async function() {
       await this.$store.dispatch('auth/fetchUser')
       this.user = { ...this.$store.state.auth.user }
+      this.currentEmail = this.user.email
+    },
+    joinTeam: async function() {
+      let res = await this.$axios.$post('team/join/' + this.joinCode)
+      console.log(res)
     },
     addAlias: function() {
       this.$axios.$post('user/' + this.id + '/alias/' + this.aliasInput)
@@ -545,6 +607,11 @@ export default {
         }
       })
     },
+    unclaimTeam: async function() {
+      let res = await this.$axios.$post('/user/unclaim/team')
+      console.log(res)
+      this.loadUser()
+    },
     deleteAccount: async function() {
       await this.$axios.$delete('user/' + this.id)
       await this.$store.dispatch('auth/logout')
@@ -553,6 +620,13 @@ export default {
       this.$axios.$put('user/' + this.id, this.user)
       .then((res) => {
         this.message = "Profile updated."
+        this.loadUser()
+      })
+    }, 
+    updateEmail: function() {
+      this.$axios.$put('user/' + this.id + '/email/' + this.user.email)
+      .then((res) => {
+        this.emailMessage = res
         this.loadUser()
       })
     }, 
