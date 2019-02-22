@@ -74,8 +74,11 @@
   </div>
   <div class="links d-flex align-items-center justify-content-center">
     <nuxt-link to="/feed">Feed</nuxt-link>
-    <nuxt-link to="/user/log/week">
+    <nuxt-link to="/user/log/week" v-if="!user.coach">
       <fa icon="book-open" class="mr-1"></fa> Logs
+    </nuxt-link>
+    <nuxt-link to="/coach" v-else> 
+      <fa icon="stopwatch"></fa> Coach
     </nuxt-link>
     <nuxt-link to="/user/settings"><fa icon="cogs"></fa></nuxt-link>
     <div @click="$emit('logOut')" 

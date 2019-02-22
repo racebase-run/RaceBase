@@ -48,7 +48,7 @@ export function getDateFromUrl(s) {
 export function getPace(time, distance) {
   if (!time || !distance) 
     return "0:00"
-  let hm = time
+  let hm = time || "0:00"
   let a = hm.split(':')
   let seconds = (+a[0]) * 60 + (+a[1])
 

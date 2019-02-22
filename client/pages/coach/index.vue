@@ -20,7 +20,7 @@
 
     <div class="d-flex align-items-center" v-else> 
       <ProfilePic class="profile-pic mr-2" :url="athlete.profilePicUrl" />
-      <nuxt-link :to="'/athlete/' + athlete.athlete_id">
+      <nuxt-link :to="'/athlete/' + athlete.athlete_id + '/logs'">
         {{ athlete.name }}
       </nuxt-link>
     </div>
