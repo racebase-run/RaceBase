@@ -66,7 +66,8 @@ form {
         <fa icon="calendar-alt"></fa>
         {{ formattedDate }}
       </div>
-      <fa class="ml-4" icon="times-circle" @click="$emit('close')"></fa>
+      <fa class="ml-4" icon="times-circle" @click="$emit('close')" 
+        v-if="!standalone"></fa>
     </div>
     <div v-if="input.result" class="d-flex align-items-center mb-3">
       <Result :result="input.result" v-if="input.result" class="ml-3"/>
@@ -113,7 +114,7 @@ form {
 const Result = () => import('~/components/Feed/Result')
 import moment from 'moment'
 export default {
-  props: ['close', 'user', 'result'],
+  props: ['close', 'user', 'result', 'standalone'],
   components: { Result },
   data () {
     let date = new Date()

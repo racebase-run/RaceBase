@@ -4,6 +4,7 @@
     :user="user" 
     :result="result"
     @callback="createdPost()"
+    :standalone="true"
   />
   <div class="mt-3 alert alert-primary alert-dismissable" v-if="alert">
     {{ alert }}
