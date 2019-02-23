@@ -5,12 +5,42 @@ var router = express.Router()
 // import models
 var User = require('../models/user')
 var Team = require('../models/team')
+var Result = require('../models/result')
 
 // import authCheck middleware
 var authCheck = require('../auth')
 
 // import extras 
 const uuidv1 = require('uuid/v1')
+
+// get list of all users who have joined the team
+router.get('/:id/users', authCheck, async (req, res) => {
+  let coach = await User.findById(req.userId)
+  if (!coach) res.send("No user found")
+  if (!coach.coach) res.send("You're not a coach")
+  else if (coach.team_id != req.params.id) res.send("This isn't your team")
+  let users = await User.find({ team_id: req.params.id, coach: false || null })
+                        .select({ password: 0, email: 0, emailVer: 0, referrer: 0 }).lean()
+  if (!users) res.send("No users belong to this team")
+  else res.send(users)
+})
+
+// get list of all athletes affiliated with a team
+router.get('/:id/athletes', async (req, res) => {
+  let data = await Result.find({ team_id: req.params.id }).distinct('athlete_id')
+  let athletes = []
+  // iterate through all distinct athlete ID's
+  for (const athlete of data) {
+    let user = await User.findOne({ athlete_id: athlete })
+                        .select({ password: 0, email: 0, emailVer: 0, referrer: 0 })
+                        .lean()
+    // if a user has claimed that ID, push their data to Athletes array
+    if (user) athletes.push(user)
+    // otherwise, just push the athlete ID
+    else athletes.push({ athlete_id: athlete })
+  }
+  res.send(athletes)
+})
 
 router.get('/:id', authCheck, async (req, res) => {
   let user = await User.findById(req.userId)
@@ -81,6 +111,18 @@ router.post('/claim/:id', authCheck, async (req, res) => {
   } 
 })
 
+router.post('/roster/athlete/:id', authCheck, async (req, res) => {
+  let user = await User.findById(req.userId)
+  if (!user.coach) res.send("You are not a coach")
+  else if (!user.team_id) res.send("You haven't claimed a team")
+  else {
+    let team = await Team.findOne({ team_id: user.team_id })
+    team.roster.push(req.params.id)
+    await team.save()
+    res.send("Successfully added athlete to roster")
+  }
+})
+
 router.post('/:id', authCheck, async (req, res) => {
   let user = await User.findById(user_id)
   let team = await Team.findOne({ team_id: req.params.id })
@@ -96,6 +138,19 @@ router.post('/:id', authCheck, async (req, res) => {
   // create team
   let newTeam = await createTeam(user._id, req.params.id)
   res.send(newTeam)
+})
+
+router.delete('/roster/athlete/:id', authCheck, async (req, res) => {
+  let user = await User.findById(req.userId)
+  if (!user.coach) res.send("You are not a coach")
+  else if (!user.team_id) res.send("You haven't claimed a team")
+  else {
+    let team = await Team.findOne({ team_id: user.team_id })
+    let i = team.roster.indexOf(req.params.id)
+    team.roster.splice(i, 1)
+    await team.save()
+    res.send("Successfully removed athlete from roster")
+  }
 })
 
 module.exports = router

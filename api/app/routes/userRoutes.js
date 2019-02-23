@@ -75,13 +75,15 @@ router.get('/athlete/:athlete_id', function(req, res) {
       res.send(err)
 
     else if (user) {
-      user.password = null;
-      user.email = null;
+      delete user.password
+      delete user.email
+      delete user.referrer
+      delete user.emailVer
       res.send(user)
     }
 
     else 
-      res.send(null)
+      res.send({})
 
   })
 })
