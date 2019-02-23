@@ -86,6 +86,14 @@
       }
     }
   } 
+
+  .note {
+    position: absolute;
+    left: 10px;
+    top: 5px;
+    font-weight: 800; 
+    a { color: @bright-blue; }
+  }
 }
 
 .total {
@@ -135,6 +143,11 @@
         <div v-if="entry.sleep" class="sleep"> 
           <fa icon="bed"></fa> {{ entry.sleep }} hrs
         </div>
+
+        <div class="note" v-if="entry.note">
+          <nuxt-link :to="'/athlete/' + athlete.athlete_id + '/log/' + formatDateUrl(moment(entry.date))">!</nuxt-link>
+        </div>
+
       </div> 
       <div class="col d-flex total px-2 align-items-center justify-content-center"> 
         <div> {{ week.totalMileage }} <label> mi </label></div>
