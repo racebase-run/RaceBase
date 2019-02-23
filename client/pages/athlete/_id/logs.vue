@@ -88,7 +88,11 @@
   } 
 }
 
-
+.total {
+  font-weight: 500;
+  font-size: 20px;
+  text-align: center;
+}
 
 </style>
 <template>
@@ -104,9 +108,10 @@
       <div class="col" v-for="day in daysOfWeek"> 
         <strong>{{ day }}</strong>
       </div>
+      <div class="col"> <strong> Total </strong> </div>
     </div>
     <div class="week row" v-for="week in weeks">
-      <div class="col p-3" v-for="entry in week"> 
+      <div class="col p-3" v-for="entry in week.data"> 
         <div class="dom ml-auto" :class="entry.today ? 'today' : ''">
           <nuxt-link :to="'/athlete/' + athlete.athlete_id + '/log/' + formatDateUrl(moment(entry.date))">
             {{ entry.dom }}
@@ -131,6 +136,9 @@
           <fa icon="bed"></fa> {{ entry.sleep }} hrs
         </div>
       </div> 
+      <div class="col d-flex total px-2 align-items-center justify-content-center"> 
+        <div> {{ week.totalMileage }} <label> mi </label></div>
+      </div>
     </div>
   </div>
 </div>
@@ -162,6 +170,15 @@ let sumRuns = function(runs) {
     totalTime: timeDecimalToString(roundToHundredths(totalTime))
   }
 }
+
+let sumWeek = function(week) {
+  var total = 0
+  for (var i = 0, l = week.length; i < l; i++ ) {
+    if (week[i].totalMileage)
+      total += week[i].totalMileage || 0
+  }
+  return Math.round(total * 100) / 100
+} 
 
 import moment from 'moment'
 export default {
@@ -213,7 +230,11 @@ export default {
         return entry
       })
 
-      return week.reverse()
+      // get mileage total for week
+      let totalMileage = sumWeek(week)
+
+      let data = { data: week.reverse(), totalMileage: totalMileage }
+      return data
 
     })
 
@@ -233,15 +254,7 @@ export default {
     },
     moment: function(date) {
       return moment(date)
-    },
-    weeklyMileage: function(week) {
-      var total = 0
-      for (var i = 0, l = week.length; i < l; i++ ) {
-        if (week[i].totalMileage)
-          total += week[i].totalMileage || 0
-      }
-      return Math.round(total * 100) / 100
-    } 
+    }
   }
 }
 </script>
