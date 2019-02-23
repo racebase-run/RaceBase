@@ -7,6 +7,7 @@ h5 {
 
 .fa-pencil-alt, .fa-heartbeat, .fa-bed {
   font-size: 13px;
+  margin-right: 3px;
 }
 
 .fa-heartbeat { color: @pink; }
@@ -14,6 +15,58 @@ h5 {
 
 .note strong {
   color: @blue;
+}
+
+.check {
+  label {
+    margin-bottom: 0;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+}
+
+.run {
+  display: inline-block;
+  border: 1px solid @light-grey;
+  border-radius: 5px;
+
+  .mileage {
+    font-weight: 500; 
+    font-size: 23px;
+    color: @bright-blue;
+  }
+
+  .title {
+    font-size: 20px;
+    font-weight: 500;
+    text-align: center;
+  }
+
+  div {
+    font-size: 18px; 
+    margin: 0 10px;
+    label {
+      font-size: 14px;
+      color: @label-grey;
+      text-transform: uppercase;
+      font-weight: 400; 
+    }
+  }
+
+  .subjectives {
+    font-weight: 500; 
+  }
+
+  .f1 { color: @pink; }
+  .f2 { color: @orange; }
+  .f3 { color: @green; }
+  .f4 { color: @bright-blue; }
+  .f5 { color: @purple; }
+
+}
+
+.other {
+  font-weight: 500;
 }
 
 .weights {
@@ -66,25 +119,30 @@ h5 {
   <div v-if="entry.note" class="note mb-2"> 
     <strong><fa icon="pencil-alt"></fa> Note: </strong> {{ entry.note }}
   </div>
-  <div v-if="entry.runs">
+  <div v-if="entry.runs" class="mt-3">
     <h5> Runs </h5>
-    <div v-for="(run, i) in entry.runs">
-      {{ run.name || 'Run ' + Number(i+1) }}, 
-      {{ run.distance }} mi
-      {{ run.time }} min
-      {{ run.pace }} min / mi
-      {{ run.feel }} / 5 feel
-      {{ run.difficulty }} / 5 difficulty
+    <div v-for="(run, i) in entry.runs" class="run p-2 mr-3 mb-3">
+      <div class="title mb-2"> {{ run.name || 'Run ' + Number(i+1) }}</div>
+      <div class="stats d-flex justify-content-center align-items-center">
+        <div class="mileage"> {{ run.distance }} <label>mi</label> </div>
+        <div> {{ run.time }} <label>min</label> </div>
+        <div> {{ run.pace }} <label>min / mi</label> </div> 
+      </div>
+      <div class="subjectives d-flex justify-content-center">
+        <div :class="'f' + run.feel"> {{ run.feel }} <label> / 5 feel </label> </div>
+        <div :class="'f' + run.difficulty"> {{ run.difficulty }} <label> / 5 difficulty </label> </div>
+      </div>
     </div>
   </div>
 
-  <div class="other">
-    <div> <fa icon="bed"></fa> {{ entry.sleep }} hrs </div>
-    <div> <fa icon="heartbeat"></fa> {{ entry.rhr }} bpm </div>
-  </div>
+  <div class="other d-flex mt-3 mb-4">
+    <div class="sleep mr-2"> <fa icon="bed"></fa> {{ entry.sleep }} hrs </div>
+    <div class="rhr mr-2"> <fa icon="heartbeat"></fa> {{ entry.rhr }} bpm </div>
 
-  <div v-for="(value, key) in entry.checks"> 
-    {{ key }} {{ value }}
+    <div class="check mr-2" v-for="(value, key) in entry.checks">
+      <label class="mr-2">{{ key }}</label> 
+      <input type="checkbox" :value="value" disabled />
+    </div>
   </div>
 
   <div class="weights mt-2" v-if="entry.weights">
