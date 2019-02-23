@@ -68,6 +68,9 @@
     font-weight: 500;
     font-size: 15px;
     text-align: right;
+    & a {
+      color: black;
+    }
     &.today {
       text-align: center;
       border-radius: 100px;
@@ -78,6 +81,9 @@
       line-height: @size;
       width: @size;
       height: @size;
+      & a {
+        color: white;
+      }
     }
   } 
 }
@@ -102,7 +108,9 @@
     <div class="week row" v-for="week in weeks">
       <div class="col p-3" v-for="entry in week"> 
         <div class="dom ml-auto" :class="entry.today ? 'today' : ''">
-          {{ entry.dom }}
+          <nuxt-link :to="'/athlete/' + athlete.athlete_id + '/log/' + formatDateUrl(moment(entry.date))">
+            {{ entry.dom }}
+          </nuxt-link>
         </div>
 
         <div class="mileage mt-2" v-if="entry.totalMileage > 0"> 
@@ -219,6 +227,12 @@ export default {
   methods: { 
     getPace: function(time, distance) {
       return getPace(time, distance)
+    },
+    formatDateUrl: function(moment) {
+      return formatDateUrl(moment)
+    },
+    moment: function(date) {
+      return moment(date)
     },
     weeklyMileage: function(week) {
       var total = 0
