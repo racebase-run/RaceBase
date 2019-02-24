@@ -409,12 +409,17 @@ form {
 
   <div class="settings-section" v-if="!user.coach">
     <div class="settings-label"> Team </div>
-    <div class="d-flex flex-shrink w-50" v-if="!team"> 
+    <div class="d-flex flex-shrink w-50" v-if="!user.team_id"> 
       <input type="text" class="form-control mr-2" v-model="joinCode" placeholder="Join Code" /> 
       <div class="btn btn-primary" @click="joinTeam"> Join </div>
     </div>
-    <div v-else> 
-      Your team's id: {{ team.team_id }}
+    <div class="d-flex align-items-center" v-else>
+      <div class="tag mr-2 mb-0"> 
+        {{ user.team_id }}
+      </div>
+      <div class="btn btn-primary" @click="leaveTeam">
+        Leave
+      </div>
     </div>
   </div>
 
@@ -552,7 +557,11 @@ export default {
     },
     joinTeam: async function() {
       let res = await this.$axios.$post('team/join/' + this.joinCode)
-      console.log(res)
+      this.loadUser()
+    },
+    leaveTeam: async function() {
+      await this.$axios.$post('team/leave')
+      this.loadUser()
     },
     addAlias: function() {
       this.$axios.$post('user/' + this.id + '/alias/' + this.aliasInput)
