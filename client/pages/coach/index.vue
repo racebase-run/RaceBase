@@ -13,6 +13,10 @@ h5 {
   font-size: 18px;
 }
 
+.fa-book-open {
+  font-size: 12px;
+}
+
 .section {
   border-radius: 5px;
   border: 1px solid @light-grey;
@@ -31,6 +35,12 @@ h5 {
     }
   }
 }
+
+.tag {
+  border-radius: 3px; 
+  border: 1px solid @light-grey;
+}
+
 </style>
 <template>
 <div class="mt-3 w-95 mx-auto">
@@ -41,12 +51,15 @@ h5 {
 
     <h5> Active Athletes </h5>
     <div class="active section mb-4">
-      <div v-for="athlete in active" class="athlete d-flex p-2 align-items-center"> 
+      <div v-for="athlete in filteredActive" class="athlete d-flex p-2 align-items-center"> 
         <ProfilePic class="profile-pic mr-2" :url="athlete.profilePicUrl" />
         <div class="ml-2"> 
           <div class="name"> {{ athlete.name }} </div>
           <nuxt-link :to="'/athlete/' + athlete.athlete_id"> 
             @{{ athlete.athlete_id }} 
+          </nuxt-link>
+          <nuxt-link class="ml-2" :to="'/athlete/' + athlete.athlete_id + '/logs'" v-if="athlete.team_id == team.team_id"> 
+            <fa icon="book-open"></fa> Logs
           </nuxt-link>
         </div>
         <div class="ml-auto">           
@@ -58,9 +71,19 @@ h5 {
       </div>
     </div>
 
-    <h5> Unclaimed Athletes </h5>
-    <div v-for="athlete in unclaimed" class="d-flex align-items-center mb-1">
-      <div class="mr-2"> {{ athlete.athlete_id }} </div>
+    <div class="d-flex align-items-center"> 
+      <h5 class="mr-3 mb-0"> Unclaimed Athletes </h5> 
+      <div class="btn btn-outline-primary btn-small" @click="showUnclaimed = !showUnclaimed">
+        {{ showUnclaimed ? 'Hide' : 'Show' }}
+      </div>
+    </div>
+    <div v-if="showUnclaimed">
+      <SearchBar v-model="search" class="mt-3"/>
+      <div v-for="athlete in filteredUnclaimed" class="d-inline-block mr-2 my-1 px-2 py-1 tag">
+        <nuxt-link :to="'/athlete/' + athlete.athlete_id"> 
+          {{ athlete.athlete_id }}
+        </nuxt-link>
+      </div>
     </div>
 
   </div>
@@ -74,6 +97,9 @@ h5 {
           <div class="name"> {{ athlete.name }} </div>
           <nuxt-link :to="'/athlete/' + athlete.athlete_id"> 
             @{{ athlete.athlete_id }} 
+          </nuxt-link>
+          <nuxt-link class="ml-2" :to="'/athlete/' + athlete.athlete_id + '/logs'" v-if="athlete.team_id == team.team_id"> 
+            <fa icon="book-open"></fa> Logs
           </nuxt-link>
         </div>
         <div class="ml-auto">           
@@ -93,9 +119,10 @@ h5 {
 </template>
 <script>
 const ProfilePic = () => import('~/components/User/ProfilePic')
+const SearchBar = () => import('~/components/Search/SearchBar')
 import _ from 'underscore'
 export default {
-  components: { ProfilePic },
+  components: { ProfilePic, SearchBar },
   async asyncData ({ $axios, store }) {
 
     let user = { ...store.state.auth.user }
@@ -108,9 +135,11 @@ export default {
 
     return {
       team: team, 
+      active: active, 
       roster: roster,
       unclaimed: unclaimed, 
-      active: active
+      search: "", 
+      showUnclaimed: false
     }
   }, 
   methods: {
@@ -124,6 +153,18 @@ export default {
     removeFromRoster: async function(athlete_id) {
       await this.$axios.$delete('/team/roster/athlete/' + athlete_id)
       this.loadRoster()
+    }
+  }, 
+  computed: {
+    filteredUnclaimed: function() {
+      return this.unclaimed.filter(athlete => {
+        return athlete.athlete_id.toLowerCase().includes(this.search.toLowerCase())
+      })
+    }, 
+    filteredActive: function() {
+      return this.active.filter(athlete => {
+        return athlete.name != (null || undefined) && !this.roster.some(a => a.name === athlete.name)
+      })
     }
   }
 }
