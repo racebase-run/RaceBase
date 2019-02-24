@@ -8,6 +8,17 @@
   width: @size; height: @size;
 }
 
+.team-name {
+  font-size: 28px;
+  border: none;
+  padding-left: 0; 
+  margin-left: 0; 
+}
+
+h2 {
+  font-size: 20px; 
+}
+
 h5 {
   text-transform: uppercase;
   font-size: 18px;
@@ -44,9 +55,13 @@ h5 {
 </style>
 <template>
 <div class="mt-3 w-95 mx-auto">
-<h2> {{ team.team_id }} </h2>
+<div class="d-flex align-items-center mb-2">
+  <input v-on:keyup.enter="updateName" type="text" v-model="team.name" class="team-name form-control" placeholder="Enter your team's name..." /> 
+  <div class="btn btn-small btn-primary" @click="updateName">Save</div>
+</div>
+<h2> @{{ team.team_id }} </h2>
 
-<div class="row mt-3"> 
+<div class="row mt-4"> 
   <div class="col">
 
     <h5> Active Athletes </h5>
@@ -153,6 +168,9 @@ export default {
     removeFromRoster: async function(athlete_id) {
       await this.$axios.$delete('/team/roster/athlete/' + athlete_id)
       this.loadRoster()
+    }, 
+    updateName: async function() {
+      let res = await this.$axios.$put('/team/' + this.team.team_id, { name: this.team.name })
     }
   }, 
   computed: {
