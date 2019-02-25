@@ -111,6 +111,7 @@ export default {
       }
     }
   }, 
+  middleware: 'coach',
   methods: {
     loadSchedule: async function() {
       let team = await this.$axios.$get('/team/' + this.user.team_id)

@@ -59,7 +59,19 @@ h5 {
   <input v-on:keyup.enter="updateName" type="text" v-model="team.name" class="team-name form-control" placeholder="Enter your team's name..." /> 
   <div class="btn btn-small btn-primary" @click="updateName">Save</div>
 </div>
-<h2> @{{ team.team_id }} </h2>
+
+<div class="d-flex align-items-center">
+  <h2> 
+    <nuxt-link :to="'/team/' + team.team_id"> 
+      @{{ team.team_id }}
+    </nuxt-link> 
+  </h2>
+
+  <nuxt-link to="/coach/schedule" class="ml-auto btn btn-outline-primary">
+    <fa icon="calendar-alt"></fa> 
+    Edit Meet Schedule
+  </nuxt-link>
+</div>
 
 <div class="row mt-4"> 
   <div class="col">
@@ -157,6 +169,7 @@ export default {
       showUnclaimed: false
     }
   }, 
+  middleware: 'coach',
   methods: {
     loadRoster: async function() {
       this.roster = await this.$axios.$get('/team/' + this.team.team_id + '/roster')

@@ -6,7 +6,12 @@
   </h1>
   <h1 v-else>There is no team with that ID!</h1>
 
-  <h5 class="mb-2"> @{{ teamId }} </h5>
+  <div class="d-flex align-items-center mb-2">
+    <h5 class="mr-4 mb-0"> @{{ teamId }} </h5>
+    <nuxt-link :to="'/team/' + teamId + '/schedule'">
+      <fa icon="calendar-alt"></fa> Meet Schedule
+    </nuxt-link>
+  </div>
 
   <div v-if="results.length != 0" class="btn-group-wrap team-dropdowns">
 
