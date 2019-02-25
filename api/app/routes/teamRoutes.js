@@ -12,6 +12,12 @@ var authCheck = require('../auth')
 
 // import extras 
 const uuidv1 = require('uuid/v1')
+const fs = require('fs')
+const Handlebars = require('handlebars')
+
+// import mail stuff
+const sgMail = require('@sendgrid/mail')
+sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 
 // get list of all athletes on team's current roster
 router.get('/:id/roster', authCheck, async (req, res) => {
@@ -87,6 +93,7 @@ router.post('/leave/', authCheck, async (req, res) => {
   res.send("Left team")
 })
 
+// small function to create a team with a join code
 let createTeam = async (user_id, team_id) => {
   // create join code
   let join_code = uuidv1()
@@ -101,6 +108,40 @@ let createTeam = async (user_id, team_id) => {
   let newTeam = await Team.create(props)
   return newTeam
 }
+
+let sendInviteEmail = async function(email, coachname, firstname, joincode, teamname, callback) {
+  fs.readFile('./mail_templates/invite.hbs', 'utf8', (err, source) => {
+    let template = Handlebars.compile(source)
+    let data = { 
+      teamname: teamname, 
+      coachname: coachname, 
+      firstname: firstname, 
+      joincode: joincode
+    }
+    let content = template(data)
+    const msg = {
+      to: email,
+      from: { email: 'donotreply@racebase.io', name: 'Coach ' + coachname + ' - RaceBase' },
+      subject: 'Invitation to join ' + teamname, 
+      html: content
+    };
+    sgMail.send(msg)
+    callback()
+  })
+}
+
+router.post('/invite/:athlete_id', authCheck, async (req, res) => {
+  let coach = await User.findById(req.userId)
+  // make sure user is a coach
+  if (!coach.coach) res.send("You're not a coach")
+  // if they're all good, get the athlete and team
+  let athlete = await User.findOne({ athlete_id: req.params.athlete_id })
+  let team = await Team.findOne({ team_id: coach.team_id })
+  let teamname = team.name ? team.name : team.team_id
+  sendInviteEmail(athlete.email, coach.name, athlete.name.split(' ')[0], team.join_code, team.name, () => {
+    res.send("Successfully invited athlete to join team")
+  })
+})
 
 router.post('/claim/:id', authCheck, async (req, res) => {
   let user = await User.findById(req.userId)
@@ -156,7 +197,7 @@ router.post('/:id', authCheck, async (req, res) => {
 })
 
 router.put('/:id', authCheck, async (req, res) => {
-  let user = await User.findById(user_id)
+  let user = await User.findById(req.userId)
   // make sure user is a coach
   if (!user.coach) res.send("You are not a coach")
   // make sure user owns this team
@@ -165,7 +206,7 @@ router.put('/:id', authCheck, async (req, res) => {
   delete req.body.join_code
   delete req.body.coach
   // then, update their team and send updated object
-  let team = await Team.findOneAndUpdate({ team_id: req.params.id }, req.body)
+  let team = await Team.findOneAndUpdate({ team_id: req.params.id }, req.body, { new: true })
   res.send(team)
 })
 
