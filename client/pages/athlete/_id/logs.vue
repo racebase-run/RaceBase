@@ -206,7 +206,8 @@ export default {
     // get athlete's profile data
     let athlete = await $axios.$get('/user/athlete/' + params.id)
 
-    let mon = moment().startOf('isoWeek')
+    // subtract a day from Monday since we add one at the start of the loop
+    let mon = moment().startOf('isoWeek').subtract(1, 'days')
     let daysOfWeek = Array.apply(null, Array(7)).map((_, i) => {
       return mon.add(1, 'days').format("ddd")
     })

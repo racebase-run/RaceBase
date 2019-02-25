@@ -79,7 +79,7 @@ h5 {
         </div>
         <div class="ml-auto">           
           <div v-if="athlete.team_id == team.team_id" class="btn btn-outline-primary btn-small" @click="addToRoster(athlete.athlete_id)"> Add to Roster </div>
-          <div v-else-if="athlete.name" class="btn btn-outline-primary btn-small">
+          <div v-else-if="athlete.name" class="btn btn-outline-primary btn-small" @click="inviteAthlete(athlete.athlete_id)">
             Invite
           </div>
         </div>
@@ -171,6 +171,10 @@ export default {
     }, 
     updateName: async function() {
       let res = await this.$axios.$put('/team/' + this.team.team_id, { name: this.team.name })
+    }, 
+    inviteAthlete: async function(athlete_id) {
+      let res = await this.$axios.$post('/team/invite/' + athlete_id)
+      console.log(res)
     }
   }, 
   computed: {
