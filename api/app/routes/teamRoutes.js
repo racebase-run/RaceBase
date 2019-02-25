@@ -86,6 +86,15 @@ router.post('/join/:code', authCheck, async (req, res) => {
   res.send("Joined team")
 })
 
+router.post('/schedule', authCheck, async(req, res) => {
+  let user = await User.findById(req.userId)
+  if (!user.coach) res.send("You're not a coach")
+  let team = Team.findOne({ team_id: user.team_id })
+  team.schedule.push(req.body)
+  await team.save()
+  res.send("Successfully added meet to schedule")
+})
+
 router.post('/leave/', authCheck, async (req, res) => {
   let user = await User.findById(req.userId)
   user.team_id = null

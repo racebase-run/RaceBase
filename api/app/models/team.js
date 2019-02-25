@@ -5,7 +5,12 @@ var teamSchema = mongoose.Schema({
   join_code: String, // generated UUID to give to athletes to join team
   coach: String, // coach's _id
   roster: [String], // array of current athlete's athlete IDs
-  name: String // team name
+  name: String, // team name
+  schedule: [{
+    name: String, 
+    location: String, 
+    date: Date
+  }]
 })
 
 module.exports = mongoose.model('Team', teamSchema);
