@@ -11,6 +11,7 @@ var Result = require('../models/result')
 var authCheck = require('../auth')
 
 // import extras 
+const moment = require('moment')
 const uuidv1 = require('uuid/v1')
 const fs = require('fs')
 const Handlebars = require('handlebars')
@@ -230,6 +231,27 @@ router.delete('/roster/athlete/:id', authCheck, async (req, res) => {
     await team.save()
     res.send("Successfully removed athlete from roster")
   }
+})
+
+router.delete('/schedule/:date', authCheck, async (req, res) => {
+  // make sure date is valid
+  let date = moment(req.params.date, 'DDMMYYYY')
+  if (!date.isValid()) res.send("Invalid date")
+
+  // make sure user is a coach
+  let user = await User.findById(req.userId)
+  if (!user.coach) res.send("You're not a coach")
+  let team = await Team.findOne({ team_id: user.team_id })
+  
+  // get index of element to be removed
+  let i = team.schedule.map((e) => { 
+    return moment(e.date).format('DDMMYYYY') 
+  }).indexOf(req.params.date)
+
+  // remove element from array and save
+  team.schedule.splice(i, 1)
+  await team.save()
+  res.send("Successfully removed meet from schedule")
 })
 
 module.exports = router
