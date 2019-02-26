@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import { interopDefault } from './utils'
 
 const _14020fcc = () => interopDefault(import('../pages/about.vue' /* webpackChunkName: "pages/about" */))
+const _8e42a714 = () => interopDefault(import('../pages/blog/index.vue' /* webpackChunkName: "pages/blog/index" */))
 const _0927d6d3 = () => interopDefault(import('../pages/changelog.vue' /* webpackChunkName: "pages/changelog" */))
 const _424f7bc8 = () => interopDefault(import('../pages/coach/index.vue' /* webpackChunkName: "pages/coach/index" */))
 const _ca9b4a84 = () => interopDefault(import('../pages/contribute.vue' /* webpackChunkName: "pages/contribute" */))
@@ -34,6 +35,7 @@ const _ddd457e2 = () => interopDefault(import('../pages/user/log/_date.vue' /* w
 const _fc1dc5bc = () => interopDefault(import('../pages/user/resetPassword/_token.vue' /* webpackChunkName: "pages/user/resetPassword/_token" */))
 const _7af55046 = () => interopDefault(import('../pages/user/verify/_token.vue' /* webpackChunkName: "pages/user/verify/_token" */))
 const _3c8511ac = () => interopDefault(import('../pages/athlete/_id/index.vue' /* webpackChunkName: "pages/athlete/_id/index" */))
+const _99ae5888 = () => interopDefault(import('../pages/blog/_url.vue' /* webpackChunkName: "pages/blog/_url" */))
 const _b6044148 = () => interopDefault(import('../pages/post/_id.vue' /* webpackChunkName: "pages/post/_id" */))
 const _e1b6b462 = () => interopDefault(import('../pages/search/_query.vue' /* webpackChunkName: "pages/search/_query" */))
 const _b465ad76 = () => interopDefault(import('../pages/athlete/_id/logs.vue' /* webpackChunkName: "pages/athlete/_id/logs" */))
@@ -108,6 +110,10 @@ export function createRouter() {
       path: "/about",
       component: _14020fcc,
       name: "about"
+    }, {
+      path: "/blog",
+      component: _8e42a714,
+      name: "blog"
     }, {
       path: "/changelog",
       component: _0927d6d3,
@@ -232,6 +238,10 @@ export function createRouter() {
       path: "/athlete/:id?",
       component: _3c8511ac,
       name: "athlete-id"
+    }, {
+      path: "/blog/:url",
+      component: _99ae5888,
+      name: "blog-url"
     }, {
       path: "/post/:id?",
       component: _b6044148,
