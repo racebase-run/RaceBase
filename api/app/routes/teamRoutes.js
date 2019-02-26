@@ -22,22 +22,24 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 
 // get list of all athletes on team's current roster
 router.get('/:id/roster', authCheck, async (req, res) => {
-  let coach = await User.findById(req.userId)
-  if (!coach) res.send("No user found")
-  if (!coach.coach) res.send("You're not a coach")
-  else if (coach.team_id != req.params.id) res.send("This isn't your team")
-  let team = await Team.findOne({ team_id: coach.team_id })
-  let athletes = []
-  for (const athlete of team.roster) {
-    let user = await User.findOne({ athlete_id: athlete, coach: false || null })
-                        .select({ password: 0, email: 0, emailVer: 0, referrer: 0 })
-                        .lean()
-    // if a user has claimed that ID, push their data to Athletes array
-    if (user) athletes.push(user)
-    // otherwise, just push the athlete ID
-    else athletes.push({ athlete_id: athlete })
-  }
-  res.send(athletes)
+  try {
+    let coach = await User.findById(req.userId)
+    if (!coach) res.send("No user found")
+    if (!coach.coach) res.send("You're not a coach")
+    else if (coach.team_id != req.params.id) res.send("This isn't your team")
+    let team = await Team.findOne({ team_id: coach.team_id })
+    let athletes = []
+    for (const athlete of team.roster) {
+      let user = await User.findOne({ athlete_id: athlete, coach: false || null })
+                          .select({ password: 0, email: 0, emailVer: 0, referrer: 0 })
+                          .lean()
+      // if a user has claimed that ID, push their data to Athletes array
+      if (user) athletes.push(user)
+      // otherwise, just push the athlete ID
+      else athletes.push({ athlete_id: athlete })
+    }
+    res.send(athletes)
+  } catch (e) { res.send(e) }
 })
 
 // get list of all athletes affiliated with a team
