@@ -24,7 +24,8 @@ module.exports = {
     link: [
       { rel: 'icon', type: 'image/png', href: '/images/favicon-320.png' }, 
       { rel: 'apple-touch-icon', sizes: '180x180', href: '/images/touch-icon-iphone-retina.png' },
-      { rel: 'apple-touch-icon', sizes: '167x167', href: '/images/touch-icon-iphone-retina.png' }
+      { rel: 'apple-touch-icon', sizes: '167x167', href: '/images/touch-icon-iphone-retina.png' }, 
+      { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Source+Code+Pro' }
     ], 
     script: [
       { src: 'https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js' },
