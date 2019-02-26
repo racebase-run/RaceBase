@@ -17,6 +17,7 @@ import nuxt_plugin_templatesplugin6e691094_447c6c5e from 'nuxt_plugin_templatesp
 import nuxt_plugin_bootstrapvue_7452b7c8 from 'nuxt_plugin_bootstrapvue_7452b7c8' // Source: ./bootstrap-vue.js (mode: 'all')
 import nuxt_plugin_axios_b1f5fa26 from 'nuxt_plugin_axios_b1f5fa26' // Source: ./axios.js (mode: 'all')
 import nuxt_plugin_axios_3566aa80 from 'nuxt_plugin_axios_3566aa80' // Source: ../plugins/axios (mode: 'all')
+import nuxt_plugin_clipboard_106d46e0 from 'nuxt_plugin_clipboard_106d46e0' // Source: ../plugins/clipboard (mode: 'all')
 
 // Component: <NoSsr>
 Vue.component(NoSsr.name, NoSsr)
@@ -160,6 +161,7 @@ async function createApp(ssrContext) {
   if (typeof nuxt_plugin_bootstrapvue_7452b7c8 === 'function') await nuxt_plugin_bootstrapvue_7452b7c8(app.context, inject)
   if (typeof nuxt_plugin_axios_b1f5fa26 === 'function') await nuxt_plugin_axios_b1f5fa26(app.context, inject)
   if (typeof nuxt_plugin_axios_3566aa80 === 'function') await nuxt_plugin_axios_3566aa80(app.context, inject)
+  if (typeof nuxt_plugin_clipboard_106d46e0 === 'function') await nuxt_plugin_clipboard_106d46e0(app.context, inject)
 
   if (process.client) {
     if (typeof nuxt_plugin_googleanalytics_0a632f19 === 'function') await nuxt_plugin_googleanalytics_0a632f19(app.context, inject)

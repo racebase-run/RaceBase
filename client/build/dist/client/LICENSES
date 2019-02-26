@@ -90,3 +90,10 @@ object-assign
 */
 
 /*! https://mths.be/punycode v1.4.1 by @mathias */
+
+/*!
+ * clipboard.js v2.0.4
+ * https://zenorocha.github.io/clipboard.js
+ * 
+ * Licensed MIT © Zeno Rocha
+ */

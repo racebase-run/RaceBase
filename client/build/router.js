@@ -4,6 +4,7 @@ import { interopDefault } from './utils'
 
 const _14020fcc = () => interopDefault(import('../pages/about.vue' /* webpackChunkName: "pages/about" */))
 const _0927d6d3 = () => interopDefault(import('../pages/changelog.vue' /* webpackChunkName: "pages/changelog" */))
+const _424f7bc8 = () => interopDefault(import('../pages/coach/index.vue' /* webpackChunkName: "pages/coach/index" */))
 const _ca9b4a84 = () => interopDefault(import('../pages/contribute.vue' /* webpackChunkName: "pages/contribute" */))
 const _667a3f8c = () => interopDefault(import('../pages/developers.vue' /* webpackChunkName: "pages/developers" */))
 const _6b54b02f = () => interopDefault(import('../pages/feed.vue' /* webpackChunkName: "pages/feed" */))
@@ -15,23 +16,29 @@ const _493ce13b = () => interopDefault(import('../pages/roadmap.vue' /* webpackC
 const _3685e82c = () => interopDefault(import('../pages/signup/index.vue' /* webpackChunkName: "pages/signup/index" */))
 const _4490ae74 = () => interopDefault(import('../pages/terms.vue' /* webpackChunkName: "pages/terms" */))
 const _1b912761 = () => interopDefault(import('../pages/welcome.vue' /* webpackChunkName: "pages/welcome" */))
+const _369ce686 = () => interopDefault(import('../pages/coach/schedule.vue' /* webpackChunkName: "pages/coach/schedule" */))
 const _fd5766e6 = () => interopDefault(import('../pages/races/notfound.vue' /* webpackChunkName: "pages/races/notfound" */))
 const _54aea296 = () => interopDefault(import('../pages/signup/claim.vue' /* webpackChunkName: "pages/signup/claim" */))
 const _252ca980 = () => interopDefault(import('../pages/team/notfound.vue' /* webpackChunkName: "pages/team/notfound" */))
 const _2d3343b4 = () => interopDefault(import('../pages/user/settings.vue' /* webpackChunkName: "pages/user/settings" */))
 const _7ae0ae31 = () => interopDefault(import('../pages/new/result/success.vue' /* webpackChunkName: "pages/new/result/success" */))
+const _0b8119e1 = () => interopDefault(import('../pages/signup/coach/claim.vue' /* webpackChunkName: "pages/signup/coach/claim" */))
 const _3819db20 = () => interopDefault(import('../pages/user/log/week/_date.vue' /* webpackChunkName: "pages/user/log/week/_date" */))
 const _370e2768 = () => interopDefault(import('../pages/new/post/_resultId.vue' /* webpackChunkName: "pages/new/post/_resultId" */))
 const _e9c2c9ce = () => interopDefault(import('../pages/new/result/_raceId.vue' /* webpackChunkName: "pages/new/result/_raceId" */))
 const _7bbed076 = () => interopDefault(import('../pages/news/post/_name.vue' /* webpackChunkName: "pages/news/post/_name" */))
 const _5f332bf2 = () => interopDefault(import('../pages/races/all/_page.vue' /* webpackChunkName: "pages/races/all/_page" */))
 const _23a0fee5 = () => interopDefault(import('../pages/user/content/_page.vue' /* webpackChunkName: "pages/user/content/_page" */))
+const _55bfcb94 = () => interopDefault(import('../pages/user/join/_joincode.vue' /* webpackChunkName: "pages/user/join/_joincode" */))
 const _ddd457e2 = () => interopDefault(import('../pages/user/log/_date.vue' /* webpackChunkName: "pages/user/log/_date" */))
 const _fc1dc5bc = () => interopDefault(import('../pages/user/resetPassword/_token.vue' /* webpackChunkName: "pages/user/resetPassword/_token" */))
 const _7af55046 = () => interopDefault(import('../pages/user/verify/_token.vue' /* webpackChunkName: "pages/user/verify/_token" */))
-const _d7b3442e = () => interopDefault(import('../pages/athlete/_id.vue' /* webpackChunkName: "pages/athlete/_id" */))
+const _3c8511ac = () => interopDefault(import('../pages/athlete/_id/index.vue' /* webpackChunkName: "pages/athlete/_id/index" */))
 const _b6044148 = () => interopDefault(import('../pages/post/_id.vue' /* webpackChunkName: "pages/post/_id" */))
 const _e1b6b462 = () => interopDefault(import('../pages/search/_query.vue' /* webpackChunkName: "pages/search/_query" */))
+const _b465ad76 = () => interopDefault(import('../pages/athlete/_id/logs.vue' /* webpackChunkName: "pages/athlete/_id/logs" */))
+const _13feaa06 = () => interopDefault(import('../pages/team/_id/schedule.vue' /* webpackChunkName: "pages/team/_id/schedule" */))
+const _e8722448 = () => interopDefault(import('../pages/athlete/_id/log/_date.vue' /* webpackChunkName: "pages/athlete/_id/log/_date" */))
 const _5bdb17c6 = () => interopDefault(import('../pages/races/_id/_gender/_event.vue' /* webpackChunkName: "pages/races/_id/_gender/_event" */))
 const _727679b7 = () => interopDefault(import('../pages/team/_id/_gender/_year.vue' /* webpackChunkName: "pages/team/_id/_gender/_year" */))
 const _33b9ea91 = () => interopDefault(import('../pages/index.vue' /* webpackChunkName: "pages/index" */))
@@ -106,6 +113,10 @@ export function createRouter() {
       component: _0927d6d3,
       name: "changelog"
     }, {
+      path: "/coach",
+      component: _424f7bc8,
+      name: "coach"
+    }, {
       path: "/contribute",
       component: _ca9b4a84,
       name: "contribute"
@@ -150,6 +161,10 @@ export function createRouter() {
       component: _1b912761,
       name: "welcome"
     }, {
+      path: "/coach/schedule",
+      component: _369ce686,
+      name: "coach-schedule"
+    }, {
       path: "/races/notfound",
       component: _fd5766e6,
       name: "races-notfound"
@@ -169,6 +184,10 @@ export function createRouter() {
       path: "/new/result/success",
       component: _7ae0ae31,
       name: "new-result-success"
+    }, {
+      path: "/signup/coach/claim",
+      component: _0b8119e1,
+      name: "signup-coach-claim"
     }, {
       path: "/user/log/week/:date?",
       component: _3819db20,
@@ -194,6 +213,10 @@ export function createRouter() {
       component: _23a0fee5,
       name: "user-content-page"
     }, {
+      path: "/user/join/:joincode?",
+      component: _55bfcb94,
+      name: "user-join-joincode"
+    }, {
       path: "/user/log/:date?",
       component: _ddd457e2,
       name: "user-log-date"
@@ -207,7 +230,7 @@ export function createRouter() {
       name: "user-verify-token"
     }, {
       path: "/athlete/:id?",
-      component: _d7b3442e,
+      component: _3c8511ac,
       name: "athlete-id"
     }, {
       path: "/post/:id?",
@@ -217,6 +240,18 @@ export function createRouter() {
       path: "/search/:query?",
       component: _e1b6b462,
       name: "search-query"
+    }, {
+      path: "/athlete/:id?/logs",
+      component: _b465ad76,
+      name: "athlete-id-logs"
+    }, {
+      path: "/team/:id?/schedule",
+      component: _13feaa06,
+      name: "team-id-schedule"
+    }, {
+      path: "/athlete/:id?/log/:date?",
+      component: _e8722448,
+      name: "athlete-id-log-date"
     }, {
       path: "/races/:id?/:gender?/:event?",
       component: _5bdb17c6,
