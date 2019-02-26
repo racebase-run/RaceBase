@@ -473,14 +473,14 @@ export default {
       if (user.following)
         following = user.following.includes(params.id)
     }
-    let athlete = await $axios.$get('user/athlete/' + params.id)
+    let athlete = await $axios.$get('user/athlete/' + params.id) || {}
 
     let results = await $axios.$get('result/list/athlete/' + params.id)
 
     if (!results || results.length < 1)
       redirect('/notfound')
 
-    let name = athlete ? athlete.name : results[0].athlete
+    let name = athlete.name || results[0].athlete
     let id = params.id
 
     for (var index in results) {
