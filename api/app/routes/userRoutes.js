@@ -4,6 +4,7 @@ var router = express.Router()
 var Race = require('../models/race')
 var Result = require('../models/result')
 var User = require('../models/user')
+const Team = require('../models/team')
 
 var moment = require('moment')
 var bcrypt = require('bcryptjs')
@@ -545,16 +546,25 @@ router.delete('/:id/alias/:alias', authCheck, function(req, res) {
   })
 });
 
-router.delete('/:_id', authCheck, function(req, res) {
-
+router.delete('/:_id', authCheck, async (req, res) => {
   if (req.userId == req.params._id) {
 
-    User.remove({ _id : req.params._id }, function(err, user) {
-      if (err)
-        res.send(err);
-      else 
-        res.send("Successfully deleted.");
-    });
+    try {
+
+      let user = await User.findById(req.userId)
+      if (user.coach) {
+        let team = await Team.findOne({ team_id: user.team_id })
+        if (team) { team.coach = null; await team.save() }
+      }
+
+      User.remove({ _id : req.params._id }, function(err, user) {
+        if (err)
+          res.send(err);
+        else 
+          res.send("Successfully deleted.");
+      });
+
+    } catch (e) { res.send(e) }
 
   } else {
     res.status(403).send("You are not authorized to delete this user.");

@@ -141,16 +141,20 @@ let sendInviteEmail = async function(email, coachname, firstname, joincode, team
 }
 
 router.post('/invite/:athlete_id', authCheck, async (req, res) => {
-  let coach = await User.findById(req.userId)
-  // make sure user is a coach
-  if (!coach.coach) res.send("You're not a coach")
-  // if they're all good, get the athlete and team
-  let athlete = await User.findOne({ athlete_id: req.params.athlete_id })
-  let team = await Team.findOne({ team_id: coach.team_id })
-  let teamname = team.name ? team.name : team.team_id
-  sendInviteEmail(athlete.email, coach.name, athlete.name.split(' ')[0], team.join_code, team.name, () => {
-    res.send("Successfully invited athlete to join team")
-  })
+  try {
+    let coach = await User.findById(req.userId)
+    // make sure user is a coach
+    if (!coach.coach) res.send("You're not a coach")
+    // if they're all good, get the athlete and team
+    let athlete = await User.findOne({ athlete_id: req.params.athlete_id })
+    let team = await Team.findOne({ team_id: coach.team_id })
+    let teamname = team.name ? team.name : team.team_id
+    sendInviteEmail(athlete.email, coach.name, athlete.name.split(' ')[0], team.join_code, team.name, () => {
+      res.send("Successfully invited athlete to join team")
+    })
+  } catch(err) {
+    res.send(err)
+  }
 })
 
 router.post('/claim/:id', authCheck, async (req, res) => {
@@ -162,7 +166,7 @@ router.post('/claim/:id', authCheck, async (req, res) => {
 
     // get Team object if one exists; if not, create one
     let team = await Team.findOne({ team_id: team_id })
-    if (!team) team = createTeam(user._id, team_id)   
+    if (!team) team = createTeam(req.userId, team_id)   
 
     // check if there's a coach who owns this team already
     let taken = await User.findOne({ team_id: team_id, coach: true })
