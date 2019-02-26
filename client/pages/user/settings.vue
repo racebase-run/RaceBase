@@ -341,18 +341,17 @@ form {
     <div class="settings-label">Email</div>
 
     <div>
-      <div class="input-group mb-2">
+      <form class="input-group mb-2" @submit.prevent="updateEmail">
         <input v-model="user.email" type="email" 
-          placeholder="Change your email..." class="form-control auto-width-input">
-        </input>
+          placeholder="Change your email..." class="form-control auto-width-input" />
 
         <span class="input-group-append">
-          <div class="btn btn-outline-dark" @click="updateEmail">
+          <button type="submit" class="btn btn-outline-dark">
             <fa :icon="user.email == currentEmail ? 'check' : 'save'"></fa>
-          </div>
+          </button>
         </span>
 
-      </div>
+      </form>
     </div>
 
     <div v-if="emailMessage">{{ emailMessage }}</div>

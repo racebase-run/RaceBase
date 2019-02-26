@@ -120,6 +120,7 @@
     </div>
     <div class="week row" v-for="week in weeks">
       <div class="col p-3" v-for="entry in week.data"> 
+        <div v-if="!entry.runs && !entry.totalMileage" class="py-5"></div>
         <div class="dom ml-auto" :class="entry.today ? 'today' : ''">
           <nuxt-link :to="'/athlete/' + athlete.athlete_id + '/log/' + formatDateUrl(moment(entry.date))">
             {{ entry.dom }}

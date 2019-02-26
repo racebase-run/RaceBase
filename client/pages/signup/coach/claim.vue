@@ -4,6 +4,7 @@
 <nuxt-link class="btn btn-default mb-3 d-inline-block ml-3" to="/welcome">
   Skip
 </nuxt-link>
+<div class="mb-3"> Search for your team below and claim it to get started. </div>
 <CoachClaimSearch />
 </div>
 </template>

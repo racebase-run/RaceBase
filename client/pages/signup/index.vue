@@ -157,7 +157,10 @@ export default {
               email: this.input.email, 
               password: this.input.password
             })
-            this.$router.push('/signup/claim')
+            if (this.input.coach)
+              this.$router.push('/signup/coach/claim')
+            else
+              this.$router.push('/signup/claim')
           }
         })
       }
