@@ -118,28 +118,6 @@
   max-width: 100%
 }
 
-.user {
-  h3 {
-    font-size: 18px;
-    font-weight: normal;
-    text-align: left;
-  }
-
-  h4 {
-    font-size: 14px;
-  }
-
-  .profile-pic {
-    @size: 50px;
-    width: @size;
-    height: @size;
-    margin: 0 auto;
-    border-radius: 7px;
-    overflow: hidden;
-  }
-
-}
-
 .links {
 
   text-align: center;
