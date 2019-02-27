@@ -22,6 +22,7 @@ p {
 
 .more {
   font-style: italic;
+  text-align: center; 
 }
 
 h2 {
@@ -43,6 +44,7 @@ h2 {
 .graphic {
   display: block;
   width: 85%;
+  max-width: 350px;
 }
 
 .profile-pic {
@@ -97,8 +99,9 @@ h3 {
 
 h4 {
   text-transform: uppercase;
-  font-size: 14px;
-  margin-bottom: 12px;
+  font-size: 16px;
+  margin-bottom: 15px;
+  text-align: center; 
 }
 
 .logo {
@@ -152,16 +155,14 @@ h4 {
   }
 
   h5 { 
-    font-size: 16px;
+    font-size: 18px;
     font-weight: normal;
-    @media (min-width: @large) { 
-      font-size: 18px;
-    }
+    a { color: @bright-blue; }
  }
 
   .metadata {
     text-transform: uppercase;
-    font-size: 13px;
+    font-size: 14px;
   }
 }
 
@@ -209,7 +210,7 @@ h4 {
       <nuxt-link to="login" class="btn btn-default"> Log In </nuxt-link>
     </div>
 
-    <div class="user mt-3 mr-3" v-if="isLoggedIn">
+    <div class="user mt-3 mr-md-3 mx-auto" v-if="isLoggedIn">
       <UserWidget :user="user" @logOut="logOut"/>
     </div>
       
@@ -225,7 +226,7 @@ h4 {
       </p>
     </div>
     
-    <div class="col-md-5 col-12">
+    <div class="col-md-5 col-12 mx-auto mx-md-0 mt-3 mt-md-0">
       <div class="races mb-4">
         <h4>Recent Races</h4>
         <div v-for="race in races" class="race row mb-2">
@@ -245,14 +246,14 @@ h4 {
             </div>
           </div>
         </div>
-        <nuxt-link class="more ml-2" to="/races/all">More Races</nuxt-link>
+        <nuxt-link class="more mt-3 mx-auto d-block" to="/races/all">More Races</nuxt-link>
       </div>
     </div>
   </div>
 
   <div class="row mb-5 mx-auto">
     <div class="col-md-5 col-12 align-items-center d-flex"> 
-      <img class="graphic" src="/images/logs.png" />
+      <img class="graphic mx-auto mx-md-0 mb-5 mb-md-0" src="/images/logs.png" />
     </div>
 
     <div class="col-md-7 col-12">
@@ -265,7 +266,7 @@ h4 {
 
   </div>
 
-  <div class="row mb-5 mx-auto">
+  <div class="row mb-5 mx-auto pb-5">
     <div class="col-md-7 col-12">
       <h2> Coaching Tools </h2>
       <p> 
@@ -274,7 +275,7 @@ h4 {
     </div>
 
     <div class="col-md-5 col-12 align-items-center d-flex"> 
-      <img class="graphic ml-auto" src="/images/coaching.png" />
+      <img class="graphic ml-md-auto mx-auto mt-md-0 mt-5" src="/images/coaching.png" />
     </div>
   </div>
 
