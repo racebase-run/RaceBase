@@ -24,26 +24,25 @@ p {
   font-style: italic;
 }
 
-.user {
-  
+h2 {
+  text-transform: uppercase;
+}
+
+.nav {
   margin: 0 auto;
-
-  .username, .name {
-    width: 100%;
-    display: block;
-    text-align: left;
+  text-align: center;
+  .link {
+    color: @bright-blue;
+    font-size: 19px;
+    text-align: center;
+    padding: 0 13px;
+    display: inline-block;
   }
+}
 
-  .username {
-    font-size: 14px;
-  }
-
-  .links {
-    a {
-      margin: 6px;
-      font-size: 14px;
-    }
-  }
+.graphic {
+  display: block;
+  width: 85%;
 }
 
 .profile-pic {
@@ -180,7 +179,12 @@ h4 {
 <div class="container">
   <div class="header row">
     <h1> <img class="logo" src="/images/logo.svg"> RaceBase </h1>
-    <h2> Community sourced running results </h2>
+
+    <div class="nav mb-3">
+      <nuxt-link class="link" to="/about"> About </nuxt-link>
+      <nuxt-link class="link" to="/roadmap"> Roadmap </nuxt-link>
+      <nuxt-link class="link" to="/blog"> Blog </nuxt-link>
+    </div>
 
     <div class="search-container">
       <form class="search-form mb-3" @submit.prevent="search()">
@@ -205,24 +209,23 @@ h4 {
       <nuxt-link to="login" class="btn btn-default"> Log In </nuxt-link>
     </div>
 
-    <div class="user p-3" v-if="isLoggedIn">
+    <div class="user mt-3 mr-3" v-if="isLoggedIn">
       <UserWidget :user="user" @logOut="logOut"/>
     </div>
       
   </div>
 
-  <div class="row mt-5 mx-auto">
+  <div class="row mt-5 mb-4 mx-auto">
 
-    <div class="col-md-8 col-12 px-0 pr-md-4 pb-4">
-      <h3 class="mb-3">News</h3>
-      <div v-for="(post, index) in posts">
-        <news-item :story="post" :link="post.link"/>
-      </div>
-      <nuxt-link to="/news" class="more more-stories"> More Stories </nuxt-link>
+    <div class="col-md-7 col-12">
+      <h3> Community Sourced </h3>
+      <h2> Results </h2>
+      <p> 
+        RaceBase was founded upon the idea that the records of our hard earned PR's should not be owned and put under lock and key by a company that doesn't know or care who you are. All RaceBase results are maintained by the community, and anyone can add or edit results… even small meets and time trials can be showcased on your profile. 
+      </p>
     </div>
     
-    <div class="col-md-4 col-12">
-
+    <div class="col-md-5 col-12">
       <div class="races mb-4">
         <h4>Recent Races</h4>
         <div v-for="race in races" class="race row mb-2">
@@ -244,34 +247,34 @@ h4 {
         </div>
         <nuxt-link class="more ml-2" to="/races/all">More Races</nuxt-link>
       </div>
+    </div>
+  </div>
 
-      <div class="about mb-4">
-        <h4>About Us</h4>
-        <p class="mb-2"><b>We believe in the power of community.</b></p>
-        <p class="mb-2">
-          We believe that people are more important than any race, or time, or championship.
-        </p>
-        <nuxt-link to="about" class="more">Learn more</nuxt-link>
-      </div>
+  <div class="row mb-5 mx-auto">
+    <div class="col-md-5 col-12 align-items-center d-flex"> 
+      <img class="graphic" src="/images/logs.png" />
+    </div>
 
-      <div class="support mb-5">
-        <h4>Support RaceBase</h4>
-        <div class="links mb-3">
-          <a 
-            class="btn btn-primary mr-3" 
-            href="https://donorbox.org/racebase""
-            target="_blank" 
-          >
-            Donate
-          </a>
-          <a target="_blank" href="https://www.instagram.com/racebase.io/" class="insta">
-            <fa :icon="['fab', 'instagram']"></fa>
-            racebase.io
-          </a>
-        </div>
-        <p class="mb-2"> Want to help us make RaceBase better? </p>
-        <nuxt-link to="contribute"> Learn about ways you can help </nuxt-link>
-      </div>
+    <div class="col-md-7 col-12">
+      <h3> Comprehensive </h3>
+      <h2> Training Logs </h2>
+      <p> 
+        There’s a lot that goes into running behind the scenes, that someone looking at your records and results alone might not fully understand. From core to weights, sleep to workouts, running is a lifestyle more than just a sport. We’ve tried to embody this principle in our training logs by offering logs that help you keep track of everything that’s important to you - and share those logs with everyone if you so choose. 
+      </p>
+    </div>
+
+  </div>
+
+  <div class="row mb-5 mx-auto">
+    <div class="col-md-7 col-12">
+      <h2> Coaching Tools </h2>
+      <p> 
+        Coaches should have an easy way to see their athletes logs, assign workouts, manage team meet schedules and rosters, and analyze trends in their athletes’ data to make better decisions. So we’ve created some tools that help them do just that. Integrated with our training logs, our tools for coaches allow you to easily manage a team of athletes. 
+      </p>
+    </div>
+
+    <div class="col-md-5 col-12 align-items-center d-flex"> 
+      <img class="graphic ml-auto" src="/images/coaching.png" />
     </div>
   </div>
 
