@@ -21,7 +21,7 @@
     </p>
 
     <a 
-      class="btn btn-primary mr-3" 
+      class="btn btn-primary mb-3" 
       href="https://donorbox.org/racebase""
       target="_blank" 
     >
