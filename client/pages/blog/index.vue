@@ -27,6 +27,11 @@
 <script> 
 export default {
   layout: 'blog', 
+  head () {
+    return {
+      title: "RaceBase Development Blog"
+    }
+  },
   async asyncData({ $axios }) {
     let postlist = await $axios.$get('blog')
 

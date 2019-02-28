@@ -46,6 +46,11 @@
 <script>
 import moment from 'moment'
 export default {
+  head () {
+    return {
+      title: (this.team.name || this.team.team_id) + " Meet Schedule - RaceBase"
+    }
+  },
   async asyncData({ $axios, params }) {
     let team = await $axios.$get('/team/public/' + params.id)
     return {

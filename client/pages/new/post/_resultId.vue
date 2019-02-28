@@ -21,6 +21,11 @@
 <script> 
 const NewPost = () => import('~/components/Feed/NewPost')
 export default {
+  head () {
+    return {
+      title: "New Post - RaceBase"
+    }
+  },
   components: { NewPost }, 
   middleware: 'auth',
   async asyncData({ store, params, $axios }) {

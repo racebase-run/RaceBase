@@ -176,9 +176,17 @@ h5 {
 import moment from 'moment'
 const dateUtil = require('~/utils/date')
 export default {
-  async asyncData({ params, $axios }) {
+  head () {
+    return {
+      title: (this.athlete.name || "?") + ' - ' + this.dateFormatted + ' - RaceBase'
+    }
+  },
+  async asyncData({ params, $axios, redirect }) {
+    let entry
     // get entry for specified day
-    let entry = await $axios.$get('/log/athlete/' + params.id + '/' + params.date)
+    try {
+      entry = await $axios.$get('/log/athlete/' + params.id + '/' + params.date)
+    } catch(e) { redirect('/login') }
 
     // get athlete's profile data
     let athlete = await $axios.$get('/user/athlete/' + params.id)

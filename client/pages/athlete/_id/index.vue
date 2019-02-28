@@ -43,6 +43,10 @@
     width: 25px;
   }
 
+  .fa-book-open {
+    font-size: 14px; 
+  }
+
 }
 
 h2.year {
@@ -258,9 +262,16 @@ h3.event-header {
             {{ athlete.mileage }} MPW
           </span>
 
-          <span class="location" v-if="athlete.location">
+          <span class="location mr-3" v-if="athlete.location">
             <fa icon="map-marker-alt" class="icon mr-1"></fa>
             <span itemprop="homeLocation"> {{ athlete.location }} </span>
+          </span>
+
+          <span class="logs" v-if="athlete.publicLogs"> 
+            <nuxt-link :to="'/athlete/' + athlete.athlete_id + '/logs'">
+              <fa icon="book-open" class="icon mr-1"></fa>
+              Logs
+            </nuxt-link>
           </span>
         </div>
 
