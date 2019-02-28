@@ -175,7 +175,7 @@ h4 input, .schedule input {
     font-size: 15px;
   }
   max-width: 100%;
-  font-size: 17px;
+  font-size: 15px;
   .col {
     .label {
       text-transform: uppercase;
@@ -322,7 +322,7 @@ h4 input, .schedule input {
     </div>
 
     <div class="schedule row align-items-center mb-3">
-      <h4 class="col-12 col-lg mb-2 mb-lg-0"> Scheduled </h4>
+      <h4 class="col-12 col-lg mb-2 mb-lg-0"> Schedule </h4>
       <div class="col row item" v-for="day in days"> 
         <div class="col-12 col-lg-6 label px-0">{{ day.dow }}</div>
         <div class="col-12 col-lg-6 mileage px-0">
@@ -337,6 +337,9 @@ h4 input, .schedule input {
       <div class="col-12 col-lg d-flex align-items-center mt-3 mt-lg-0"> 
         <h4 class="d-inline-block mb-0"> Goal </h4>
         <div class="d-inline-block goal ml-3"> {{ totalGoal || 0 }} mi</div>
+      </div>
+      <div class="btn btn-small btn-primary" @click="updateEntireSchedule()"> 
+        Save 
       </div>
     </div>
 
@@ -578,6 +581,12 @@ export default {
         console.log(res)
       })
     }, 
+    updateEntireSchedule: async function() {
+      for (const day of this.days) {
+        let res = await this.$axios.$post('/log/' + day.url + '/goal', { goal: day.mileageGoal }) 
+        console.log(res)
+      }
+    },
     getCheckPercentage: function(prop) {
       let l = 0, t = 0
       for (var i = 0; i < this.days.length; i++ ) {
