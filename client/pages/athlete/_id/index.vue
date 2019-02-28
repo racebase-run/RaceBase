@@ -146,11 +146,17 @@ h3.event-header {
     font-size: 16px;
   }
 
-  .time {
+  .time, .time a {
     font-family: 'DS Digital';
     color: @blue;
     font-size: 22px;
     text-align: right;
+  }
+
+  .date {
+    font-size: 13px; 
+    text-transform: uppercase;
+    text-align: left;
   }
 
   .more {
@@ -409,10 +415,21 @@ h3.event-header {
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(record, distance) in records">
-            <td class="distance">{{ distance }}</td>
-            <td class="time">{{ record.time }}</td>
-          </tr>
+          <template v-for="(record, distance) in records"> 
+            <tr>
+              <td class="distance">
+                {{ distance }}
+              </td>
+              <td class="time">
+                <nuxt-link :to="'/races/' + record.race_id">
+                  {{ record.time }}
+                </nuxt-link>
+              </td>
+            </tr>
+            <tr> 
+              <td class="date pb-2" colspan="2"> {{ record.date }}</td>
+            </tr>
+          </template>
           <tr v-if="Object.keys(records).length < 3" class="more">
             <td colspan="2">
               <div v-if="isLoggedIn">
