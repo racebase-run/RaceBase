@@ -23,6 +23,11 @@
 import roadmap from '~/assets/Roadmap.md'
 
 export default {
+  head () {
+    return {
+      title: 'RaceBase Roadmap'
+    }
+  }, 
   asyncData () {
     return {
       roadmap: roadmap

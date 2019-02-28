@@ -24,7 +24,7 @@ const _252ca980 = () => interopDefault(import('../pages/team/notfound.vue' /* we
 const _2d3343b4 = () => interopDefault(import('../pages/user/settings.vue' /* webpackChunkName: "pages/user/settings" */))
 const _7ae0ae31 = () => interopDefault(import('../pages/new/result/success.vue' /* webpackChunkName: "pages/new/result/success" */))
 const _0b8119e1 = () => interopDefault(import('../pages/signup/coach/claim.vue' /* webpackChunkName: "pages/signup/coach/claim" */))
-const _3819db20 = () => interopDefault(import('../pages/user/log/week/_date.vue' /* webpackChunkName: "pages/user/log/week/_date" */))
+const _afb60f34 = () => interopDefault(import('../pages/user/log/week/_week.vue' /* webpackChunkName: "pages/user/log/week/_week" */))
 const _370e2768 = () => interopDefault(import('../pages/new/post/_resultId.vue' /* webpackChunkName: "pages/new/post/_resultId" */))
 const _e9c2c9ce = () => interopDefault(import('../pages/new/result/_raceId.vue' /* webpackChunkName: "pages/new/result/_raceId" */))
 const _7bbed076 = () => interopDefault(import('../pages/news/post/_name.vue' /* webpackChunkName: "pages/news/post/_name" */))
@@ -195,9 +195,9 @@ export function createRouter() {
       component: _0b8119e1,
       name: "signup-coach-claim"
     }, {
-      path: "/user/log/week/:date?",
-      component: _3819db20,
-      name: "user-log-week-date"
+      path: "/user/log/week/:week?",
+      component: _afb60f34,
+      name: "user-log-week-week"
     }, {
       path: "/new/post/:resultId?",
       component: _370e2768,

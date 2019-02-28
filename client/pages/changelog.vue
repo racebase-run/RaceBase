@@ -23,6 +23,10 @@
 import changelog from '~/assets/Changelog.md'
 
 export default {
+  layout: 'blog', 
+  head () {
+    title: 'RaceBase Changelog'
+  },
   asyncData () {
     return {
       changelog: changelog
