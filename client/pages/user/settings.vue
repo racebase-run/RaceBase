@@ -338,6 +338,26 @@ form {
   </div>
 
   <div class="settings-section">
+    <div class="settings-label">Logs</div>
+    <div>
+      <label class="form-check-label mb-3">
+        <input 
+          v-model="publicLogs" 
+          :value="true" 
+          type="radio"
+        /> Public <fa icon="globe-americas"></fa>&nbsp; 
+        <input 
+          v-model="publicLogs" 
+          :value="false" 
+          type="radio"
+        /> Private <fa icon="lock"></fa>
+      </label>
+    </div>
+    <div class="btn btn-primary btn-small" @click="changeLogType">Save</div>
+  </div>
+
+
+  <div class="settings-section">
     <div class="settings-label">Email</div>
 
     <div>
@@ -406,6 +426,25 @@ form {
     </div>
   </div>
 
+  <div class="settings-section">
+    <div class="settings-label"> Account Type </div>
+    <div>
+      <label class="form-check-label mb-3">
+        <input 
+          v-model="coachAccount" 
+          :value="true" 
+          type="radio"
+        /> Coach &nbsp; 
+        <input 
+          v-model="coachAccount" 
+          :value="false" 
+          type="radio"
+        /> Athlete
+      </label>
+    </div>
+    <div class="btn btn-primary btn-small" @click="changeAccountType">Save</div>
+  </div>
+
   <div class="settings-section" v-if="!user.coach">
     <div class="settings-label"> Team </div>
     <div class="d-flex flex-shrink w-50" v-if="!user.team_id"> 
@@ -436,7 +475,7 @@ form {
     <div v-else> 
       <nuxt-link to="/signup/coach/claim">Claim a team</nuxt-link>
     </div>
-    <div class="mt-2" v-if="team"><strong>Join Code:</strong> {{ team.join_code }}</div>
+    <div class="mt-2" v-if="user.team_id"><strong>Join Code:</strong> {{ team.join_code }}</div>
   </div>
 
   <div class="settings-section">
@@ -545,7 +584,9 @@ export default {
       referrals: referrals, 
       currentEmail: currentEmail,
       emailMessage: "", 
-      team: team
+      team: team, 
+      coachAccount: user.coach, 
+      publicLogs: user.publicLogs
     }
   },
   methods : {
@@ -638,6 +679,19 @@ export default {
         this.loadUser()
       })
     }, 
+    changeAccountType: function() {
+      this.$axios.$put('user/' + this.id + '/coach', { coach: this.coachAccount })
+      .then((res) => {
+        this.loadUser()
+      })
+    },
+    changeLogType: function() {
+      console.log(this.publicLogs)
+      this.$axios.$put('user/' + this.id, { publicLogs: this.publicLogs })
+      .then((res) => {
+        this.loadUser()
+      })
+    },
     onProfilePicChanged: function(e) {
       this.profilePic = e.target.files[0]
     },

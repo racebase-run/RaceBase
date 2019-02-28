@@ -200,6 +200,7 @@ export default {
     let entries
     try {
       entries = await $axios.$get('/log/athlete/' + params.id + '/month/')
+      if (!entries || typeof entries == 'string') redirect('/login')
     } catch(err) {
       redirect('/login')
     }
