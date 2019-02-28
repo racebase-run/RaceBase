@@ -447,6 +447,11 @@ export default {
     Stat
   },
   middleware: 'auth',
+  head () {
+    return {
+      title: "Training Log (Week of " + this.weekOf + ") - RaceBase"
+    }
+  },
   async asyncData({ store, params, $axios }) {
 
     let user = { ...store.state.auth.user }

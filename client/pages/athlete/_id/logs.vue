@@ -196,6 +196,11 @@ let sumWeek = function(week) {
 
 import moment from 'moment'
 export default {
+  head () {
+    return {
+      title: this.athlete.name + ' - Training Logs - RaceBase'
+    }
+  },
   async asyncData ({ params, $axios, redirect }) {
     let entries
     try {

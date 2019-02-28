@@ -83,6 +83,11 @@ export default {
   components: {
     Post, NewPost, Result, ByLine
   }, 
+  head () {
+    return {
+      title: "Your Feed - RaceBase"
+    }
+  }, 
   methods: {
     closeAddWindow: function() {
       this.addingPost = false
