@@ -26,7 +26,7 @@ router.get('/athlete/:id/week/:date?', authCheck, async (req, res) => {
   else if (athlete._id == coach._id) res.send("These are your logs")
   else {
     // only send data if Coach is authorized to see athlete's data, or if athlete's data is public
-    if (athlete.publicLogs || athlete.team_id == coach.team_id) {
+    if (athlete.publicLogs || (athlete.team_id == coach.team_id && coach.coach)) {
       let day = moment(createDay(req.params.date))
       let monday = day.startOf('isoWeek').toDate()
       let sunday = day.endOf('isoWeek').toDate()
@@ -34,30 +34,58 @@ router.get('/athlete/:id/week/:date?', authCheck, async (req, res) => {
       let entries = await Entry.find({ date: { $gte: monday, $lte: sunday }, userId: athlete._id }).sort({ date: 1 })
       if (entries) res.send(entries)
       else res.send([])
-    } else res.send("You aren't authorized to access this entry")
+    } else res.send("You aren't authorized to access this week's entries")
   }
 })
 
-router.get('/athlete/:id/month/:date?', authCheck, async (req, res) => {
+router.get('/athlete/:id/month/:date?', async (req, res) => {
+  try {
+    let athlete = await User.findOne({ athlete_id: req.params.id })
+    if (!athlete) res.send("No user with that Athlete ID exists")
+
+    let authorized = true
+    // if athlete's logs aren't public, check authorization
+    if (!athlete.publicLogs) {
+      await authCheck(req, res, () => { authorized = true })
+      let coach = await User.findById(req.userId)
+      if (req.userId == athlete._id) authorized = true
+      else if (athlete.team_id == coach.team_id && coach.coach) authorized = true
+    } else {
+      authorized = true
+    }
+
+    // only send data if Coach is authorized to see athlete's data, or if athlete's data is public
+    if (!authorized) { res.send("You're not authorized to view these logs"); }
+    else {
+      let start = moment(createDay(req.params.date)).subtract(28, 'days').startOf('isoWeek').toDate()
+      let end = moment(createDay(req.params.date)).endOf('isoWeek').toDate()
+
+      let entries = await Entry.find({ date: { $gte: start, $lte: end }, userId: athlete._id }).sort({ date: -1 })
+
+      if (entries) res.send(entries)
+      else res.send([])
+    } 
+
+  } catch(e) { res.send(e) }
+})
+
+router.get('/athlete/:id/:date?', authCheck, async (req, res) => {
   let coach = await User.findById(req.userId)
   let athlete = await User.findOne({ athlete_id: req.params.id })
   if (!athlete) res.send("No user with that Athlete ID exists")
   else if (athlete._id == coach._id) res.send("These are your logs")
   else {
     // only send data if Coach is authorized to see athlete's data, or if athlete's data is public
-    if (athlete.publicLogs || athlete.team_id == coach.team_id) {
-      let start = moment(createDay(req.params.date)).subtract(28, 'days').startOf('isoWeek').toDate()
-      let end = moment(createDay(req.params.date)).endOf('isoWeek').toDate()
-
-      let entries = await Entry.find({ date: { $gte: start, $lte: end }, userId: athlete._id }).sort({ date: -1 })
-      if (entries) res.send(entries)
-      else res.send([])
+    if (athlete.publicLogs || (athlete.team_id == coach.team_id && coach.coach)) {
+      let day = createDay(req.params.date)
+      let entry = await Entry.findOne({ date: day, userId: athlete._id })
+      if (entry) res.send(entry)
+      else res.send({})
     } else res.send("You aren't authorized to access this entry")
   }
 })
 
 router.get('/list/week/:date?', authCheck, (req, res) => {
-
   let day = moment(createDay(req.params.date))
   let monday = day.startOf('isoWeek').toDate()
   let sunday = day.endOf('isoWeek').toDate()
@@ -118,22 +146,6 @@ router.get('/streaks', authCheck, (req, res) => {
       } else res.send("No streak data available."); 
     } 
   })
-})
-
-router.get('/athlete/:id/:date?', authCheck, async (req, res) => {
-  let coach = await User.findById(req.userId)
-  let athlete = await User.findOne({ athlete_id: req.params.id })
-  if (!athlete) res.send("No user with that Athlete ID exists")
-  else if (athlete._id == coach._id) res.send("These are your logs")
-  else {
-    // only send data if Coach is authorized to see athlete's data, or if athlete's data is public
-    if (athlete.publicLogs || athlete.team_id == coach.team_id) {
-      let day = createDay(req.params.date)
-      let entry = await Entry.findOne({ date: day, userId: athlete._id })
-      if (entry) res.send(entry)
-      else res.send({})
-    } else res.send("You aren't authorized to access this entry")
-  }
 })
 
 router.get('/:date?', authCheck, (req, res) => {

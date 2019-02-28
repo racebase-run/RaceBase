@@ -491,6 +491,20 @@ router.put('/:id/email/:email', authCheck, async (req, res) => {
 
 })
 
+// change account type
+router.put('/:id/coach', authCheck, async (req, res) => {
+  if (req.userId != req.params.id) res.send("You are not logged in as the specified user.")
+  // get the user
+  let user = await User.findById(req.userId)
+  // if the user wants to change to coach account, unaffiliate them from any teams
+  if (req.body.coach && !user.coach) user.team_id = null
+
+  // change their account type
+  user.coach = req.body.coach
+  let updated = await user.save()
+  res.send(updated)
+})
+
 router.put("/:id", authCheck, async (req, res) => {
   if (req.params.id == req.userId) {
 
@@ -502,11 +516,16 @@ router.put("/:id", authCheck, async (req, res) => {
     delete req.body.referrer
     delete req.body.referralCode
     delete req.body.active
+    delete req.body.email
+    delete req.body.coach
 
     for (let prop in req.body) {
       if (req.body[prop])
         params[prop] = req.body[prop]
     }
+
+    if (req.body.hasOwnProperty('publicLogs'))
+      params.publicLogs = req.body.publicLogs
 
     User.findOneAndUpdate({ _id: req.params.id }, params, async (err, user) => {
       if (err)
