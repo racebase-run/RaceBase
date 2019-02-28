@@ -176,6 +176,11 @@ h5 {
 import moment from 'moment'
 const dateUtil = require('~/utils/date')
 export default {
+  head () {
+    return {
+      title: (this.athlete.name || "?") + ' - ' + this.dateFormatted + ' - RaceBase'
+    }
+  },
   async asyncData({ params, $axios, redirect }) {
     let entry
     // get entry for specified day

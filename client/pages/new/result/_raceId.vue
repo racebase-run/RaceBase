@@ -244,6 +244,11 @@ import _ from 'underscore'
 const SearchBar = () => import('~/components/Search/SearchBar')
 const ResultEditor = () => import('~/components/ResultEditor')
 export default {
+  head () {
+    return {
+      title: "Add Result - RaceBase"
+    }
+  },
   components: { ResultEditor, SearchBar }, 
   async asyncData ({ params, $axios, store }) {
     let user = store.state.auth.user

@@ -171,6 +171,11 @@ const SearchBar = () => import('~/components/Search/SearchBar')
 import _ from 'underscore'
 export default {
   components: { ProfilePic, SearchBar },
+  head () {
+    return {
+      title: "Coaching - RaceBase"
+    }
+  },
   async asyncData ({ $axios, store }) {
     let user = { ...store.state.auth.user }
 

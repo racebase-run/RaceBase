@@ -97,6 +97,11 @@
 <script> 
 import moment from 'moment'
 export default {
+  head () {
+    return {
+      title: (this.team.name || this.team.team_id) + " Meet Schedule - RaceBase"
+    }
+  },
   async asyncData({ $axios, store }) {
     let user = { ...store.state.auth.user }
     let team = await $axios.$get('/team/' + user.team_id)
