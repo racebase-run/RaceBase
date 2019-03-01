@@ -292,7 +292,7 @@ router.delete('/:_id', authCheck, function(req, res) {
           if (err)
             res.status(500).send(err);
 
-          res.send("Successfully deleted.");
+          res.send("Successfully deleted race");
         });
 
       });

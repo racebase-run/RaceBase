@@ -211,9 +211,8 @@ router.get('/list/:id/:gender?/:event?', (req, res) => {
   
 })
 
-// Get results for a specified race (gender and event are optional)
 router.get('/:id', async (req, res) => {
-  if (req.params.id == 'undefined') res.send("Please submit a valid ID")
+  if (req.params.id == 'undefined') res.status(400).send("Please submit a valid ID")
 
   let result = await Result.findById(req.params.id) 
   if (result) res.send(result)
@@ -284,7 +283,7 @@ router.delete('/:_id', authCheck, function(req, res) {
       Result.remove({ _id: req.params._id}, function(err, result) {
         if (err)
           res.status(500).send(err);
-        res.send("Successfully deleted.");
+        res.send("Successfully deleted result");
       });
     } else {
       res.status(403).send("You are not authorized to delete this result.");
