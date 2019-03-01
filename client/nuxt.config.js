@@ -121,6 +121,16 @@ module.exports = {
     /*
     ** You can extend webpack config here
     */
+    vendor: ['prismjs'],
+    babel: {
+      "plugins": [
+        ["prismjs", {
+            "languages": ["json"],
+            "theme": "tomorrow",
+            "css": true
+        }]
+      ]
+    },
     extend(config, ctx) {
       config.resolve.alias['@fortawesome/fontawesome-free-brands-svg-icons$'] = '@fortawesome/fontawesome-free-brands-svg-icons/shakable.es.js'
       config.resolve.alias['@fortawesome/fontawesome-free-solid-svg-icons$'] = '@fortawesome/fontawesome-free-solid-svg-icons/shakable.es.js'

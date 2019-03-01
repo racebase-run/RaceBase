@@ -1,0 +1,76 @@
+<style lang="less" scoped>
+@import (reference) '~assets/less/colors.less';
+
+.api-nav {
+  background: @ultra-light-grey + #050505;
+  border-radius: 5px;
+
+  a {
+    display: block;
+    font-size: 18px;
+    padding: 5px;
+    color: @bright-blue;
+    font-weight: 500; 
+  }
+
+  .schemas {
+    padding-left: 22px; 
+    list-style: square;
+    a {
+      font-weight: 400; 
+      font-size: 16px;
+      padding: 3px;
+      color: @blue;
+    }
+  }
+}
+</style>
+
+<template>
+<div class="row">
+  <div class="col-md-8 col-12 lang-json">
+    <slot/> 
+  </div>
+  <div class="col-md-4 col-12 mt-4">
+    <h4> API Links </h4>
+    <div class="api-nav p-2">
+      <nuxt-link to="/api">API Home</nuxt-link>
+      <div class="d-flex align-items-center"> 
+        <nuxt-link to="/api/schemas">Schema Definitions</nuxt-link>
+        <a class="ml-auto">
+          <fa icon="chevron-circle-down" 
+            @click="showSchemas=true" 
+            v-if="!showSchemas">
+          </fa>
+          <fa icon="chevron-circle-up" 
+            @click="showSchemas=false" 
+            v-else>
+          </fa>
+        </a>
+      </div>
+      <ul class="schemas" v-if="showSchemas">
+        <li><a href="/api/schemas#entry">Entry</a></li>
+        <li><a href="/api/schemas#post">Post</a></li>
+        <li><a href="/api/schemas#race">Race</a></li>
+        <li><a href="/api/schemas#result">Result</a></li>
+        <li><a href="/api/schemas#team">Team</a></li>
+        <li><a href="/api/schemas#user">User</a></li>
+        <li><a href="/api/schemas#vote">Vote</a></li>
+      </ul>
+    </div>
+  </div>
+</div>
+</template>
+<script> 
+import Prism from 'prismjs'
+export default {
+  data () {
+    return {
+      showSchemas: false
+    }
+  },
+  mounted() {
+    Prism.highlightAll();
+  }
+}
+</script>

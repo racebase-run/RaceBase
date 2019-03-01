@@ -14,10 +14,8 @@
       <nuxt-link :to="'/blog/' + post.link"> {{ post.data.title }} </nuxt-link>
     </h4>
     <div class="code meta d-flex align-items-center mb-2">
-      <div class="author"> 
-        Posted by <strong>{{ post.data.author }}</strong>, &nbsp; 
-      </div>
-      <div class="date"> {{ post.data.date }} </div>
+      Posted by&nbsp;<strong> {{ post.data.author }}</strong>, 
+      {{ post.data.date }}
     </div>
     <div v-html="post.content"> </div>
   </div>

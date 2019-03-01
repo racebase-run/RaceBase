@@ -39,9 +39,12 @@
       </nuxt-link>
       <nuxt-link to="/blog" class="d-inline-block code ml-3">Developers</nuxt-link>
     </div>
-    <ul class="navbar-nav ml-auto">
+    <ul class="navbar-nav ml-auto flex-row">
       <li class="nav-item">
         <nuxt-link to="/changelog">Changelog</nuxt-link>
+      </li>
+      <li class="nav-item">
+        <nuxt-link to="/api" class="d-inline-block code ml-3">API</nuxt-link>
       </li>
     </ul>
   </nav>
