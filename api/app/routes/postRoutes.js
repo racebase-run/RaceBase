@@ -21,7 +21,7 @@ router.get('/feed', authCheck, async (req, res) => {
   feed.sort((a, b) => {
     return new Date(b.date) - new Date(a.date) 
   })
-  res.send({ feed: feed })
+  res.send(feed)
 })
 
 router.get('/:id', async (req, res) => {
@@ -34,7 +34,7 @@ router.get('/:id', async (req, res) => {
 
 router.post('/like/:id', authCheck, async (req, res) => {
   let post = await Post.findById(req.params.id)
-  if (!post) res.send("Post not found")
+  if (!post) res.status(400).send("Post not found")
   else {
     let likes = post.likes || []
 
@@ -44,7 +44,7 @@ router.post('/like/:id', authCheck, async (req, res) => {
     post.likes = likes
     post.save((err, data) => {
       if (err) res.send(err)
-      else res.send("Successfully liked post")
+      else res.send(data)
     })
   }
 })
@@ -52,7 +52,7 @@ router.post('/like/:id', authCheck, async (req, res) => {
 router.post('/comment/:id', authCheck, async (req, res) => {
   let post = await Post.findById(req.params.id)
   let user = await User.findById(req.userId)
-  if (!post) res.send("Post not found")
+  if (!post) res.status(400).send("Post not found")
   else {
 
     let date = new Date()
@@ -69,7 +69,7 @@ router.post('/comment/:id', authCheck, async (req, res) => {
 
     post.save((err, data) => {
       if (err) res.send(err)
-      else res.send("Successfully added comment")
+      else res.status(201).send(data)
     })
   }
 })
@@ -95,7 +95,7 @@ router.post('/', authCheck, async (req, res) => {
     newResult = await r.save()
   }
 
-  res.send(newPost)
+  res.status(201).send(newPost)
 
 })
 
@@ -110,7 +110,7 @@ router.delete('/:id', authCheck, async (req, res) => {
   if (p.user_id == req.userId) {
     await p.remove()
     res.send("Successfully deleted")
-  } else res.send("You don't own that post")
+  } else res.status(403).send("You don't own that post")
 
 })
 

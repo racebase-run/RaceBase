@@ -65,7 +65,7 @@ router.get('/claimed/:athlete_id', function(req,res) {
 
 router.get('/following', authCheck, async (req, res) => {
   let curUser = User.findOne({ _id: req.userId })
-  if (!curUser) res.send("Error")
+  if (!curUser) res.status(400).send("User doesn't exist")
   else res.send(curUser.following)
 })
 
@@ -73,7 +73,7 @@ router.get('/following', authCheck, async (req, res) => {
 router.get('/athlete/:athlete_id', function(req, res) {
   User.findOne({ 'athlete_id' : req.params.athlete_id }, function(err, user) {
     if (err)
-      res.send(err)
+      res.status(500).send(err)
 
     else if (user) {
       delete user.password
@@ -92,9 +92,9 @@ router.get('/athlete/:athlete_id', function(req, res) {
 router.get('/:id/races/:page?/:length?', function(req, res) {
   User.findOne({ '_id' : req.params.id}).lean().exec(function(err, user) {
     if (err)
-      res.send(err);
+      res.status(500).send(err);
     else if (!user)
-      res.send({ error : "No user with that ID exists." });
+      res.status(400).send("No user with that ID exists.");
     else {
       Race.paginate({ 'user_id' : String(user._id) }, { 
         lean: true, 
@@ -104,7 +104,7 @@ router.get('/:id/races/:page?/:length?', function(req, res) {
 
         // if there's an error getting it, send it
         if (err)
-          res.send(err);
+          res.status(500).send(err);
 
         else {
           for (x in races.docs) {
@@ -121,7 +121,7 @@ router.get('/:id/races/:page?/:length?', function(req, res) {
 
 router.get('/:id/profilePic', async (req, res) => {
   let user = await User.findOne({ athlete_id: req.params.id })
-  if (!user) res.send("Athlete ID isn't claimed")
+  if (!user) res.status(400).send("Athlete ID isn't claimed")
   else res.send({ url: user.profilePicUrl })
 })
 
@@ -129,7 +129,7 @@ router.get('/:id', authCheck, async function(req, res) {
   if (req.params.id == req.userId) {
     User.findOne({ '_id' : req.params.id }, async function(err, user) {
       if (err)
-        res.send(err);
+        res.status(500).send(err);
       else {
         if (!user.referralCode) {
           user.referralCode = uuidv1()
@@ -139,7 +139,7 @@ router.get('/:id', authCheck, async function(req, res) {
       }
     });
   } else {
-    res.sendStatus(401)
+    res.status(403).send("This isn't your athlete ID")
   }
 
 });
@@ -149,9 +149,8 @@ router.get('/:userId/isFollowing/:id', authCheck, function(req, res) {
   else {
     User.findOne({ '_id' : req.userId }, function(err, user) {
       if (err) res.status(500).send('Internal server error.')
-      else if (!user) res.status(404).send('User not found')
+      else if (!user) res.status(400).send('User not found')
       else {
-        res.status(200)
         if (user.following.includes(req.params.id)) res.send(true)
         else res.send(false)
       }
@@ -178,7 +177,7 @@ let sendVerificationEmail = async function(user, token, callback) {
 router.post('/', async function(req, res) {
   User.findOne({ 'email' : req.body.email }, function(err, user) {
     if (user) {
-      res.send({ error : "User already exists." })
+      res.status(400).send("User already exists.")
     }
     else {
       var hashedPassword = bcrypt.hashSync(req.body.password, 8);
@@ -194,14 +193,13 @@ router.post('/', async function(req, res) {
         coach: req.body.coach
       }, async function(err, user) {
         if (err)
-          res.send(err);
+          res.status(500).send(err);
         else {
           let emailToken = jwt.sign({ id: user._id, emailVer: emailVer }, config.secret, { expiresIn: 3600 })
           sendVerificationEmail(user, emailToken, () => {
             let token = jwt.sign({ id: user._id }, config.secret, { expiresIn: 86400 })          
             res
               .cookie('csrf_token', token, { maxAge: 86400000, httpOnly: true })
-              .status(200)
               .send({ auth: true, token: token });
           })
         }
@@ -212,7 +210,7 @@ router.post('/', async function(req, res) {
 
 router.post('/forgotPassword', async (req, res) => {
   let user = await User.findOne({ email: req.body.email })
-  if (!user) res.send("User does not exist!")
+  if (!user) res.status(400).send("User does not exist!")
   let token = jwt.sign({ id: user._id }, config.secret, { expiresIn: 360 })
   let link = "https://racebase.io/user/resetPassword/" + token
   const msg = {
@@ -227,7 +225,7 @@ router.post('/forgotPassword', async (req, res) => {
 
 router.post('/resetPassword/:token', async (req, res) => {
   jwt.verify(req.params.token, config.secret, async (err, decoded) => {
-    if (err) res.send("Token is invalid")
+    if (err) res.status(400).send("Token is invalid")
     let user = await User.findById(decoded.id)
     let hashedPassword = bcrypt.hashSync(req.body.newPassword, 8)
     user.password = hashedPassword
@@ -248,21 +246,21 @@ router.post('/resendVerification', authCheck, async function(req, res) {
 router.post('/verify/:token', function(req, res) {
   jwt.verify(req.params.token, config.secret, async (err, decoded) => {
     if (err)
-      return res.send("Failed to verify email")
+      return res.status(500).send("Failed to verify email")
     let user = await User.findById(decoded.id)
     if (!user) res.send("Failed to verify email")
     else if (decoded.emailVer == user.emailVer) {
       user.active = true
       await user.save()
       res.send("Successfully verified email")
-    } else res.send("Your verification token didn't match!")
+    } else res.status(400).send("Your verification token didn't match!")
   })
 })
 
 router.post('/:id/profile_pic', parser.single("image"), authCheck, (req, res) => {
   User.findOne({ '_id' : req.params.id }, (err, user) => {
     if (err)
-      res.send(err)
+      res.status(500).send(err)
 
     else {
       const image = {};
@@ -285,7 +283,7 @@ router.post('/:id/profile_pic', parser.single("image"), authCheck, (req, res) =>
 router.post('/:id/brand_pic', parser.single("image"), authCheck, (req, res) => {
   User.findOne({ '_id' : req.params.id }, (err, user) => {
     if (err)
-      res.send(err)
+      res.status(500).send(err)
 
     else {
       const image = {};
@@ -297,7 +295,7 @@ router.post('/:id/brand_pic', parser.single("image"), authCheck, (req, res) => {
 
       user.save((err, data) => {
         if (err)
-          res.send(err)
+          res.status(500).send(err)
         else
           res.send(data)
       })
@@ -308,7 +306,7 @@ router.post('/:id/brand_pic', parser.single("image"), authCheck, (req, res) => {
 router.post('/:id/featured_pic', parser.single("image"), authCheck, (req, res) => {
   User.findOne({ '_id' : req.params.id }, (err, user) => {
     if (err)
-      res.send(err)
+      res.status(500).send(err)
 
     else {
       const image = {};
@@ -320,7 +318,7 @@ router.post('/:id/featured_pic', parser.single("image"), authCheck, (req, res) =
 
       user.save((err, data) => {
         if (err)
-          res.send(err)
+          res.status(500).send(err)
         else
           res.send(data)
       })
@@ -331,19 +329,19 @@ router.post('/:id/featured_pic', parser.single("image"), authCheck, (req, res) =
 router.post('/follow/:id', authCheck, async (req, res) => {
   let curUser = await User.findOne({ _id: req.userId })
   User.findOne({ 'athlete_id' : req.params.id }, function(err, data) {
-    if (err) res.send(err);
+    if (err) res.status(500).send(err);
     else {
       if (!data || data == null)
-        res.send({ message : "No athlete with that ID exists." });
+        res.status(400).send("No athlete with that ID exists.");
       else if (curUser.following.includes(req.params.id)) {
-        res.send({ message : "You are already following this user." });
+        res.status(400).send("You are already following this user.");
       }
       else {
         curUser.following.push(req.params.id)
         curUser.save((err, data) =>  {
-          if (err) res.send(err);
+          if (err) res.status(500).send(err);
           else 
-            res.send({ message : "Successfully followed." });
+            res.send("Successfully followed.");
         })
       }
     }
@@ -358,20 +356,20 @@ router.post('/unfollow/:id', authCheck, async (req, res) => {
     }
   }
   curUser.save((err, data) => {
-    if (err) res.send(err)
+    if (err) res.status(500).send(err)
     else res.send("Successfully unfollowed " + req.params.id)
   })
 })
 
 router.post('/claim/team/:team_id', authCheck, async (req, res) => {
   let user = await User.findById(req.userId)
-  if (!user.coach) res.send("You are not a coach")
-  else if (user.team_id) res.send("You already own a team")
+  if (!user.coach) res.status(403).send("You are not a coach")
+  else if (user.team_id) res.status(400).send("You already own a team")
   else {
     let team_id = req.params.team_id
     // check if there's a coach who owns this team already
     let taken = await User.findOne({ team_id: team_id, coach: true })
-    if (taken) res.send("This team has already been claimed")
+    if (taken) res.status(400).send("This team has already been claimed")
     else {
       user.team_id = team_id
       await user.save()
@@ -382,7 +380,7 @@ router.post('/claim/team/:team_id', authCheck, async (req, res) => {
 
 router.post('/unclaim/team/', authCheck, async (req, res) => {
   let user = await User.findById(req.userId)
-  if (!user.coach) res.send("You are not a coach")
+  if (!user.coach) res.status(403).send("You are not a coach")
   else {
     user.team_id = null
     await user.save()
@@ -394,75 +392,75 @@ router.post('/claim/:id/:athlete_id', authCheck, function(req, res) {
   if (req.params.id == req.userId) {
     User.findOne({ 'athlete_id' : req.params.athlete_id }, function(err, data) {
       if (err)
-        res.send({ failure: err });
+        res.status(500).send(err);
       else if (!data) {
         Result.findOne({ 'athlete_id' : req.params.athlete_id }, function(err, data) {
           if (data) {
             User.findOneAndUpdate({ '_id' : req.params.id }, { athlete_id : req.params.athlete_id }, {new:true}, function(err, response) {
               if (err)
-                res.send(err);
+                res.status(500).send(err);
               else
-                res.send({ success: "Successfully claimed ID.", data: response });
+                res.send("Successfully claimed ID");
             });
           } else {
-            res.send({ failure: "That Athlete ID doesn't exist." });
+            res.status(400).send("That Athlete ID doesn't exist");
           }
         });  
       } else {
-        res.send({ failure: "Athlete ID already claimed." });
+        res.status(400).send("Athlete ID already claimed");
       }
     });
-  } else { res.send({ failure: "Unauthorized." }) }
+  } else { res.status(403).send("This isn't your athlete_id") }
 });
 
 router.post('/unclaim/:id/:athlete_id', authCheck, function(req, res) {
   User.findOne({ 'athlete_id' : req.params.athlete_id }, function(err, data) {
     if (err)
-      res.send(err);
+      res.status(500).send(err);
     else if (data) {
       Result.findOne({ 'athlete_id' : req.params.athlete_id }, function(err, data) {
         if (data) {
           User.findOneAndUpdate({ '_id' : req.params.id }, { athlete_id : "" }, {new:true}, function(err, response) {
             if (err)
-              res.send(err);
-            res.send({ success: "Successfully unclaimed ID.", data: response });
+              res.status(500).send(err);
+            res.send("Successfully unclaimed ID");
           });
         } else {
-          res.send({ failure: "That Athlete ID doesn't exist." });
+          res.status(400).send("That Athlete ID doesn't exist");
         }
       });  
     } else {
-      res.send({failure: "That Athlete ID wasn't claimed." });
+      res.status(400).send("Athlete ID wasn't claimed");
     }
   });
 });
 
 router.post('/:id/alias/:alias', authCheck, function(req, res) {
   if (req.userId != req.params.id) {
-    res.status(403).send({ failure: "Unauthorized to add alias." });
+    res.status(403).send("Unauthorized to add alias");
   } else {
     User.findOne({ 'athlete_id' : req.params.alias }, function(err, data) {
       if (err)
-        res.send(err)
+        res.status(500).send(err)
       else if (data)
-        res.send({ failure: "Specified athlete ID already claimed." }); 
+        res.status(400).send("Athlete ID already claimed"); 
       else {
         Result.findOne({ 'athlete_id' : req.params.alias }, function(err, result) {
           if (err)
-            res.send(err);
+            res.status(500).send(err);
           else if (!result)
-            res.send({ failure: "Specified athlete ID doesn't exist." });
+            res.status(400).send("Athlete ID doesn't exist");
           else {
             User.findById(req.userId, function(err, user) {
               if (user.aliases.includes(req.params.alias))
-                res.send({ failure: "Alias already exists." });
+                res.status(400).send("Alias already exists.");
               else {
                 user.aliases.push(req.params.alias);
                 user.save(function(err, data) {
                   if (err)
-                    res.send(err)
+                    res.status(500).send(err)
                   else {
-                    res.send({ success: 'Successfully added alias ' + req.params.alias, data: data });
+                    res.send("Successfully added alias " + req.params.alias);
                   }
                 }); 
               }
@@ -475,10 +473,10 @@ router.post('/:id/alias/:alias', authCheck, function(req, res) {
 });
 
 router.put('/:id/email/:email', authCheck, async (req, res) => {
-  if (req.userId != req.params.id) res.send("You are not logged in as the specified user.")
+  if (req.userId != req.params.id) res.status(403).send("You are not logged in as the specified user")
 
   let taken = await User.findOne({ email: req.params.email })
-  if (taken) res.send("Email already taken!")
+  if (taken) res.status(400).send("Email already taken")
   else {
     let user = await User.findById(req.params.id)
     user.email = req.params.email
@@ -486,14 +484,14 @@ router.put('/:id/email/:email', authCheck, async (req, res) => {
     await user.save()
     var emailVer = uuidv1()
     let emailToken = jwt.sign({ id: user._id, emailVer: emailVer }, config.secret, { expiresIn: 3600 })
-    sendVerificationEmail(user, emailToken, () => { res.send("Email updated.") })
+    sendVerificationEmail(user, emailToken, () => { res.send("Email updated") })
   }  
 
 })
 
 // change account type
 router.put('/:id/coach', authCheck, async (req, res) => {
-  if (req.userId != req.params.id) res.send("You are not logged in as the specified user.")
+  if (req.userId != req.params.id) res.status(403).send("You are not logged in as the specified user")
   // get the user
   let user = await User.findById(req.userId)
   // if the user wants to change to coach account, unaffiliate them from any teams
@@ -529,7 +527,7 @@ router.put("/:id", authCheck, async (req, res) => {
 
     User.findOneAndUpdate({ _id: req.params.id }, params, async (err, user) => {
       if (err)
-        res.send(err)
+        res.status(500).send(err)
       else {
         if (req.body.email && user.email != req.body.email) {
           user.active = false
@@ -539,7 +537,7 @@ router.put("/:id", authCheck, async (req, res) => {
       }
     })
   } else {
-    res.status(403).send({ message: 'You are not logged in as the specified user.' })
+    res.status(403).send('You are not logged in as the specified user')
   }
 })
 
@@ -550,14 +548,14 @@ router.delete('/:id/alias/:alias', authCheck, function(req, res) {
     } else {
       var index = data.aliases.indexOf(req.params.alias);
       if (index <= -1) 
-        res.send({ failure : "Specified alias doesn't exist." });
+        res.status(400).send("Specified alias doesn't exist.");
       else {
         data.aliases.splice(index, 1);
         data.save(function(err, data) {
           if (err)
-            res.send(err)
+            res.status(500).send(err)
           else {
-            res.send({ success: 'Successfully removed alias ' + req.params.alias, data: data});
+            res.send("Successfully removed alias " + req.params.alias);
           }
         }); 
       }
@@ -578,7 +576,7 @@ router.delete('/:_id', authCheck, async (req, res) => {
 
       User.remove({ _id : req.params._id }, function(err, user) {
         if (err)
-          res.send(err);
+          res.status(500).send(err);
         else 
           res.send("Successfully deleted.");
       });
@@ -586,7 +584,7 @@ router.delete('/:_id', authCheck, async (req, res) => {
     } catch (e) { res.send(e) }
 
   } else {
-    res.status(403).send("You are not authorized to delete this user.");
+    res.status(403).send("You are not authorized to delete this user");
   }
 });
 

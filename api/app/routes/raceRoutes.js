@@ -21,7 +21,7 @@ router.get('/list/:page?/:length?', function(req, res) {
     if (!data)
       res.send("No data")
     else if (err)
-      res.send(err)
+      res.status(500).send(err)
     else {
       for (x in data.docs) { 
         data.docs[x].date = moment(data.docs[x].date).format('MMMM D YYYY');
@@ -35,7 +35,7 @@ router.get('/list', function(req, res) {
   Race.find().lean().sort({ date: -1 }).exec(function(err, data) {
     // if there's an error getting it, send it
     if (err)
-      res.send(err);
+      res.status(500).send(err);
 
     res.json(data); // return data in JSON format
 
@@ -47,7 +47,7 @@ router.get('/:id', function(req, res) {
   Race.findById(req.params.id).lean().exec(function(err, race) {
 
     if (err) {
-      res.send({ message : err.message })
+      res.status(500).send(err)
     }
 
     else if (race) {
@@ -56,7 +56,7 @@ router.get('/:id', function(req, res) {
     }
 
     else
-      res.send({ message : "No race with that ID exists." })
+      res.status(400).send("No race with that ID exists.")
 
   });
 });
@@ -67,7 +67,7 @@ router.get('/:id/:gender/events', (req, res) => {
     womens = false;
   Result.find({ race_id : req.params.id, womens : womens }).distinct('event', (error, events) => {
     if (error)
-      res.send(error)
+      res.status(500).send(error)
     else
       res.send(events);
   });
@@ -78,9 +78,9 @@ router.get('/vote/:id', authCheck, function(req, res) {
     if (err)
       res.send(err);
     else if (!data)
-      res.send({ voted : false, message : "You have no vote attached to that race." })
+      res.status(400).send("You have no vote attached to that race.")
     else 
-      res.send({ voted: true, vote: data });
+      res.send(data);
   });
 });
 
@@ -104,7 +104,7 @@ router.post('/upvote/:id', authCheck, function(req, res) {
         res.send(response);
       });
     } else {
-      res.send("You already voted for this race.");
+      res.status(400).send("You already voted for this race.");
     }
   });
 });
@@ -117,7 +117,7 @@ router.post('/downvote/:id', authCheck, function(req, res) {
       vote.save(); 
       Race.findByIdAndUpdate(req.params.id, { $inc: { downvotes: 1 } }, function(err, response) {
         if (err)
-          res.send(err);
+          res.status(500).send(err);
         res.send(response);
       });
     } else if (data.up == true) {
@@ -125,11 +125,11 @@ router.post('/downvote/:id', authCheck, function(req, res) {
       data.save(); 
       Race.findByIdAndUpdate(req.params.id, { $inc: { upvotes: -1, downvotes: 1 } }, function(err, response) {
         if (err)
-          res.send(err);
+          res.status(500).send(err);
         res.send(response);
       });
     } else {
-      res.send("You already voted for this race.");
+      res.status(400).send("You already voted for this race.");
     }
   });
 });
@@ -145,7 +145,7 @@ router.post('/', authCheck, function(req, res) {
 
       race.save(function(err, newRace) {
         if (err)
-          res.send(err);
+          res.status(500).send(err);
 
         else if (req.body.csv) {
           let parsed = Papa.parse(req.body.csv, { header: true, 
@@ -172,7 +172,7 @@ router.post('/', authCheck, function(req, res) {
 
               result.save((err, data) => {
                 if (err)
-                  console.log(err)
+                  res.status(500).send(err)
               })
             },
             complete: (results) => {
@@ -180,11 +180,11 @@ router.post('/', authCheck, function(req, res) {
             }
           })
         } else {
-          res.send({ race : newRace });
+          res.send(newRace);
         }
       });
     } else {
-      res.send("User not found.")
+      res.status(400).send("User not found.")
     }
   });
 });
@@ -251,7 +251,7 @@ router.put('/:_id', authCheck, function(req, res) {
             } else {
               Result.update({ race_id: req.params._id }, { race : raceName, date: data.date }, { multi: true }, function(err, response) {
                 if (err)
-                  res.send(err);
+                  res.status(500).send(err);
                 else 
                   res.send(data);
               });               
@@ -273,26 +273,26 @@ router.delete('/:_id', authCheck, function(req, res) {
 
   Race.findById(req.params._id, function (err, data) {
     if (err)
-      res.send(err);
+      res.status(500).send(err);
 
     else if (!data)
-      res.send({ error: "No race with this ID exists." })
+      res.status(400).send("No race with this ID exists.")
 
     else if (req.userId != data.user_id) 
-      res.send({ error: "You are not authorized to delete this race." })
+      res.status(403).send("You are not authorized to delete this race.")
 
     else {
       Race.remove({ _id : req.params._id }, function(err, race) {
 
         // if there's an error getting it, send it
         if (err)
-          res.send(err);
+          res.status(500).send(err);
 
         Result.remove({ race_id : req.params._id }, function(err, result) {
           if (err)
-            res.send(err);
+            res.status(500).send(err);
 
-          res.send({ success: "Successfully deleted." });
+          res.send("Successfully deleted.");
         });
 
       });

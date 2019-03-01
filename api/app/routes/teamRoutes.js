@@ -24,9 +24,9 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 router.get('/:id/roster', authCheck, async (req, res) => {
   try {
     let coach = await User.findById(req.userId)
-    if (!coach) res.send("No user found")
-    if (!coach.coach) res.send("You're not a coach")
-    else if (coach.team_id != req.params.id) res.send("This isn't your team")
+    if (!coach) res.status(400).send("No user found")
+    if (!coach.coach) res.status(403).send("You're not a coach")
+    else if (coach.team_id != req.params.id) res.status(403).send("This isn't your team")
     let team = await Team.findOne({ team_id: coach.team_id })
     let athletes = []
     for (const athlete of team.roster) {
@@ -39,7 +39,7 @@ router.get('/:id/roster', authCheck, async (req, res) => {
       else athletes.push({ athlete_id: athlete })
     }
     res.send(athletes)
-  } catch (e) { res.send(e) }
+  } catch (e) { res.status(500).send(e) }
 })
 
 // get list of all athletes affiliated with a team
@@ -61,19 +61,19 @@ router.get('/:id/athletes', async (req, res) => {
 
 router.get('/:id', authCheck, async (req, res) => {
   let user = await User.findById(req.userId)
-  if (!user.coach) res.send("You're not a coach")
+  if (!user.coach) res.status(403).send("You're not a coach")
   else {
     let team = await Team.findOne({ team_id: req.params.id })
-    if (!team) res.send("That team doesn't exist")
+    if (!team) res.status(400).send("That team doesn't exist")
     else if (team.coach != req.userId || user.team_id != team.team_id) 
-      res.send("This isn't your team")
+      res.status(403).send("This isn't your team")
     else res.send(team)
   }
 })
 
 router.get('/public/:id', async (req, res) => {
   let team = await Team.findOne({ team_id: req.params.id })
-  if (!team) res.send("That team doesn't exist")
+  if (!team) res.status(400).send("That team doesn't exist")
   else {
     delete team.join_code
     res.send(team)
@@ -82,7 +82,7 @@ router.get('/public/:id', async (req, res) => {
 
 router.post('/join/:code', authCheck, async (req, res) => {
   let team = await Team.findOne({ join_code: req.params.code })
-  if (!team) res.send("No team with that join code exists")
+  if (!team) res.status(400).send("No team with that join code exists")
   let user = await User.findById(req.userId)
   user.team_id = team.team_id
   await user.save()
@@ -91,11 +91,11 @@ router.post('/join/:code', authCheck, async (req, res) => {
 
 router.post('/schedule', authCheck, async(req, res) => {
   let user = await User.findById(req.userId)
-  if (!user.coach) res.send("You're not a coach")
+  if (!user.coach) res.status(403).send("You're not a coach")
   let team = await Team.findOne({ team_id: user.team_id })
   team.schedule.push(req.body)
   await team.save()
-  res.send("Successfully added meet to schedule")
+  res.status(201).send(team)
 })
 
 router.post('/leave/', authCheck, async (req, res) => {
@@ -146,13 +146,13 @@ router.post('/invite/:athlete_id', authCheck, async (req, res) => {
   try {
     let coach = await User.findById(req.userId)
     // make sure user is a coach
-    if (!coach.coach) res.send("You're not a coach")
+    if (!coach.coach) res.status(403).send("You're not a coach")
     // if they're all good, get the athlete and team
     let athlete = await User.findOne({ athlete_id: req.params.athlete_id })
     let team = await Team.findOne({ team_id: coach.team_id })
     let teamname = team.name ? team.name : team.team_id
     sendInviteEmail(athlete.email, coach.name, athlete.name.split(' ')[0], team.join_code, team.name, () => {
-      res.send("Successfully invited athlete to join team")
+      res.send("Invited athlete to join team")
     })
   } catch(err) {
     res.send(err)
@@ -161,8 +161,8 @@ router.post('/invite/:athlete_id', authCheck, async (req, res) => {
 
 router.post('/claim/:id', authCheck, async (req, res) => {
   let user = await User.findById(req.userId)
-  if (!user.coach) res.send("You are not a coach")
-  else if (user.team_id) res.send("You already own a team")
+  if (!user.coach) res.status(403).send("You are not a coach")
+  else if (user.team_id) res.status(400).send("You already own a team")
   else {
     let team_id = req.params.id
 
@@ -172,7 +172,7 @@ router.post('/claim/:id', authCheck, async (req, res) => {
 
     // check if there's a coach who owns this team already
     let taken = await User.findOne({ team_id: team_id, coach: true })
-    if (taken) res.send("This team has already been claimed")
+    if (taken) res.status(400).send("This team has already been claimed")
 
     else {
       user.team_id = team_id
@@ -185,8 +185,8 @@ router.post('/claim/:id', authCheck, async (req, res) => {
 
 router.post('/roster/athlete/:id', authCheck, async (req, res) => {
   let user = await User.findById(req.userId)
-  if (!user.coach) res.send("You are not a coach")
-  else if (!user.team_id) res.send("You haven't claimed a team")
+  if (!user.coach) res.status(403).send("You are not a coach")
+  else if (!user.team_id) res.status(400).send("You haven't claimed a team")
   else {
     let team = await Team.findOne({ team_id: user.team_id })
     team.roster.push(req.params.id)
@@ -199,9 +199,9 @@ router.post('/:id', authCheck, async (req, res) => {
   let user = await User.findById(user_id)
   let team = await Team.findOne({ team_id: req.params.id })
   // make sure user is a coach
-  if (!user.coach) res.send("You are not a coach")
+  if (!user.coach) res.status(403).send("You are not a coach")
   // make sure this team doesn't already exist
-  else if (team) res.send("That team already exists")
+  else if (team) res.status(400).send("That team already exists")
 
   // assign team_id to coach
   user.team_id = team_id
@@ -209,15 +209,15 @@ router.post('/:id', authCheck, async (req, res) => {
 
   // create team
   let newTeam = await createTeam(user._id, req.params.id)
-  res.send(newTeam)
+  res.status(201).send(newTeam)
 })
 
 router.put('/:id', authCheck, async (req, res) => {
   let user = await User.findById(req.userId)
   // make sure user is a coach
-  if (!user.coach) res.send("You are not a coach")
+  if (!user.coach) res.status(403).send("You are not a coach")
   // make sure user owns this team
-  if (user.team_id != req.params.id) res.send("You don't own this team")
+  if (user.team_id != req.params.id) res.status(403).send("You don't own this team")
   // make sure people aren't messing with data they shouldn't be
   delete req.body.join_code
   delete req.body.coach
@@ -228,8 +228,8 @@ router.put('/:id', authCheck, async (req, res) => {
 
 router.delete('/roster/athlete/:id', authCheck, async (req, res) => {
   let user = await User.findById(req.userId)
-  if (!user.coach) res.send("You are not a coach")
-  else if (!user.team_id) res.send("You haven't claimed a team")
+  if (!user.coach) res.status(403).send("You are not a coach")
+  else if (!user.team_id) res.status(403).send("You haven't claimed a team")
   else {
     let team = await Team.findOne({ team_id: user.team_id })
     let i = team.roster.indexOf(req.params.id)
@@ -242,11 +242,11 @@ router.delete('/roster/athlete/:id', authCheck, async (req, res) => {
 router.delete('/schedule/:date', authCheck, async (req, res) => {
   // make sure date is valid
   let date = moment(req.params.date, 'DDMMYYYY')
-  if (!date.isValid()) res.send("Invalid date")
+  if (!date.isValid()) res.status(400).send("Invalid date")
 
   // make sure user is a coach
   let user = await User.findById(req.userId)
-  if (!user.coach) res.send("You're not a coach")
+  if (!user.coach) res.status(403).send("You're not a coach")
   let team = await Team.findOne({ team_id: user.team_id })
   
   // get index of element to be removed

@@ -10,8 +10,10 @@ var authCheck = require('../auth')
 const moment = require('moment')
 
 router.get('/count', async function(req, res) {
-  let count = await Result.find({}).count()
-  res.send({count: count})
+  try {
+    let count = await Result.find({}).count()
+    res.send({count: count}) 
+  } catch(e) { res.status(500).send(e) }
 })
 
 // Get team scores for specified race, gender, and event
@@ -78,7 +80,7 @@ router.get('/list/team/:id/:gender/years', function(req,res) {
         .select('date')
         .exec((err, data) => {
           if (err)
-            res.send(err);
+            res.status(500).send(err);
           else {
             var years = [];
             for (x in data) {
@@ -102,7 +104,7 @@ router.get('/list/team/:id/:year', function(req, res) {
         .lean()
         .exec((err, data) => {
           if (err)
-            res.send(err);
+            res.status(500).send(err);
           else {
             for (x in data) {
               data[x].date = moment(data[x].date).format('MMMM D YYYY'); 
@@ -134,7 +136,7 @@ router.get('/list/team/:id/:year?/:gender?', function(req, res) {
 
   Result.find(query).sort({ date: -1 }).lean().exec(function(err, data) {
     if (err)
-      res.send(err);
+      res.status(500).send(err);
     else {
       for (x in data) {
         data[x].date = moment(data[x].date).format('MMMM D YYYY'); 
@@ -150,7 +152,7 @@ router.get('/list/athlete/:id', function(req, res) {
   User.findOne({ 'athlete_id' : req.params.id }, function(err, user) {
     var aliasArray = [];
     if (err)
-      res.send(err);
+      res.status(500).send(err);
     else if (user) {
       if (user.aliases.length > 0) {
         user.aliases.forEach(function(alias) {
@@ -161,7 +163,7 @@ router.get('/list/athlete/:id', function(req, res) {
     aliasArray.push({ 'athlete_id' : req.params.id });
     Result.find({ $or : aliasArray }).lean().exec(function(err, data) {
       if (err)
-        res.send(err);
+        res.status(500).send(err);
       else {
         for (x in data) {
           data[x].date = moment(data[x].date).format('MMMM D YYYY'); 
@@ -189,8 +191,10 @@ const getResults = (req, res) => {
   .sort({ 'place': 1, 'name' : 1 }) 
   .exec(function(err, results) {
 
+    if (err) res.status(500).send(err)
+
     if (!results)
-      res.send("No results for that race were found.");
+      res.status(400).send("No results for that race were found.");
 
     else {
       // client.setex(id, 3600, JSON.stringify(results))
@@ -213,7 +217,7 @@ router.get('/:id', async (req, res) => {
 
   let result = await Result.findById(req.params.id) 
   if (result) res.send(result)
-  else res.send("That result doesn't exist")
+  else res.status(400).send("That result doesn't exist")
   
 })
 
@@ -229,8 +233,7 @@ router.post('/', authCheck, function(req, res) {
 
     else { 
       result.save(function(err, data) {
-        if (err)
-          res.send(err);
+        if (err) res.status(500).send(err);
         res.send(data);
       });
     }
@@ -276,15 +279,15 @@ router.put('/:_id', authCheck, function(req, res) {
 router.delete('/:_id', authCheck, function(req, res) {
   Result.findById(req.params._id, function(err, result) {
     if (!result) {
-      res.send({ error: "No result with that ID found." })
+      res.status(400).send("No result with that ID found.")
     } else if (result.user_id == req.userId || !result.user_id) {
       Result.remove({ _id: req.params._id}, function(err, result) {
         if (err)
-          res.send(err);
-        res.send({ success: "Successfully deleted." });
+          res.status(500).send(err);
+        res.send("Successfully deleted.");
       });
     } else {
-      res.send({ error: "You are not authorized to delete this result." });
+      res.status(403).send("You are not authorized to delete this result.");
     }
   });
 });

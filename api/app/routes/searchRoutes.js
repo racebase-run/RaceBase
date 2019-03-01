@@ -9,7 +9,7 @@ var authCheck = require('../auth')
 
 router.get('/results/:query/:page/:length', function(req, res) {
   if (!req.params.query || req.params.query == "" || typeof req.params.query== 'undefined') {
-    res.send("Invalid search!");
+    res.status(400).send("Invalid search!");
   } else {
     var length = parseInt(req.params.length);
     var page = parseInt(req.params.page);
@@ -26,7 +26,7 @@ router.get('/results/:query/:page/:length', function(req, res) {
       }
     }).skip(length * (page-1)).limit(length + 1).lean().exec((err, results) => {
       if (err)
-        res.send(err);
+        res.status(500).send(err);
       var lastPage = false; 
       if (results.length <= length)
         lastPage = true; 
@@ -44,7 +44,7 @@ router.get('/results/:query/:page/:length', function(req, res) {
 
 router.get('/races/:query', function(req, res) {
   if (!req.params.query || req.params.query == "" || typeof req.params.query== 'undefined') {
-    res.send("Invalid search!");
+    res.status(400).send("Invalid search!");
   } else {
     Race.find({
       $text: { $search: req.params.query } 
@@ -60,14 +60,14 @@ router.get('/races/:query', function(req, res) {
       }
     }).lean().exec((err, results) => {
       if (err)
-        res.send(err);
+        res.status(500).send(err);
       else if (results) {
         for (x in results) {
           results[x].date = moment(results[x].date).format('MMMM D YYYY');
         }
         res.json(results);
       } else {
-        res.send("No results")
+        res.status(400).send("No results")
       }
     });
   }
@@ -75,7 +75,7 @@ router.get('/races/:query', function(req, res) {
 
 router.get('/user/races/:query', authCheck, function(req, res) {
   if (!req.params.query || req.params.query == "" || typeof req.params.query== 'undefined') {
-    res.send("Invalid search!");
+    res.status(400).send("Invalid search!");
   } else {
 
     Race.find({
@@ -90,7 +90,7 @@ router.get('/user/races/:query', authCheck, function(req, res) {
     }).lean().exec( 
     function(err, results) {
       if (err)
-        res.send(err);
+        res.status(500).send(err);
       for (x in results) {
         results[x].date = moment(results[x].date).format('MMMM D YYYY');
       }

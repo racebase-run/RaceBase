@@ -22,8 +22,8 @@ let createDay = function(date) {
 router.get('/athlete/:id/week/:date?', authCheck, async (req, res) => {
   let coach = await User.findById(req.userId)
   let athlete = await User.findOne({ athlete_id: req.params.id })
-  if (!athlete) res.send("No user with that Athlete ID exists")
-  else if (athlete._id == coach._id) res.send("These are your logs")
+  if (!athlete) res.status(500).send("No user with that Athlete ID exists")
+  else if (athlete._id == coach._id) res.status(500).send("These are your logs")
   else {
     // only send data if Coach is authorized to see athlete's data, or if athlete's data is public
     if (athlete.publicLogs || (athlete.team_id == coach.team_id && coach.coach)) {
@@ -34,7 +34,7 @@ router.get('/athlete/:id/week/:date?', authCheck, async (req, res) => {
       let entries = await Entry.find({ date: { $gte: monday, $lte: sunday }, userId: athlete._id }).sort({ date: 1 })
       if (entries) res.send(entries)
       else res.send([])
-    } else res.send("You aren't authorized to access this week's entries")
+    } else res.status(403).send("You aren't authorized to access this week's entries")
   }
 })
 
@@ -55,7 +55,7 @@ router.get('/athlete/:id/month/:date?', async (req, res) => {
     }
 
     // only send data if Coach is authorized to see athlete's data, or if athlete's data is public
-    if (!authorized) { res.send("You're not authorized to view these logs"); }
+    if (!authorized) { res.status(403).send("You're not authorized to view these logs"); }
     else {
       let start = moment(createDay(req.params.date)).subtract(28, 'days').startOf('isoWeek').toDate()
       let end = moment(createDay(req.params.date)).endOf('isoWeek').toDate()
@@ -66,13 +66,13 @@ router.get('/athlete/:id/month/:date?', async (req, res) => {
       else res.send([])
     } 
 
-  } catch(e) { res.send(e) }
+  } catch(e) { res.status(500).send(e) }
 })
 
 router.get('/athlete/:id/:date?', async (req, res) => {
   try {
     let athlete = await User.findOne({ athlete_id: req.params.id })
-    if (!athlete) res.send("No user with that Athlete ID exists")
+    if (!athlete) res.status(500).send("No user with that Athlete ID exists")
 
     let authorized = true
     // if athlete's logs aren't public, check authorization
@@ -86,7 +86,7 @@ router.get('/athlete/:id/:date?', async (req, res) => {
     }
 
     // only send data if Coach is authorized to see athlete's data, or if athlete's data is public
-    if (!authorized) { res.send("You're not authorized to view this entry"); }
+    if (!authorized) { res.status(403).send("You're not authorized to view this entry"); }
     else {
       let day = createDay(req.params.date)
       let entry = await Entry.findOne({ date: day, userId: athlete._id })
@@ -96,7 +96,7 @@ router.get('/athlete/:id/:date?', async (req, res) => {
 
     }
 
-  } catch(e) { res.send(e) }
+  } catch(e) { res.status(500).send(e) }
 })
 
 router.get('/list/week/:date?', authCheck, (req, res) => {
@@ -157,7 +157,7 @@ router.get('/streaks', authCheck, (req, res) => {
           }
         })
         res.send(streaks)
-      } else res.send("No streak data available."); 
+      } else res.status(400).send("No streak data available."); 
     } 
   })
 })
@@ -202,7 +202,7 @@ router.get('/avg/moving/rhr/:date?', authCheck, (req, res) => {
       }
       let avg = length > 0 ? (sum / length) : null
       res.send({ avg: avg })
-    } else res.send("No entries to average")
+    } else res.status(400).send("No entries to average")
   })
 })
 
@@ -233,9 +233,9 @@ router.get('/avg/moving/sleep/:date?',authCheck, (req, res) => {
       minutes = ("0" + minutes).slice(-2)
       let formattedAvg = hours + ":" + minutes
 
-      res.send({ avg: formattedAvg })
+      res.send(data)
 
-    } else res.send("No entries to average")
+    } else res.status(400).send("No entries to average")
   })
 })
 
@@ -247,7 +247,7 @@ router.post('/:date/goal', authCheck, (req, res) => {
       if (err)
         res.status(500).send(err)
       else 
-        res.send({ message: "Successfully updated goal.", entry: data })
+        res.send(data)
     })
 })
 
@@ -263,7 +263,7 @@ router.post('/:date?', authCheck, (req, res) => {
       if (err)
         res.status(500).send(err)
       else 
-        res.send({ message: "Successfully created entry.", entry: data })
+        res.send(data)
     })
 })
 
