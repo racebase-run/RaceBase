@@ -112,12 +112,24 @@ router.get('/list/week/:date?', authCheck, (req, res) => {
   })
 })
 
-router.get('/list', authCheck, (req, res) => {
-  Entry.find({ userId: req.userId }, (err, data) => {
+router.get('/:date?', authCheck, (req, res) => {
+
+  let day  = createDay(req.params.date)
+
+  Entry.findOne({ date: day, userId: req.userId }, (err, data) => {
     if (err)
       res.status(500).send(err)
-    else 
-      res.send(data)
+    else if (data) {
+      if (data.runs) {
+        for (i in data.runs) {
+          if (data.runs[i] == null)
+            data.runs.splice(i, 1)
+        }
+        data.save(() => {
+          res.send(data)
+        })
+      } else res.send(data)
+    } else res.send({})
   })
 })
 
@@ -159,27 +171,6 @@ router.get('/streaks', authCheck, (req, res) => {
         res.send(streaks)
       } else res.status(400).send("No streak data available."); 
     } 
-  })
-})
-
-router.get('/:date?', authCheck, (req, res) => {
-
-  let day  = createDay(req.params.date)
-
-  Entry.findOne({ date: day, userId: req.userId }, (err, data) => {
-    if (err)
-      res.status(500).send(err)
-    else if (data) {
-      if (data.runs) {
-        for (i in data.runs) {
-          if (data.runs[i] == null)
-            data.runs.splice(i, 1)
-        }
-        data.save(() => {
-          res.send(data)
-        })
-      } else res.send(data)
-    } else res.send({})
   })
 })
 

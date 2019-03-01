@@ -13,3 +13,5 @@ where `ROUTE` is the category you'd like to query and `QUERY` is the more specif
 will return the current total number of results in our database.
 
 All available Routes are listed on the sidebar, with their documentation available by clicking through. 
+
+**Routes with a "+" next to them are public, and those with a "-" require authorization to access.**

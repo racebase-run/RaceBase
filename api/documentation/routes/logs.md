@@ -58,4 +58,103 @@ date: Date
 **Returns:**
 [`[Entry]`](/api/schemas#entry)
 
+<div class="divider"></div>
 
+#### `GET /:date?` -
+Get a single entry from your logs
+
+**Parameters:**
+``` 
+date: Date
+```
+
+**Returns:**
+[`Entry`](/api/schemas#entry)
+
+<div class="divider"></div>
+
+#### `GET /streaks` -
+Get a list of your streaks
+
+**Parameters:**
+``` 
+date: Date
+```
+
+**Returns:**
+```
+{
+  (key): Number // where key is the name of your checkbox
+  // ...repeated for every checkbox
+}
+```
+
+<div class="divider"></div>
+
+#### `GET /avg/moving/rhr/:date?` + 
+Get your moving average RHR for the 5 days preceding the date you pass
+
+**Parameters:**
+``` 
+date: Date
+```
+
+**Returns:**
+```
+{
+  avg: Number
+}
+```
+
+<div class="divider"></div>
+
+#### `GET /avg/moving/sleep/:date?` + 
+Get your moving average sleep for the 5 days preceding the date you pass
+
+**Parameters:**
+``` 
+date: Date
+```
+
+**Returns:**
+```
+{
+  avg: Number
+}
+```
+
+<div class="divider"></div>
+
+#### `POST /:date/goal` -
+Update the mileage goal for date in question
+
+**Parameters:**
+``` 
+date: Date
+```
+
+**Expects:**
+```
+{ 
+  goal: Number
+}
+```
+**Returns:**
+[`Entry`](/api/schemas#entry)
+
+<div class="divider"></div>
+
+#### `POST /:date?` -
+Create or update the log entry for date in question
+
+**Parameters:**
+``` 
+date: Date
+```
+
+**Expects:**
+[`Entry`](/api/schemas#entry)
+(accepts partial entry)
+
+**Returns:**
+[`Entry`](/api/schemas#entry)

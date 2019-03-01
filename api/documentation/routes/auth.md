@@ -1,7 +1,7 @@
-## Authorization
+## Authentication
 `/auth`
 
-#### `GET /login` + 
+#### `POST /login` + 
 **Expects:**
 ``` 
 { 
@@ -13,7 +13,7 @@
 **Returns:**
 ```
 { 
-  token: String, // Authorization JWT
+  token: String, // Authentication JWT
   auth: Boolean // only true if authorization was successful, 
   error: String // only present if something went wrong
 }
