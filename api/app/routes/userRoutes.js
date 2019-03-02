@@ -388,51 +388,31 @@ router.post('/unclaim/team/', authCheck, async (req, res) => {
   }
 })
 
-router.post('/claim/:id/:athlete_id', authCheck, function(req, res) {
-  if (req.params.id == req.userId) {
-    User.findOne({ 'athlete_id' : req.params.athlete_id }, function(err, data) {
-      if (err)
-        res.status(500).send(err);
-      else if (!data) {
-        Result.findOne({ 'athlete_id' : req.params.athlete_id }, function(err, data) {
-          if (data) {
-            User.findOneAndUpdate({ '_id' : req.params.id }, { athlete_id : req.params.athlete_id }, {new:true}, function(err, response) {
-              if (err)
-                res.status(500).send(err);
-              else
-                res.send("Successfully claimed ID");
-            });
-          } else {
-            res.status(400).send("That Athlete ID doesn't exist");
-          }
-        });  
-      } else {
-        res.status(400).send("Athlete ID already claimed");
-      }
-    });
-  } else { res.status(403).send("This isn't your athlete_id") }
-});
-
-router.post('/unclaim/:id/:athlete_id', authCheck, function(req, res) {
+router.post('/claim/athlete/:athlete_id', authCheck, function(req, res) {
   User.findOne({ 'athlete_id' : req.params.athlete_id }, function(err, data) {
-    if (err)
-      res.status(500).send(err);
-    else if (data) {
+    if (err) res.status(500).send(err)
+    else if (!data) {
       Result.findOne({ 'athlete_id' : req.params.athlete_id }, function(err, data) {
         if (data) {
-          User.findOneAndUpdate({ '_id' : req.params.id }, { athlete_id : "" }, {new:true}, function(err, response) {
-            if (err)
-              res.status(500).send(err);
-            res.send("Successfully unclaimed ID");
+          User.findOneAndUpdate({ '_id' : userId }, { athlete_id : req.params.athlete_id }, {new:true}, (err, response) => {
+            if (err) res.status(500).send(err);
+            else res.send("Successfully claimed ID");
           });
         } else {
           res.status(400).send("That Athlete ID doesn't exist");
         }
       });  
     } else {
-      res.status(400).send("Athlete ID wasn't claimed");
+      res.status(400).send("Athlete ID already claimed");
     }
-  });
+  })
+});
+
+router.post('/unclaim/athlete/:athlete_id', authCheck, function(req, res) {
+  User.findOneAndUpdate({ '_id' : req.userId }, { athlete_id : "" }, {new:true}, (err, response) => {
+    if (err) res.status(500).send(err)
+    res.send("Successfully unclaimed ID")
+  })
 });
 
 router.post('/:id/alias/:alias', authCheck, function(req, res) {
@@ -472,13 +452,12 @@ router.post('/:id/alias/:alias', authCheck, function(req, res) {
   }
 });
 
-router.put('/:id/email/:email', authCheck, async (req, res) => {
-  if (req.userId != req.params.id) res.status(403).send("You are not logged in as the specified user")
+router.put('/email/:email', authCheck, async (req, res) => {
 
   let taken = await User.findOne({ email: req.params.email })
   if (taken) res.status(400).send("Email already taken")
   else {
-    let user = await User.findById(req.params.id)
+    let user = await User.findById(req.userId)
     user.email = req.params.email
     user.active = false
     await user.save()
@@ -490,8 +469,7 @@ router.put('/:id/email/:email', authCheck, async (req, res) => {
 })
 
 // change account type
-router.put('/:id/coach', authCheck, async (req, res) => {
-  if (req.userId != req.params.id) res.status(403).send("You are not logged in as the specified user")
+router.put('/coach', authCheck, async (req, res) => {
   // get the user
   let user = await User.findById(req.userId)
   // if the user wants to change to coach account, unaffiliate them from any teams
