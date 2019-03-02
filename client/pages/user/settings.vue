@@ -625,7 +625,7 @@ export default {
       }); 
     },
     claim: function(athlete_id) {
-      this.$axios.$post('user/claim/' + this.id + '/' + athlete_id)
+      this.$axios.$post('user/claim/athlete' + athlete_id)
       .then((res) => {
         this.claimFailure = ""
         this.claimSuccess = ""
@@ -641,7 +641,7 @@ export default {
       })
     },
     unclaim: function(athlete_id) {
-      this.$axios.$post('user/unclaim/' + this.id + '/' + athlete_id)
+      this.$axios.$post('user/unclaim/athlete')
       .then((res) => {
         this.claimFailure = ""
         this.claimSuccess = ""
@@ -673,14 +673,14 @@ export default {
       })
     }, 
     updateEmail: function() {
-      this.$axios.$put('user/' + this.id + '/email/' + this.user.email)
+      this.$axios.$put('user/email/' + this.user.email)
       .then((res) => {
         this.emailMessage = res
         this.loadUser()
       })
     }, 
     changeAccountType: function() {
-      this.$axios.$put('user/' + this.id + '/coach', { coach: this.coachAccount })
+      this.$axios.$put('user/coach', { coach: this.coachAccount })
       .then((res) => {
         this.loadUser()
       })

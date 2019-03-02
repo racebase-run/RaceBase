@@ -13,7 +13,7 @@
     font-weight: 500; 
   }
 
-  .schemas {
+  .schemas, .routes {
     padding-left: 22px; 
     list-style: square;
     a {
@@ -28,10 +28,10 @@
 
 <template>
 <div class="row">
-  <div class="col-md-8 col-12 lang-json">
+  <div class="col-md-8 col-12 lang-json order-2 order-md-1">
     <slot/> 
   </div>
-  <div class="col-md-4 col-12 mt-4">
+  <div class="col-md-4 col-12 mt-4 order-1 order-md-2">
     <h4> API Links </h4>
     <div class="api-nav p-2">
       <nuxt-link to="/api">API Home</nuxt-link>
@@ -48,6 +48,7 @@
           </fa>
         </a>
       </div>
+
       <ul class="schemas" v-if="showSchemas">
         <li><a href="/api/schemas#entry">Entry</a></li>
         <li><a href="/api/schemas#post">Post</a></li>
@@ -57,7 +58,35 @@
         <li><a href="/api/schemas#user">User</a></li>
         <li><a href="/api/schemas#vote">Vote</a></li>
       </ul>
+
+      <div class="d-flex align-items-center"> 
+        <nuxt-link to="/api/routes">Routes</nuxt-link>
+        <a class="ml-auto">
+          <fa icon="chevron-circle-down" 
+            @click="showRoutes=true" 
+            v-if="!showRoutes">
+          </fa>
+          <fa icon="chevron-circle-up" 
+            @click="showRoutes=false" 
+            v-else>
+          </fa>
+        </a>
+      </div>
+
+      <ul class="routes" v-if="showRoutes">
+        <li><nuxt-link to="/api/routes/auth">Authentication</nuxt-link></li>
+        <li><nuxt-link to="/api/routes/logs">Training Logs</nuxt-link></li>
+        <li><nuxt-link to="/api/routes/post">Post / Feed</nuxt-link></li>
+        <li><nuxt-link to="/api/routes/races">Races</nuxt-link></li>
+        <li><nuxt-link to="/api/routes/results">Results</nuxt-link></li>
+        <li><nuxt-link to="/api/routes/search">Search</nuxt-link></li>
+        <li><nuxt-link to="/api/routes/teams">Teams</nuxt-link></li>
+        <li><nuxt-link to="/api/routes/users">Users</nuxt-link></li>
+        <li><nuxt-link to="/api/routes/docs">Docs</nuxt-link></li>
+      </ul>
+
     </div>
+
   </div>
 </div>
 </template>
@@ -66,7 +95,8 @@ import Prism from 'prismjs'
 export default {
   data () {
     return {
-      showSchemas: false
+      showSchemas: false, 
+      showRoutes: true
     }
   },
   mounted() {

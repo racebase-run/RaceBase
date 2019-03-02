@@ -183,7 +183,7 @@
     <div class="nav mb-3">
       <nuxt-link class="link" to="/about"> About </nuxt-link>
       <nuxt-link class="link" to="/roadmap"> Roadmap </nuxt-link>
-      <nuxt-link class="link" to="/blog"> Blog </nuxt-link>
+      <nuxt-link class="link" to="/api"> API </nuxt-link>
     </div>
 
     <div class="actions mt-4 mb-3" v-if="isLoggedIn">

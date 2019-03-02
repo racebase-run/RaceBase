@@ -21,11 +21,11 @@
 <script> 
 export default {
   async asyncData({ $axios, params }) {
-    let post = await $axios.$get('/blog/' + params.url)
+    let post = await $axios.$get('/docs/blog/' + params.url)
     return {
       post: post
     }
   },
-  layout: 'blog'
+  layout: 'api'
 }
 </script>

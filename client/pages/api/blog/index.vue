@@ -24,18 +24,18 @@
 
 <script> 
 export default {
-  layout: 'blog', 
+  layout: 'api', 
   head () {
     return {
       title: "RaceBase Development Blog"
     }
   },
   async asyncData({ $axios }) {
-    let postlist = await $axios.$get('blog')
+    let postlist = await $axios.$get('docs/blog')
 
     var posts = []
     for (const post of postlist) {
-      await $axios.$get('blog/' + post)
+      await $axios.$get('docs/blog/' + post)
       .then(async (res) => {
         if (res.data) {
           var story = res

@@ -3,6 +3,8 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+<a name="1.6.4"></a>
+
 ## [1.6.4] - 2019-02-27
 ### Added
 - Save button on Training Logs; can save all days' mileage goals at once rather than one at a time
@@ -11,18 +13,26 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Changed
 - Personal Records table on Profiles now includes link to race and date of PR
 
+<a name="1.6.3"></a>
+
 ## [1.6.3] - 2019-02-27
 ### Added
 - Ability to make Training Logs public
 - Ability to change account type from Coach to Athlete or vice versa
 
+<a name="1.6.2"></a>
+
 ## [1.6.2] - 2019-02-26
 ### Changed
 - New homepage; no more news, descriptor blurbs about RaceBase instead
 
+<a name="1.6.1"></a>
+
 ## [1.6.1] - 2019-02-26
 ### Added
 - Development blog
+
+<a name="1.6.0"></a>
 
 ## Coaching Tools [1.6.0] - 2019-02-25
 ### Added 
@@ -38,9 +48,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Fixed 
 - Removed nonfunctional X button from New Post page
 
+<a name="1.5.9"></a>
+
 ## [1.5.9] - 2019-02-17
 ### Fixed
 - Critical bug with Logs when accessing or editing logs on a Sunday
+
+<a name="1.5.8"></a>
 
 ## [1.5.8] - 2019-02-17
 ### Added
@@ -48,27 +62,39 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Forgot password option on Login page
 - Referral codes
 
+<a name="1.5.7"></a>
+
 ## [1.5.7] - 2019-02-16
 ### Fixed
 - Several bugs with Logs
 
+<a name="1.5.6"></a>
+
 ## [1.5.6] - 2019-02-16
 ### Fixed
 - Issue with Streaks when streak is 0
+
+<a name="1.5.5"></a>
 
 ## [1.5.5] - 2019-02-16
 ### Fixed 
 - Issue with Elevation Gain total in Logs
 - Issue with Streaks in Logs
 
+<a name="1.5.4"></a>
+
 ## [1.5.4] - 2019-02-16
 ### Added 
 - New 404 page (met [Rex](https://racebase.io/notfound), the friendly dinosaur)
 - "Add Result" button on Profile pages 
 
+<a name="1.5.3"></a>
+
 ## [1.5.3] - 2019-02-15
 ### Fixed 
 - Critical bug when viewing Profile pages when not logged in
+
+<a name="1.5.2"></a>
 
 ## [1.5.2] - 2019-02-15
 ### Added
@@ -78,10 +104,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Changed 
 - Switched middle sidebar link to Roadmap
 
+<a name="1.5.1"></a>
+
 ## [1.5.1] - 2019-02-15
 ### Added 
 - Changelog.md
 - Changelog page
+
+<a name="1.5.0"></a>
 
 ## Posts and Feed [1.5.0] - 2019-02-15
 

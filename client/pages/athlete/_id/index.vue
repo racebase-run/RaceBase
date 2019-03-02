@@ -565,7 +565,7 @@ export default {
     claim: function() {
       if (!this.user)
         return
-      this.$axios.$post('user/claim/' + this.user._id + '/' + this.id)
+      this.$axios.$post('user/claim/athlete/' + this.id)
       .then((res) => {
         this.getClaim()
       })
