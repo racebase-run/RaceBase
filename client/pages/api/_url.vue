@@ -14,7 +14,7 @@ export default {
   async asyncData({ $axios, params }) {
     let post = {}
     try {
-      let post = await $axios.$get('/docs/' + params.url)
+      post = await $axios.$get('/docs/' + params.url)
     } catch (e) { console.log(e) }
     return {
       post: post

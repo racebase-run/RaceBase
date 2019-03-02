@@ -80,12 +80,17 @@ export default {
   },
   methods: {
     logIn: async function() {
-      let x = await this.$store.dispatch('auth/login', {
-        email: this.formData.email, 
-        password: this.formData.password
-      }, { withCredentials: true })
-      this.message = x.message
-      this.error = x.error
+      try {
+        await this.$store.dispatch('auth/login', {
+          email: this.formData.email, 
+          password: this.formData.password
+        }, { withCredentials: true })
+        this.error = false
+        this.message = "Successfully logged in"
+      } catch (e) { 
+        this.error = true
+        this.message = e.response.data.error 
+      }
     }, 
     forgotPassword: async function() {
       if (this.formData.email) {
