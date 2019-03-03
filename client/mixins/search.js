@@ -15,14 +15,20 @@ export default {
 
       if (this.searchInput != "") {
 
-        let page = await this.$axios.get('search/results/' 
-          + this.searchInput 
-          + '/' 
-          + this.currentPage 
-          + '/10')
+        try {
+          let page = await this.$axios.get('search/results/' 
+            + this.searchInput 
+            + '/' 
+            + this.currentPage 
+            + '/10')
 
-        this.results = page.data.docs
-        this.lastPage = page.data.lastPage
+          this.results = page.data.docs
+          this.lastPage = page.data.lastPage  
+        } catch (e) {
+          console.log(e.response.data)
+          this.results = {}
+        }
+
       } 
       else
         this.results = {}

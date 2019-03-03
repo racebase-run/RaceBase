@@ -43,7 +43,7 @@ h4 {
     class="mb-3"
   />
 
-  <div class="feed" v-if="posts.length > 0">
+  <div class="feed" v-if="posts">
     <div v-for="post in posts" :key="post._id" class="mb-4">
       <Post 
         :post="post" 
@@ -97,18 +97,21 @@ export default {
     }, 
     loadFeed: async function() {
       this.addingPost = false
-      let feed = (await this.$axios.$get('/post/feed')).feed
+      try {
+        let feed = (await this.$axios.$get('/post/feed')).feed
 
-      for (const post of feed) {
-        if (!this.following[post.athlete_id])
-          this.following[post.athlete_id] = await this.$axios.$get('/user/athlete/' + post.athlete_id)
+        if (!feed) throw "No posts in feed"
+        for (const post of feed) {
+          if (!this.following[post.athlete_id])
+            this.following[post.athlete_id] = await this.$axios.$get('/user/athlete/' + post.athlete_id)
 
-        if (post.result_id) 
-          post.result = await this.$axios.$get('/result/' + post.result_id)
-      }
+          if (post.result_id) 
+            post.result = await this.$axios.$get('/result/' + post.result_id)
+        }
 
-      this.posts = feed
+        this.posts = feed
 
+      } catch (e) { this.posts = {}; console.log(e) }
     }, 
     createdPost: function() {
       this.alert = "Successfully created post!"
@@ -118,17 +121,19 @@ export default {
   middleware: 'auth',
   async asyncData ({ $axios, store }) {
     let user = store.state.auth.user
-    let feed = (await $axios.$get('/post/feed')).feed
+    let feed, following = []
+    try {
+      feed = (await $axios.$get('/post/feed')).feed
+      if (!feed) throw "No posts in feed"
 
-    let following = {}
+      for (const post of feed) {
+        if (!following[post.athlete_id]) 
+          following[post.athlete_id] = await $axios.$get('/user/athlete/' + post.athlete_id)
 
-    for (const post of feed) {
-      if (!following[post.athlete_id])
-        following[post.athlete_id] = await $axios.$get('/user/athlete/' + post.athlete_id)
-
-      if (post.result_id) 
-        post.result = await $axios.$get('/result/' + post.result_id)
-    }
+        if (post.result_id) 
+          post.result = await $axios.$get('/result/' + post.result_id)
+      }
+    } catch (e) { console.log(e) }
 
     return {
       addingPost: false,

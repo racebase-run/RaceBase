@@ -39,10 +39,12 @@ export default {
   methods: {
     resetPassword: async function() {
       if (this.input.confirm == this.input.newPassword) {
-        await this.$axios.post('/user/resetPassword/' + this.token, {
-          newPassword: this.input.newPassword
-        })
-        this.$router.push('/login')
+        try {
+          await this.$axios.post('/user/resetPassword/' + this.token, {
+            newPassword: this.input.newPassword
+          })
+          this.$router.push('/login')
+        } catch (e) { console.log(e.response.data) }
       }
     }
   }

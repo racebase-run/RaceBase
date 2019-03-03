@@ -162,6 +162,9 @@ export default {
             else
               this.$router.push('/signup/claim')
           }
+        }).catch((e) => {
+          this.error = true
+          this.message = e.response.data
         })
       }
       else {

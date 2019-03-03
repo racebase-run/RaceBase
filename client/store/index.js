@@ -8,8 +8,6 @@ export const state = () => ({
 export const actions = {
   async nuxtServerInit({ dispatch, commit }, { req }) {
 
-    await dispatch('posts/fetchPosts')
-
     let auth = null
 
     if (req.headers.cookie) {

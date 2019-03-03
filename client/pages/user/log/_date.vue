@@ -762,7 +762,8 @@ export default {
       date: params.date, 
       streaks: streaks, 
       curRun: 0, 
-      goalTomorrow: goalTomorrow
+      goalTomorrow: goalTomorrow, 
+      emptyEntry: emptyEntry
     }
   },
   methods: {
@@ -777,10 +778,13 @@ export default {
       if (!this.didWeights)
         this.$set(this.entryData, 'weights', null)
       this.$axios.$post('log/' + formatDateUrl(moment(this.currentDay)), this.entryData).then((res) => {
-        this.entryData = res.entry
+        res.entry = res.entry || {}
+        this.entryData = deepmerge(this.emptyEntry, res.entry)
         this.originalData = JSON.parse(JSON.stringify(this.entryData))
         this.load()
-        console.log(res.message)
+      }).catch((e) => {
+        console.log("Error submitting entry:")
+        console.log(e)
       })
     }, 
     changeDate: function(date) {

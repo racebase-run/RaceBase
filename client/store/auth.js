@@ -55,10 +55,12 @@ export const mutations = {
 export const actions = {
   async fetchUser(store) {
     if (store.getters.isLoggedIn) {
-      let user = await this.$axios.$get('user/' + store.getters.getId())
-      .catch((err) => {
+      let user = {}
+      try {
+        user = await this.$axios.$get('user/' + store.getters.getId())
+      } catch(err) {
         console.log("Error fetching user... " + err.response.data.message)
-      })
+      }
 
       if (user)
         store.commit('setUser', user)

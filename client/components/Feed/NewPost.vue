@@ -142,12 +142,20 @@ export default {
       this.$axios.$post('/post/', this.input)
       .then((res) => {
         this.$emit('callback')
+      }).catch((e) => {
+        console.log(e)
+        this.$emit('callback')
       })
     }, 
     getResults: async function() {
       this.linking = true;
-      let yourResults = await this.$axios.$get('/result/list/athlete/' + this.user.athlete_id); 
-      this.yourResults = yourResults.slice(-5); 
+      try {
+        let yourResults = await this.$axios.$get('/result/list/athlete/' + this.user.athlete_id); 
+        this.yourResults = yourResults.slice(-5);   
+      } catch (e) {
+        console.log(e)
+        this.yourResults = []
+      }
     }, 
     linkResult: function(result) {
       this.input.result = result

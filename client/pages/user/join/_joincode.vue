@@ -7,12 +7,15 @@
 <script> 
 export default {
   async asyncData ({ $axios, redirect, params }) {
-    let res = await $axios.$post('team/join/' + params.joincode)
-    let message
-    if (res == "Joined team")
-      message = "Successfully joined team"
-    else 
-      message = "Something went wrong"
+    let res, message
+    try {
+      res = await $axios.$post('team/join/' + params.joincode)
+      if (res == "Joined team")
+        message = "Successfully joined team"
+      else 
+        message = "Something went wrong"
+    } catch (e) { message = e.response.data }
+    
     return {
       message: message
     }

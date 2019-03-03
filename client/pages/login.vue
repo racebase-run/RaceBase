@@ -94,11 +94,16 @@ export default {
     }, 
     forgotPassword: async function() {
       if (this.formData.email) {
-        await this.$axios.$post('/user/forgotPassword', {
-          email: this.formData.email
-        })
-        this.error = false
-        this.message = "Password reset link sent to " + this.formData.email
+        try {
+          await this.$axios.$post('/user/forgotPassword', {
+            email: this.formData.email
+          })
+          this.message = "Password reset link sent to " + this.formData.email
+          this.error = false
+        } catch (e) {
+          this.error = true
+          this.message = "Something went wrong! Please enter a valid email and try again"
+        }
       } else {
         this.error = true
         this.message = "Please enter your email!"

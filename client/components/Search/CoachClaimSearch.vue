@@ -82,9 +82,13 @@ export default {
   },
   methods: {
     claim: async function(id) {
-      let res = await this.$axios.$post('/team/claim/' + id)
-      if (res = "Successfully claimed team")
+      try {
+        let res = await this.$axios.$post('/team/claim/' + id)
+        if (res = "Successfully claimed team")
         this.$router.push("/welcome")
+      } catch (e) {
+        console.log(e.response.data)
+      }
     }
   },
   computed: {

@@ -255,10 +255,15 @@ export default {
     let curRace = {}
     let raceName = ""
     let events = {}
+
     if (params.raceId) {
-      curRace = await $axios.$get('/race/' + params.raceId)
-      raceName = curRace.name
-      events = await $axios.$get('/race/' + params.raceId + '/mens/events')
+      try {
+          curRace = await $axios.$get('/race/' + params.raceId)
+        raceName = curRace.name
+        events = await $axios.$get('/race/' + params.raceId + '/mens/events')
+      } catch (e) {
+        console.log(e.response.data)
+      }
     }
 
     return {
@@ -294,21 +299,36 @@ export default {
   }, 
   methods : {
     search: async function() {
-      if (this.searchInput) 
-        this.races = await this.$axios.$get('search/races/' + this.searchInput)
+      if (this.searchInput) {
+        try {
+          this.races = await this.$axios.$get('search/races/' + this.searchInput)
+        } catch (e) {
+          console.log(e.response.data)
+          this.races = []
+        }
+      }
     }, 
     teamSearch: async function() {
       if (this.teamSearchInput) {
-        let teams = await this.$axios.$get('search/results/' + this.teamSearchInput + '/1/50')
-        this.teams = _.uniq(teams.docs, 'team')
+        try {
+          let teams = await this.$axios.$get('search/results/' + this.teamSearchInput + '/1/50')
+          this.teams = _.uniq(teams.docs, 'team')
+        } catch (e) {
+          console.log(e)
+          this.teams = {}
+        }
       } else {
         this.teams = {}
       }
     },
     selectRace: async function(id) {
-      this.raceId = id
-      this.curRace = await this.$axios.$get('/race/' + id) || {}
-      this.events = await this.$axios.$get('/race/' + id + '/' + this.gender + '/events')
+      try {
+        this.raceId = id
+        this.curRace = await this.$axios.$get('/race/' + id) || {}
+        this.events = await this.$axios.$get('/race/' + id + '/' + this.gender + '/events')
+      } catch (e) {
+        console.log(e.response.data)
+      }
     }, 
     selectEvent: function(event) {
       this.result.event = event; 
@@ -324,8 +344,10 @@ export default {
       } 
       this.result.womens = this.womens ? true : false
       this.result.date = this.curRace.date
-      let response = await this.$axios.$post('result', this.result)
-      if (response) this.$router.push('/new/result/success')
+      try {
+        let response = await this.$axios.$post('result', this.result)
+        if (response) this.$router.push('/new/result/success')
+      } catch (e) { console.log(e) }
     }, 
     createCustomTeam: function() {
       this.result.team = this.newTeam.name
@@ -338,8 +360,12 @@ export default {
   }, 
   watch: {
     womens: async function() {
-      if (this.curRace._id)
-        this.events = await this.$axios.$get('/race/' + this.curRace._id + '/' + this.gender + '/events')
+      try {
+        if (this.curRace._id)
+          this.events = await this.$axios.$get('/race/' + this.curRace._id + '/' + this.gender + '/events')
+      } catch (e) {
+        console.log(e)
+      }
     }, 
     curRace: function() {
       this.result.race = this.curRace.name
