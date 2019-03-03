@@ -202,13 +202,16 @@ export default {
         this.success = "Successfully added result."
       }).catch((err) => {
         console.log(err)
-        this.success = "Unauthorized."
+        this.success = err.response.data
       })
     }, 
     updateResult: function() {
       this.$axios.$put('result/' + this.input._id, this.input)
       .then((res) => {
         this.success = "Successfully updated result."
+      }).catch((err) => {
+        console.log(err)
+        this.success = err.response.data
       })
     }, 
     deleteResult: function(id) {
@@ -216,6 +219,9 @@ export default {
       .then((res) => {
         this.$emit('loadResults')
         this.$emit('closeWindow')
+      }).catch((err) => {
+        console.log(err)
+        this.success = err.response.data
       })
     }
   }

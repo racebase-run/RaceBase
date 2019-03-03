@@ -570,12 +570,21 @@ export default {
   async asyncData ({ store, $axios }) {
     let user = { ...store.state.auth.user }
     let team = null
-    if (user.team_id && user.coach)
-      team = await $axios.$get('/team/' + user.team_id)
-    else if (user.team_id)
-      team = await $axios.$get('/team/public/' + user.team_id)
+    try {
+      if (user.team_id && user.coach)
+        team = await $axios.$get('/team/' + user.team_id)
+      else if (user.team_id)
+        team = await $axios.$get('/team/public/' + user.team_id)   
+    } catch (e) { 
+      console.log(e)
+    }
+
     let currentEmail = user.email
-    let referrals = (await $axios.$get('/user/referrals')).referrals
+    let referrals = 0
+    try {
+      referrals = (await $axios.$get('/user/referrals')).referrals
+    } catch (e) { console.log(e.response.data) }
+
     return {
       user: user, 
       id: user._id, 
@@ -596,11 +605,16 @@ export default {
       this.currentEmail = this.user.email
     },
     joinTeam: async function() {
-      let res = await this.$axios.$post('team/join/' + this.joinCode)
+      try {
+        let res = await this.$axios.$post('team/join/' + this.joinCode)
+      } catch (e) {
+        console.log(e.response.data)
+      }
       this.loadUser()
     },
     leaveTeam: async function() {
-      await this.$axios.$post('team/leave')
+      try { await this.$axios.$post('team/leave') }
+      catch (e) { console.log(e.response.data) }
       this.loadUser()
     },
     addAlias: function() {
@@ -614,6 +628,9 @@ export default {
           this.aliasSuccess = res.success
           this.loadUser()
         }
+      }).catch((err) => {
+        this.aliasFailure = err.response.data
+        this.aliasSuccess = null
       })
     },
     removeAlias: function(alias) {
@@ -622,7 +639,10 @@ export default {
         this.aliasSuccess = null
         this.aliasFailure = null
         this.loadUser()
-      }); 
+      }).catch((err) => {
+        this.aliasFailure = err.response.data
+        this.aliasSuccess = null
+      })
     },
     claim: function(athlete_id) {
       this.$axios.$post('user/claim/athlete' + athlete_id)
@@ -638,6 +658,10 @@ export default {
           this.claimSuccess = res.success
           this.loadUser()
         }
+      }).catch((err) => {
+        console.log(err)
+        this.claimFailure = err.response.data
+        this.claimSuccess = null
       })
     },
     unclaim: function(athlete_id) {
@@ -654,6 +678,10 @@ export default {
           this.claimFailure = null
           this.loadUser()
         }
+      }).catch((err) => {
+        console.log(err)
+        this.claimFailure = err.response.data
+        this.claimSuccess = null
       })
     },
     unclaimTeam: async function() {
@@ -670,6 +698,8 @@ export default {
       .then((res) => {
         this.message = "Profile updated."
         this.loadUser()
+      }).catch((err) => {
+        this.message = err.response.data
       })
     }, 
     updateEmail: function() {
@@ -677,12 +707,17 @@ export default {
       .then((res) => {
         this.emailMessage = res
         this.loadUser()
+      }).catch((err) => {
+        console.log(err)
+        this.emailMessage = err.response.data
       })
     }, 
     changeAccountType: function() {
       this.$axios.$put('user/coach', { coach: this.coachAccount })
       .then((res) => {
         this.loadUser()
+      }).catch((err) => {
+        console.log(err)
       })
     },
     changeLogType: function() {
@@ -690,6 +725,9 @@ export default {
       this.$axios.$put('user/' + this.id, { publicLogs: this.publicLogs })
       .then((res) => {
         this.loadUser()
+      }).catch((err) => {
+        console.log(err)
+        this.emailMessage = err.response.data
       })
     },
     onProfilePicChanged: function(e) {
@@ -708,6 +746,9 @@ export default {
       .then((res) => {
         this.imageMessage = "Profile updated."
         this.loadUser()
+      }).catch((err) => {
+        console.log(err)
+        this.imageMessage = err.response.data
       })
     }, 
     resendVerification: async function() {
@@ -721,6 +762,9 @@ export default {
       .then((res) => {
         this.imageMessage = "Profile updated."
         this.loadUser()
+      }).catch((err) => {
+        console.log(err)
+        this.imageMessage = err.response.data
       })
     },
     uploadFeaturedPic: function() {
@@ -730,6 +774,9 @@ export default {
       .then((res) => {
         this.imageMessage = "Profile updated."
         this.loadUser()
+      }).catch((err) => {
+        console.log(err)
+        this.imageMessage = err.response.data
       })
     }, 
     addToClipboard: function() {
@@ -739,10 +786,12 @@ export default {
       this.copied = true; 
     },
     resetPassword: async function() {
-      await this.$axios.$post('/user/forgotPassword', {
-        email: this.user.email
-      })
-      this.sentReset = true
+      try {
+        await this.$axios.$post('/user/forgotPassword', {
+          email: this.user.email
+        })
+        this.sentReset = true
+      } catch (e) { console.log(e) }
     }
   }
 }; 

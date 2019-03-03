@@ -119,22 +119,30 @@ export default {
   middleware: 'coach',
   methods: {
     loadSchedule: async function() {
-      let team = await this.$axios.$get('/team/' + this.user.team_id)
-      this.team.schedule = team.schedule
+      try {
+        let team = await this.$axios.$get('/team/' + this.user.team_id)
+        this.team.schedule = team.schedule
+      } catch (err) { 
+        console.log(err.response.data) 
+      }
     }, 
     addToSchedule: async function() {
-      let newDate = moment(this.newMeet.date, 'MMMM DD YYYY').toDate()
-      let res = await this.$axios.$post('/team/schedule', {
-        name: this.newMeet.name, 
-        location: this.newMeet.location, 
-        date: newDate
-      })
-      this.clearForm()
-      this.loadSchedule()
+      try {
+        let newDate = moment(this.newMeet.date, 'MMMM DD YYYY').toDate()
+        let res = await this.$axios.$post('/team/schedule', {
+          name: this.newMeet.name, 
+          location: this.newMeet.location, 
+          date: newDate
+        })
+        this.clearForm()
+        this.loadSchedule()
+      } catch (err) { console.log(err) }
     }, 
     removeFromSchedule: async function(i) {
-      let res = await this.$axios.$delete('/team/schedule/' + moment(this.team.schedule[i].date).format('DDMMYYYY'))
-      this.loadSchedule()
+      try {
+        let res = await this.$axios.$delete('/team/schedule/' + moment(this.team.schedule[i].date).format('DDMMYYYY'))
+        this.loadSchedule()
+      } catch (err) { console.log(err) }
     },
     clearForm: function() {
       this.newMeet.name = ""

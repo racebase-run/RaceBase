@@ -201,23 +201,37 @@ export default {
   middleware: 'coach',
   methods: {
     loadRoster: async function() {
-      this.roster = await this.$axios.$get('/team/' + this.team.team_id + '/roster')
+      try {
+        this.roster = await this.$axios.$get('/team/' + this.team.team_id + '/roster')
+      } catch (err) { console.log(err.response.data) }
     }, 
     addToRoster: async function(athlete_id) {
-      await this.$axios.$post('/team/roster/athlete/' + athlete_id)
-      this.loadRoster()
+      try {
+        await this.$axios.$post('/team/roster/athlete/' + athlete_id)
+        this.loadRoster()
+      } catch (err) { console.log(err.response.data) }
     }, 
     removeFromRoster: async function(athlete_id) {
-      await this.$axios.$delete('/team/roster/athlete/' + athlete_id)
-      this.loadRoster()
+      try {
+        await this.$axios.$delete('/team/roster/athlete/' + athlete_id)
+        this.loadRoster()
+      } catch (err) { console.log(err.response.data) }
     }, 
     updateName: async function() {
-      let res = await this.$axios.$put('/team/' + this.team.team_id, { name: this.team.name })
+      try {
+        let res = await this.$axios.$put('/team/' + this.team.team_id, { name: this.team.name })
+      } catch (err) {
+        console.log(err.response.data)
+      }
     }, 
     inviteAthlete: async function(athlete) {
-      let res = await this.$axios.$post('/team/invite/' + athlete.athlete_id)
-      athlete.sentInvite = true
-      athlete.showInvite = false
+      try {
+        let res = await this.$axios.$post('/team/invite/' + athlete.athlete_id)
+        athlete.sentInvite = true
+        athlete.showInvite = false
+      } catch (err) {
+        console.log(err.response.data)
+      }
     }
   }, 
   computed: {
