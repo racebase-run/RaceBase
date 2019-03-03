@@ -1,5 +1,8 @@
 ## Welcome to the RaceBase API
 
+RaceBase was designed upon an extensible and maintanable API 
+that we built from the ground up to be used by the community. 
+
 All API access is through HTTPS, and is accessed with `https://api.racebase.io`.
 
 Every API call will take the format

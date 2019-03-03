@@ -13,7 +13,7 @@ let cookie_domain = process.env.NODE_ENV == "development" ? 'localhost' : 'raceb
 router.post('/login', function(req, res) {
   User.findOne({ email: req.body.email }, function(err, user) {
     if (err) res.status(500).send({ error: err, message: 'Internal server error.' })
-    else if (!user) res.send({ error: 'User not found.' })
+    else if (!user) res.status(400).send({ error: 'User not found.' })
     else {
       bcrypt.compare(req.body.password, user.password).then(function(validPassword) {
         if (!validPassword) res.status(400).send({ auth: false, error: 'Incorrect password.', token: null })
