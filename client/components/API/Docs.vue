@@ -86,6 +86,9 @@
       </ul>
 
     </div>
+    <div class="mx-auto my-4 d-table">
+      <iframe src="//rcm-na.amazon-adsystem.com/e/cm?o=1&p=20&l=ur1&category=student_usa&banner=0FMF1X5SG1HSD2TT9MR2&f=ifr&linkID=322330519281314fb8aa8e2d7a7172a1&t=racebase-20&tracking_id=racebase-20" width="120" height="90" scrolling="no" border="0" marginwidth="0" style="border:none;" frameborder="0"></iframe>
+    </div>
 
   </div>
 </div>
