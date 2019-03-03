@@ -1,0 +1,1 @@
+{"version":3,"file":"299438166e8aea7bd7ee.js","sources":["webpack:///./pages/signup/coach/claim.vue"],"sourcesContent":["//\n//\n//\n//\n//\n//\n//\n//\n//\n//\n\nconst CoachClaimSearch = () => import('~/components/Search/CoachClaimSearch')\nexport default {\n  components: { CoachClaimSearch }\n}\n"],"mappings":"AAYA","sourceRoot":""}
