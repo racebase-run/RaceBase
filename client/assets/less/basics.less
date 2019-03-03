@@ -70,6 +70,26 @@ b, strong {
   font-weight: 500;
 }
 
+pre {
+  background: #343a40 !important;
+  overflow: hidden;
+  padding: 5px;
+  border-radius: 5px; 
+}
+
+code { 
+  background: #343a40 !important;
+  color: white !important; 
+  border-radius: 0px !important; 
+  padding: 3px !important;
+  .token.operator {
+    color: @bright-blue + #555;
+  }
+  .token.number, .token.boolean {
+    color: @orange + #222;
+  }
+}
+
 p {
   line-height: 29px;
   font-size: 17px;

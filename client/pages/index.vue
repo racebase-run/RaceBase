@@ -184,7 +184,7 @@ h4 {
     <div class="nav mb-3">
       <nuxt-link class="link" to="/about"> About </nuxt-link>
       <nuxt-link class="link" to="/roadmap"> Roadmap </nuxt-link>
-      <nuxt-link class="link" to="/blog"> Blog </nuxt-link>
+      <nuxt-link class="link" to="/api"> API </nuxt-link>
     </div>
 
     <div class="search-container">

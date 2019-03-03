@@ -11,8 +11,12 @@ export const mutations = {
 
 export const actions = {
   async fetchRecentRaces ({ commit }) {
-
-    let raceData = await this.$axios.$get('race/list/1/3')
-    commit('setRecentRaces', raceData.docs)
+    try {
+      let raceData = await this.$axios.$get('race/list/1/3')
+      commit('setRecentRaces', raceData.docs) 
+    } catch (e) {
+      console.log("Something went wrong fetching recent races") 
+      console.log(e)
+    }
   }
 }

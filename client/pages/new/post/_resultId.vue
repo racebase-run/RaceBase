@@ -30,7 +30,10 @@ export default {
   middleware: 'auth',
   async asyncData({ store, params, $axios }) {
     let user = store.state.auth.user
-    let result = await $axios.$get('/result/' + params.resultId)
+    let result
+    try {
+      result = await $axios.$get('/result/' + params.resultId)
+    } catch (e) { console.log(e.response.data) }
     result = result.athlete ? result : null
     return {
       user: user, 

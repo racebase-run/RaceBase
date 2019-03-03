@@ -15,10 +15,10 @@
 - ### Development Blog and API Documentation - Mar 5
   There are no publicly available APIs out there for running results, which is why we have designed our API to be usable by anyone from the start. While our API has been usable since RaceBase launched, we'll be releasing official documentation in March to make it much easier for anyone to integrate our data into their applications or services. Along with the API docs, we'll be releasing a Development blog to give you a behind the scenes look into how RaceBase is developed and why we made / make some our decisions.
 
-- ### Training Resources
+- ### Training Resources - Mar 12
   We at RaceBase have read a lot of books and articles on training, and we have quite a bit of first hand experience as well. We plan on launching a Wiki of sorts that will contain a wealth of information on training, and recommendations for our favorite books and external resources.
 
-- ### Training Tools 
+- ### Training Tools - Mar 12
   An extension of our Logs, we'll be releasing a suite of tools that will help you do things like pace zone and heart rate zone calculations, splits, workout generators, conversions, race time predictions, and more. 
 
 - ### RaceBase Pro - TBD

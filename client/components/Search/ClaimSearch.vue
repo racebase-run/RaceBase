@@ -101,6 +101,9 @@ export default {
         await this.$store.dispatch('auth/fetchUser')
         this.$router.push('/welcome')
       })
+      .catch((e) => {
+        console.log(e.response.data)
+      })
     }
   },
   computed: {

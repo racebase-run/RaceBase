@@ -149,6 +149,9 @@ export default {
           this.createdLink = "/races/" + res.race._id
           this.$emit('load')
         }
+      }).catch((err) => {
+        console.log(err)
+        this.success = err.response.data
       })
     },
     updateRace: function() {
@@ -161,6 +164,9 @@ export default {
           this.success = "Successfully updated race."
           this.$emit('load', csvUpdated)
         }
+      }).catch((err) => {
+        console.log(err)
+        this.success = err.response.data
       })
     },
     closeWindow: function() {
@@ -173,6 +179,9 @@ export default {
       .then((res) => {
         this.$router.push("/user/content")
         this.closeWindow()
+      }).catch((err) => {
+        console.log(err)
+        this.success = err.response.data
       })
     },
     processFile: function(event) {

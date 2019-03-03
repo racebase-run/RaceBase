@@ -1,11 +1,9 @@
 // pages/user/log/week/_date.vue
 
 <style lang="less" scoped>
-
 @import (reference) "~assets/less/colors.less";
 @import (reference) "~assets/less/basics.less";
 @import (reference) "~assets/less/sizes.less";
-
 h1 {
   .name {
     font-weight: 400; 
@@ -14,12 +12,10 @@ h1 {
   font-size: 32px;
   font-weight: 500;
 }
-
 h2 {
   text-transform: uppercase;
   font-size: 21px;
 }
-
 h4 {
   text-transform: uppercase;
   font-size: 14px;
@@ -27,7 +23,6 @@ h4 {
   font-weight: 400;
   width: 100%;
 }
-
 h4 input, .schedule input {
   display: inline-block;
   border: none;
@@ -38,38 +33,31 @@ h4 input, .schedule input {
   line-height: 1;
   height: auto;
 }
-
 .week {
   padding: 0;
   overflow: hidden;
 }
-
 .log-pager.today {
   color: @bright-blue;
 }
-
 .day {
   overflow: hidden;
   text-align: center; 
   padding: 0;
   min-height: 100%;
   border-right: 1px solid @light-grey + #191919;
-
   .calendar {
     font-size: 16px;
-
     .dow, .dow a {
       text-align: left;
       text-transform: uppercase;
       font-weight: 500;
       color: black;
     }
-
     .dom, .dom a {
       color: @medium-grey;
       text-align: right;
     }
-
     .dom.today {
       display: flex;
       justify-content: center;
@@ -77,7 +65,6 @@ h4 input, .schedule input {
       padding: 0px;
       margin-right: 3px;
       margin-top: -4px;
-
       a {
         text-align: center;
         border-radius: 100px;
@@ -91,7 +78,6 @@ h4 input, .schedule input {
       }
     }
   }
-
   .placeholder {
     font-size: 17px;
     text-transform: uppercase;
@@ -104,14 +90,12 @@ h4 input, .schedule input {
       color: @bright-blue;
     }
   }
-
   .unit {
     color: @medium-grey;
     font-size: 14px;
     font-weight: 400;
     text-transform: uppercase;
   }
-
   .mileage {
     font-weight: 500; 
     font-size: 26px;
@@ -120,7 +104,6 @@ h4 input, .schedule input {
       font-size: 23px;
     }
   }
-
   .pace {
     font-weight: 400;
     font-size: 19px;
@@ -129,7 +112,6 @@ h4 input, .schedule input {
       font-size: 16px;
     }
   }
-
   .checks {
     text-align: left;
     font-size: 15px;
@@ -138,38 +120,30 @@ h4 input, .schedule input {
       font-weight: 500;
     }
   }
-
   .stats {
     font-size: 18px;
     font-weight: 500;
-
     @media (min-width: @large) {
       font-size: 15px;
     }
-
     .fa-heartbeat {
       color: @pink;
     }
-
     .fa-bed {
       color: @orange;
     }
   }
-
   .feel {
     width: 100%;
     height: 3.5px;
     background: @medium-grey;
   }
-
   .f1 { background: @pink; }
   .f2 { background: @orange; }
   .f3 { background: @green; }
   .f4 { background: @bright-blue; }
   .f5 { background: @purple; }
-
 }
-
 .schedule {
   h4 {
     font-size: 15px;
@@ -182,7 +156,6 @@ h4 input, .schedule input {
       color: @dark-grey;
       font-weight: 500;
       text-align: center;
-
       @media (min-width: @large) {
         text-align: right;
       }
@@ -191,14 +164,12 @@ h4 input, .schedule input {
       color: @bright-blue;
       font-weight: 500;
     }
-
     input {
       font-size: 17px;
       text-align: center;
       width: 100%;
     }
   }
-
   .goal {
     background: @bright-blue;
     font-size: 16px;
@@ -207,13 +178,10 @@ h4 input, .schedule input {
     padding: 2px 7px;
     white-space: nowrap;
   }
-
 }
-
 .stats.row .box {
   margin: 10px;
   overflow: hidden;
-
   .placeholder {
     text-transform: uppercase;
     color: @medium-grey;
@@ -221,18 +189,15 @@ h4 input, .schedule input {
     font-size: 14px;
   }
 }
-
 .num {
   color: @bright-blue;
 }
-
 .data {
   text-align: right;
   font-weight: 500;
   font-size: 21px;
   color: @medium-grey;
 }
-
 </style>
 
 <template>
@@ -394,7 +359,6 @@ h4 input, .schedule input {
 </template>
 
 <script> 
-
 Array.prototype.sum = function(prop) {
   var total = 0
   for ( var i = 0, _len = this.length; i < _len; i++ ) {
@@ -402,13 +366,11 @@ Array.prototype.sum = function(prop) {
   }
   return total
 }
-
 import moment from 'moment-timezone'
 moment.tz.setDefault("America/Los_Angeles")
 const Chart = () => import('~/components/Chart')
 const LogPagers = () => import('~/components/LogPagers')
 const Stat = () => import('~/components/Stat')
-
 let { 
   timeStringToDecimal, 
   timeDecimalToString, 
@@ -416,14 +378,11 @@ let {
   getDateFromUrl, 
   getPace 
 } = require('~/utils/date.js')
-
 let roundToHundredths = function(n) { return Math.round(n * 100) / 100 }
-
 let sumRuns = function(runs) {
   var totalMileage = 0
   var totalElev = 0
   var totalTime = 0
-
   for (var i = 0, l = runs.length; i < l; i++ ) {
     totalMileage += runs[i].distance || 0
     totalElev += runs[i].elevationGain || 0
@@ -435,11 +394,9 @@ let sumRuns = function(runs) {
     totalTime: timeDecimalToString(roundToHundredths(totalTime))
   }
 }
-
 let getArrayOfProp = function(data, prop) {
   return data.filter(a => a[prop] > 0).map(a => a[prop])
 }
-
 export default {
   components: {
     Chart, 
@@ -453,67 +410,69 @@ export default {
     }
   },
   async asyncData({ store, params, $axios }) {
+    try {
+      let user = { ...store.state.auth.user }
+      if (user.name)
+        user.firstName = user.name.split(' ')[0]
+      else 
+        user.firstName = ""
 
-    let user = { ...store.state.auth.user }
-    if (user.name)
-      user.firstName = user.name.split(' ')[0]
-    else 
-      user.firstName = ""
+      let now = moment()
+      let dayUrl = params.date
+      let curDay = getDateFromUrl(params.date)
+      let weekOf = moment(curDay).startOf('isoWeek').format('M/D/YY')
 
-    let now = moment()
-    let dayUrl = params.date
-    let curDay = getDateFromUrl(params.date)
-    let weekOf = moment(curDay).startOf('isoWeek').format('M/D/YY')
-    let data = await $axios.$get('/log/list/week/' + dayUrl)
-    let lastWeekUrl = formatDateUrl(moment(curDay).subtract(7, 'days'))
+      let data = {}
+      try { data = await $axios.$get('/log/list/week/' + dayUrl) }
+      catch (e) { console.log(e.response.data) }
 
-    let lastWeek = await $axios.$get('/log/list/week/' + lastWeekUrl)
+      let lastWeekUrl = formatDateUrl(moment(curDay).subtract(7, 'days'))
+      let lastWeek
+      try { lastWeek = await $axios.$get('/log/list/week/' + lastWeekUrl) }
+      catch (e) { console.log(e.response.data) }
 
-    let days = await Array.apply(null, Array(7)).map(function (_, i) {
-      let day = moment(getDateFromUrl(params.date)).startOf('isoWeek').weekday(i + 1)
-      let dayOfWeekFull = day.format('dddd')
-      let dayOfWeek = day.format('ddd')
-      let dayOfMonth = day.format('DD')
-      let curDayUrl = formatDateUrl(day)
-
-      var today = false
-      if (formatDateUrl(moment()) == formatDateUrl(day)) 
-        today = true
-
-      if (i < data.length && moment(data[i].date).format('dddd') == dayOfWeekFull) {
-        let dayData = data[i]
-        dayData.dow = dayOfWeek
-        dayData.dom = dayOfMonth
-        dayData.today = today,
-        dayData.url = curDayUrl
-
-        let sums = sumRuns(dayData.runs)
-
-        dayData.totalMileage = sums.totalMileage
-        dayData.totalElev = sums.totalElev
-        dayData.totalTime = sums.totalTime
-
-        dayData.sleepDecimal = timeStringToDecimal(dayData.sleep)
-        dayData.avgPace = getPace(dayData.totalTime, dayData.totalMileage)
-
-        return dayData
-      } else {
-        return { 
-          dow: dayOfWeek, 
-          dom: dayOfMonth, 
-          today: today, 
-          url: curDayUrl,
-          now: now
+      let days = await Array.apply(null, Array(7)).map(function (_, i) {
+        let day = moment(getDateFromUrl(params.date)).startOf('isoWeek').weekday(i + 1)
+        let dayOfWeekFull = day.format('dddd')
+        let dayOfWeek = day.format('ddd')
+        let dayOfMonth = day.format('DD')
+        let curDayUrl = formatDateUrl(day)
+        var today = false
+        if (formatDateUrl(moment()) == formatDateUrl(day)) 
+          today = true
+        if (i < data.length && moment(data[i].date).format('dddd') == dayOfWeekFull) {
+          let dayData = data[i]
+          dayData.dow = dayOfWeek
+          dayData.dom = dayOfMonth
+          dayData.today = today,
+          dayData.url = curDayUrl
+          let sums = sumRuns(dayData.runs)
+          dayData.totalMileage = sums.totalMileage
+          dayData.totalElev = sums.totalElev
+          dayData.totalTime = sums.totalTime
+          dayData.sleepDecimal = timeStringToDecimal(dayData.sleep)
+          dayData.avgPace = getPace(dayData.totalTime, dayData.totalMileage)
+          return dayData
+        } else {
+          return { 
+            dow: dayOfWeek, 
+            dom: dayOfMonth, 
+            today: today, 
+            url: curDayUrl,
+            now: now
+          }
         }
-      }
-    });
+      });
 
-    return {
-      days: days, 
-      lastWeek: lastWeek,
-      weekOf: weekOf, 
-      user: user, 
-      date: params.date || formatDateUrl(moment())
+      return {
+        days: days, 
+        lastWeek: lastWeek,
+        weekOf: weekOf, 
+        user: user, 
+        date: params.date || formatDateUrl(moment())
+      }
+    } catch (e) {
+      console.log(e)
     }
   },
   computed: {
@@ -577,19 +536,24 @@ export default {
       let m = moment(date, format)
       if (!m.isValid())
         return
-
       this.$router.push({ params: { date: formatDateUrl(m) } })
     }, 
     updateSchedule: function(val, date) {
       this.$axios.$post('log/' + date + '/goal', { goal: val })
       .then((res) => {
         console.log(res)
+      }).catch((e) => {
+        console.log(e.response.data)
       })
     }, 
     updateEntireSchedule: async function() {
-      for (const day of this.days) {
-        let res = await this.$axios.$post('/log/' + day.url + '/goal', { goal: day.mileageGoal }) 
-        console.log(res)
+      try {
+        for (const day of this.days) {
+          let res = await this.$axios.$post('/log/' + day.url + '/goal', { goal: day.mileageGoal }) 
+          console.log(res)
+        }
+      } catch (e) {
+        console.log(e)
       }
     },
     getCheckPercentage: function(prop) {

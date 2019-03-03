@@ -20,14 +20,6 @@
       </a>
     </p>
 
-    <a 
-      class="btn btn-primary mb-3" 
-      href="https://donorbox.org/racebase""
-      target="_blank" 
-    >
-      Donate
-    </a>
-
     <h5>We believe in the power of the community.</h5>
     <p class="mb-4">
       RaceBase was started from the idea that the records of our hard earned PR's should not be maintained by a company that doesn't know or care who you are. Those who have overcome tremendous obstacles deserve a moment in the spotlight, and we all have a story that deserves to be told, whether you are the fastest or the slowest. Friends and family who want to see results shouldn't have to dig through Google to find a results link or wait for days, to see their loved ones' race times. Missing or inaccurate results should not exist, and the members of the running community should not have to pay to watch the sport they love. These are our founding principles and are the driving forces behind every feature that we add and decision that we make. 
