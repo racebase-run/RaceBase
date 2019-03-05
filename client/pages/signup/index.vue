@@ -90,10 +90,22 @@ ul {
           </nuxt-link>
       </div>
 
-      <div class="mb-3">
-        <span class="mr-2">Are you a coach?</span>
-        <input v-model="input.coach" type="checkbox" name="coach">
-        <strong>{{ input.coach ? "Yep!" : "No" }}</strong>
+      <div>
+        Are you a coach? 
+        <label class="form-check-label mb-3">
+          <input 
+            v-model="input.coach" 
+            :value="true" 
+            type="radio"
+            name="coach"
+          /> Yep! &nbsp; 
+
+          <input 
+            v-model="input.coach" 
+            :value="false" 
+            type="radio"
+          /> No
+        </label>
       </div>
 
       <div 

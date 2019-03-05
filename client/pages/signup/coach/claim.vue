@@ -11,6 +11,7 @@
 <script>
 const CoachClaimSearch = () => import('~/components/Search/CoachClaimSearch')
 export default {
+  middleware: 'coach',
   components: { CoachClaimSearch }
 }
 </script>
