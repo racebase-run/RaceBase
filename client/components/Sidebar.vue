@@ -234,7 +234,7 @@
     </div>
 
     <div class="site-links links mt-2 pl-0 pb-4">
-      <nuxt-link to="/developers">For Developers</nuxt-link>
+      <nuxt-link to="/api">For Developers</nuxt-link>
       <nuxt-link to="/press">For the Press</nuxt-link>
       <nuxt-link to="/privacy">Privacy</nuxt-link>
     </div>
