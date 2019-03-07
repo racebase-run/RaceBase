@@ -191,13 +191,17 @@ const getResults = (req, res) => {
   .sort({ 'place': 1, 'name' : 1 }) 
   .exec(function(err, results) {
 
+    results.sort((a, b) => {
+      if (a.place === null || typeof a.place !== "number") return 1
+      else if (b.place === null || typeof b.place !== "number") return -1
+    })
+
     if (err) res.status(500).send(err)
 
     if (!results)
       res.status(400).send("No results for that race were found.");
 
     else {
-      // client.setex(id, 3600, JSON.stringify(results))
       res.send(results);
     }
 
