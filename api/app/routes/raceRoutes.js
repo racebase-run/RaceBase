@@ -78,7 +78,7 @@ router.get('/vote/:id', authCheck, function(req, res) {
     if (err)
       res.send(err);
     else if (!data)
-      res.status(400).send("You have no vote attached to that race.")
+      res.status({})
     else 
       res.send(data);
   });
