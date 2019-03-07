@@ -98,7 +98,7 @@ export default {
     loadFeed: async function() {
       this.addingPost = false
       try {
-        let feed = (await this.$axios.$get('/post/feed')).feed
+        let feed = await this.$axios.$get('/post/feed')
 
         if (!feed) throw "No posts in feed"
         for (const post of feed) {
@@ -121,14 +121,16 @@ export default {
   middleware: 'auth',
   async asyncData ({ $axios, store }) {
     let user = store.state.auth.user
-    let feed, following = []
+    let feed = []
+    let following = {}
     try {
       feed = await $axios.$get('/post/feed')
       if (!feed) throw "No posts in feed"
 
       for (const post of feed) {
-        if (!following[post.athlete_id]) 
+        if (!following[post.athlete_id]) {
           following[post.athlete_id] = await $axios.$get('/user/athlete/' + post.athlete_id)
+        } 
 
         if (post.result_id) 
           post.result = await $axios.$get('/result/' + post.result_id)

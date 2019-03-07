@@ -115,7 +115,7 @@ export default {
       this.$emit('loadFeed')
     }, 
     loadPost: async function() {
-      this.post = await this.$axios.$get('/post/' + this.post._id)
+      this.$emit('loadFeed')
     }
   }
 }

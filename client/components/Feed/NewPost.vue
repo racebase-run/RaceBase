@@ -136,7 +136,6 @@ export default {
   },
   methods: {
     createPost: function() {
-      console.log(this.input)
       if (this.input.result)
         this.input.result_id = this.input.result._id
       this.$axios.$post('/post/', this.input)
