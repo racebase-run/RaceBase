@@ -9,10 +9,6 @@ h4 {
 
 .table-responsive {
   overflow-x: auto;
-
-  .pencil {
-    color: @purple;
-  }
 }
 
 .team-toggle {

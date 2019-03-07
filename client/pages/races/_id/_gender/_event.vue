@@ -96,9 +96,12 @@ export default {
     var voteData
 
     if (store.getters['auth/isLoggedIn']) {
-      voteData = await $axios.$get('race/vote/' + params.id).catch((err) => { 
-        console.log(err);
-      })
+      try {
+        voteData = await $axios.$get('race/vote/' + params.id)
+      } catch(err) { 
+        voteData = {}
+        console.log(err)
+      }
     }
 
     else 
