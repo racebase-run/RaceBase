@@ -394,7 +394,7 @@ router.post('/claim/athlete/:athlete_id', authCheck, function(req, res) {
     else if (!data) {
       Result.findOne({ 'athlete_id' : req.params.athlete_id }, function(err, data) {
         if (data) {
-          User.findOneAndUpdate({ '_id' : userId }, { athlete_id : req.params.athlete_id }, {new:true}, (err, response) => {
+          User.findOneAndUpdate({ '_id' : req.userId }, { athlete_id : req.params.athlete_id }, {new:true}, (err, response) => {
             if (err) res.status(500).send(err);
             else res.send("Successfully claimed ID");
           });
@@ -408,7 +408,7 @@ router.post('/claim/athlete/:athlete_id', authCheck, function(req, res) {
   })
 });
 
-router.post('/unclaim/athlete/:athlete_id', authCheck, function(req, res) {
+router.post('/unclaim/athlete/', authCheck, function(req, res) {
   User.findOneAndUpdate({ '_id' : req.userId }, { athlete_id : "" }, {new:true}, (err, response) => {
     if (err) res.status(500).send(err)
     res.send("Successfully unclaimed ID")
