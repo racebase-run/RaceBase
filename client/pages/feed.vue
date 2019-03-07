@@ -123,7 +123,7 @@ export default {
     let user = store.state.auth.user
     let feed, following = []
     try {
-      feed = (await $axios.$get('/post/feed')).feed
+      feed = await $axios.$get('/post/feed')
       if (!feed) throw "No posts in feed"
 
       for (const post of feed) {
