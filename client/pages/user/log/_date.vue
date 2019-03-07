@@ -751,6 +751,7 @@ export default {
     return {
       user: user, 
       id: user._id,
+      dayUrl: dayUrl,
       entryData: entryData, 
       originalData: JSON.parse(JSON.stringify(entryData)),
       currentDay: dayPretty, 
@@ -768,8 +769,8 @@ export default {
   },
   methods: {
     load: async function() {
-      this.movingAvgs.rhr = Math.round((await this.$axios.$get('log/avg/moving/rhr/' + dayUrl)).avg * 10) / 10
-      this.movingAvgs.sleep = (await this.$axios.$get('log/avg/moving/sleep/' + dayUrl)).avg
+      this.movingAvgs.rhr = Math.round((await this.$axios.$get('log/avg/moving/rhr/' + this.dayUrl)).avg * 10) / 10
+      this.movingAvgs.sleep = (await this.$axios.$get('log/avg/moving/sleep/' + this.dayUrl)).avg
       this.streaks = await this.$axios.$get('log/streaks')
     },
     submitEntry: function() {
@@ -778,8 +779,8 @@ export default {
       if (!this.didWeights)
         this.$set(this.entryData, 'weights', null)
       this.$axios.$post('log/' + formatDateUrl(moment(this.currentDay)), this.entryData).then((res) => {
-        res.entry = res.entry || {}
-        this.entryData = deepmerge(this.emptyEntry, res.entry)
+        res.entry = res || {}
+        this.entryData = deepmerge(this.emptyEntry, res)
         this.originalData = JSON.parse(JSON.stringify(this.entryData))
         this.load()
       }).catch((e) => {
