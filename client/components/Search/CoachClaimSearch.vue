@@ -29,6 +29,9 @@ td {
         <tr v-for="result in filtered">
 
           <td> 
+            <button class="claim btn btn-secondary" v-if="result.taken" disabled>
+              Taken
+            </button>
             <div class="claim btn btn-primary" @click="claim(result.team_id)">
               Claim
             </div>
@@ -99,10 +102,18 @@ export default {
   mixins: [search], 
   components: { SearchBar, Pagers }, 
   watch: {
-    results: function(val) {
+    results: async function(val) {
       let filtered = _.uniq(val, (x) => {
         return [ x.team ].join()
       })
+
+      for (const team of filtered) {
+        try {
+          let taken = await this.$axios.$get('/team/public/' + team.team_id)
+          if (taken) team.taken = true
+        } catch (e) { console.log(e.response.data) }
+      }
+
       this.filtered = filtered
     }
   }

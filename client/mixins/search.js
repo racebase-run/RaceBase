@@ -20,7 +20,7 @@ export default {
             + this.searchInput 
             + '/' 
             + this.currentPage 
-            + '/10')
+            + '/20')
 
           this.results = page.data.docs
           this.lastPage = page.data.lastPage  

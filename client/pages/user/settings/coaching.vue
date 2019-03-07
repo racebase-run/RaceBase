@@ -73,6 +73,11 @@ export default {
       let res = await this.$axios.$post('/user/unclaim/team')
       console.log(res)
       this.loadUser()
+    }, 
+    loadUser: async function() {
+      await this.$store.dispatch('auth/fetchUser')
+      this.user = { ...this.$store.state.auth.user }
+      this.currentEmail = this.user.email
     }
   }
 }
