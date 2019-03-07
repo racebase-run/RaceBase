@@ -382,6 +382,8 @@ router.post('/unclaim/team/', authCheck, async (req, res) => {
   let user = await User.findById(req.userId)
   if (!user.coach) res.status(403).send("You are not a coach")
   else {
+    if (user.team_id)
+      await Team.remove({ team_id: user.team_id })
     user.team_id = null
     await user.save()
     res.send("Successfully unclaimed team")
