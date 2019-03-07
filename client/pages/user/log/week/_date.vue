@@ -469,6 +469,7 @@ export default {
         lastWeek: lastWeek,
         weekOf: weekOf, 
         user: user, 
+        now: now,
         date: params.date || formatDateUrl(moment())
       }
     } catch (e) {
@@ -532,6 +533,7 @@ export default {
   }, 
   methods: {
     changeDate: function(date) {
+      console.log(date)
       let format = 'M/D/YY'
       let m = moment(date, format)
       if (!m.isValid())

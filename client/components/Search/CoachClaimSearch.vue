@@ -32,7 +32,7 @@ td {
             <button class="claim btn btn-secondary" v-if="result.taken" disabled>
               Taken
             </button>
-            <div class="claim btn btn-primary" @click="claim(result.team_id)">
+            <div class="claim btn btn-primary" @click="claim(result.team_id)" v-else>
               Claim
             </div>
           </td>
