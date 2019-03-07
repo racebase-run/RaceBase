@@ -78,7 +78,7 @@ router.get('/vote/:id', authCheck, function(req, res) {
     if (err)
       res.send(err);
     else if (!data)
-      res.status({})
+      res.send({})
     else 
       res.send(data);
   });
