@@ -1,2 +1,0 @@
-exports.ids=[38],exports.modules={310:function(t,e,r){"use strict";r.r(e);var o=r(1),component=Object(o.a)({},function(){var t=this.$createElement,e=this._self._c||t;return e("div",{staticClass:"mt-4 mx-auto w-95"},[this._ssrNode("<h4>Awesome! You've added your result!</h4> "),this._ssrNode("<div>","</div>",[this._ssrNode(" Click "),e("nuxt-link",{attrs:{to:"/new/result"}},[this._v("here")]),this._ssrNode(" to add another ")],2)],2)},[],!1,null,null,"28e05004");e.default=component.exports}};
-//# sourceMappingURL=ed8ed030c8e03436548f.js.map

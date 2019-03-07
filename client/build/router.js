@@ -23,9 +23,12 @@ const _369ce686 = () => interopDefault(import('../pages/coach/schedule.vue' /* w
 const _fd5766e6 = () => interopDefault(import('../pages/races/notfound.vue' /* webpackChunkName: "pages/races/notfound" */))
 const _54aea296 = () => interopDefault(import('../pages/signup/claim.vue' /* webpackChunkName: "pages/signup/claim" */))
 const _252ca980 = () => interopDefault(import('../pages/team/notfound.vue' /* webpackChunkName: "pages/team/notfound" */))
-const _2d3343b4 = () => interopDefault(import('../pages/user/settings.vue' /* webpackChunkName: "pages/user/settings" */))
+const _3ca13029 = () => interopDefault(import('../pages/user/settings/index.vue' /* webpackChunkName: "pages/user/settings/index" */))
 const _7ae0ae31 = () => interopDefault(import('../pages/new/result/success.vue' /* webpackChunkName: "pages/new/result/success" */))
 const _0b8119e1 = () => interopDefault(import('../pages/signup/coach/claim.vue' /* webpackChunkName: "pages/signup/coach/claim" */))
+const _88d20f78 = () => interopDefault(import('../pages/user/settings/account.vue' /* webpackChunkName: "pages/user/settings/account" */))
+const _e11aacfe = () => interopDefault(import('../pages/user/settings/coaching.vue' /* webpackChunkName: "pages/user/settings/coaching" */))
+const _dae44c80 = () => interopDefault(import('../pages/user/settings/profile.vue' /* webpackChunkName: "pages/user/settings/profile" */))
 const _3819db20 = () => interopDefault(import('../pages/user/log/week/_date.vue' /* webpackChunkName: "pages/user/log/week/_date" */))
 const _78b0f107 = () => interopDefault(import('../pages/api/blog/_url.vue' /* webpackChunkName: "pages/api/blog/_url" */))
 const _48ba1c42 = () => interopDefault(import('../pages/api/routes/_url.vue' /* webpackChunkName: "pages/api/routes/_url" */))
@@ -196,7 +199,7 @@ export function createRouter() {
       name: "team-notfound"
     }, {
       path: "/user/settings",
-      component: _2d3343b4,
+      component: _3ca13029,
       name: "user-settings"
     }, {
       path: "/new/result/success",
@@ -206,6 +209,18 @@ export function createRouter() {
       path: "/signup/coach/claim",
       component: _0b8119e1,
       name: "signup-coach-claim"
+    }, {
+      path: "/user/settings/account",
+      component: _88d20f78,
+      name: "user-settings-account"
+    }, {
+      path: "/user/settings/coaching",
+      component: _e11aacfe,
+      name: "user-settings-coaching"
+    }, {
+      path: "/user/settings/profile",
+      component: _dae44c80,
+      name: "user-settings-profile"
     }, {
       path: "/user/log/week/:date?",
       component: _3819db20,

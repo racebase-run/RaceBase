@@ -1,2 +1,0 @@
-exports.ids=[22],exports.modules={240:function(t,e,n){"use strict";n.r(e);var o={layout:"api",components:{Docs:()=>n.e(2).then(n.bind(null,283))},asyncData:async({$axios:t,params:e})=>({post:await t.$get("/docs/index")})},c=n(1),component=Object(c.a)(o,function(){var t=this.$createElement,e=this._self._c||t;return e("Docs",[e("div",{staticClass:"container mt-4",domProps:{innerHTML:this._s(this.post.content)}})])},[],!1,null,null,"f200de22");e.default=component.exports}};
-//# sourceMappingURL=5d73efe3dec345d51c97.js.map
