@@ -96,7 +96,7 @@ export default {
   },
   methods: {
     claim: async function(id) {
-      this.$axios.$post('user/claim/' + this.user._id + '/' + id)
+      this.$axios.$post('user/claim/athlete/' + id)
       .then(async (res) => {
         await this.$store.dispatch('auth/fetchUser')
         this.$router.push('/welcome')

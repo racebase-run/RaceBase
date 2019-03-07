@@ -133,7 +133,7 @@ export default {
       results: results, 
       teamResults: teamResults, 
       gender: gender, 
-      voteData: voteData
+      voteData: voteData, 
     } 
   },
   data () {
@@ -172,6 +172,8 @@ export default {
       ).catch(() => {
         console.log("Something went wrong.")
       })
+
+      await setTimeout(_, 2000)
 
     },
     loadRace: async function(shouldLoadResults) {
