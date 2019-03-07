@@ -73,7 +73,7 @@ router.get('/:id', authCheck, async (req, res) => {
 
 router.get('/public/:id', async (req, res) => {
   let team = await Team.findOne({ team_id: req.params.id })
-  if (!team) res.status(400).send("That team doesn't exist")
+  if (!team) res.send(null)
   else {
     delete team.join_code
     res.send(team)

@@ -84,7 +84,7 @@ router.get('/athlete/:athlete_id', function(req, res) {
     }
 
     else 
-      res.send({})
+      res.send(null)
 
   })
 })
