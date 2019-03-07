@@ -301,7 +301,7 @@ export default {
     search: async function() {
       if (this.searchInput) {
         try {
-          this.races = await this.$axios.$get('search/races/' + this.searchInput)
+          this.races = (await this.$axios.$get('search/races/' + this.searchInput)).slice(0, 10)
         } catch (e) {
           console.log(e.response.data)
           this.races = []
