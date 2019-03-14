@@ -3,8 +3,8 @@
 
 thead {
   th {
+    border-top: none;
     font-weight: 500; 
-    border-right: 1px solid black; 
     text-align: center;
     padding: 0px 10px;
   }
@@ -34,6 +34,40 @@ td {
   cursor: pointer;
 }
 
+.pr {
+  font-size: 18px;
+  text-transform: uppercase;
+  text-align: center;
+  font-weight: 500;
+}
+
+.pace {
+  color: @bright-blue;
+  font-size: 28px;
+  margin-left: 3px; 
+  font-family: 'DS Digital'
+}
+
+.output {
+  margin: 0 auto;
+  width: 95%;
+  padding: 20px;
+  border-radius: 5px; 
+  border: 1px solid @light-grey;
+}
+
+.zone {
+  text-transform: uppercase;
+  font-weight: 500; 
+  font-size: 23px;
+}
+
+.unit {
+  text-transform: none; 
+  font-size: 16px;
+  font-weight: normal;
+}
+
 </style>
 <template>
 <div class="mx-auto w-95 mt-4">
@@ -45,33 +79,43 @@ td {
       <input type="number" placeholder="Distance" class="col form-control" v-model="input.distance"/> 
     </div>
   </div>
-  <div class="mb-3"> PR Pace: {{ pace }}</div>
-  <table class="table">
-    <thead> 
-      <tr> 
-        <th v-for="zone in zones"> 
-          {{ zone.name }}
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr> 
-        <td v-for="(zone, index) in zones">
-          {{ calculatePace(zone.range[0]) }} - {{ zone.range[1] ? calculatePace(zone.range[1]) : 'INF' }}
-        </td>
-      </tr>
-    </tbody>
-  </table>
-  
-  <div> {{ calculatePace(curDist) }} - {{ getZone(curDist) }} </div>
-  <div class="slider mt-3">
-    <input 
-      type="range" 
-      :min="0" :max="13" 
-      :step="0.2"
-      class="slider mb-2"
-      v-model="scaleVal"
-    />
+
+  <div class="pr mb-3"> PR Pace: <span class="pace">{{ pace }}</span> <span class="unit"> min / mi </span></div>
+
+  <div class="output">
+
+    <table class="table">
+      <thead> 
+        <tr> 
+          <th v-for="zone in zones"> 
+            {{ zone.name }}
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr> 
+          <td v-for="(zone, index) in zones">
+            {{ calculatePace(zone.range[0]) }} - {{ zone.range[1] ? calculatePace(zone.range[1]) : 'INF' }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    
+    <div class="d-flex align-items-center"> 
+      <div> <span class="pace"> {{ calculatePace(curDist) }} </span> min / mi </div> 
+      <div class="zone ml-auto"> {{ getZone(curDist) }} </div>
+    </div>
+
+    <div class="slider mt-3">
+      <input 
+        type="range" 
+        :min="0" :max="13" 
+        :step="0.2"
+        class="slider mb-2"
+        v-model="scaleVal"
+      />
+    </div>
+
   </div>
 
 </div>
