@@ -37,13 +37,16 @@
       <div class="d-flex header mb-3 py-2">
         <div class="col"> Distance </div>
         <div class="col"> Time </div>
-        <div class="col"> Pace (min / {{ unit == 'kilometers' ? 'km' : 'mi' }}) </div>
+        <div class="col d-flex align-items-center"> 
+          Pace (Min / 
+          <UnitSelector class="ml-2" v-model="paceUnit" name="paceUnit" />)
+        </div>
         <div class="col"> Projected </div>
       </div>
       <div class="d-flex mb-3 split" v-for="split in splits">
         <div class="col"> {{ split.distance }} {{ split.unit == 'kilometers' ? 'km' : 'mi' }} </div>
         <div class="col"> {{ split.time }} </div>
-        <div class="col"> {{ getPace(split.time, split.distance) }} </div>
+        <div class="col"> {{ getPace(split.time, split.distance, split.unit) }} </div>
         <div class="col"> {{ getProjection(split.time, split.distance, split.unit) }} </div>
       </div>
     </div>
@@ -72,12 +75,13 @@ export default {
       input: {
         distance: null, 
         time: '', 
-        unit: false
+        unit: 'miles'
       }, 
       splits: [], 
       unit: false, 
       projectedDist: null, 
-      projectedDistUnit: false
+      projectedDistUnit: 'miles', 
+      paceUnit: 'miles'
     }
   }, 
   methods: {
@@ -85,11 +89,13 @@ export default {
       this.splits.push({ distance: this.input.distance, time: this.input.time, unit: this.input.unit })
       this.input.time = null
     }, 
-    getPace: function(time, dist) {
-      return getPace(time, dist)
+    getPace: function(time, dist, unit) {
+      // if the units of Pace Unit and Split are equal, don't convert. otherwise, convert to correct unit 
+      let conversion = unit == this.paceUnit ? 1 : (unit == 'kilometers' ? (1/conv) : conv)
+      return getPace(time, dist*conversion)
     }, 
     getProjection: function(time, dist, unit) {
-      // if the units are equal, don't convert. otherwise, convert to correct unit 
+      // if the units of Projected Distance and Split are equal, don't convert. otherwise, convert to correct unit 
       let conversion = unit == this.projectedDistUnit ? 1 : (unit == 'kilometers' ? (1/conv) : conv)
       let t = timeStringToDecimal(time)
       let distConverted = conversion * dist
