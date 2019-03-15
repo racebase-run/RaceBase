@@ -7,11 +7,20 @@
   border-bottom: 1px solid @light-grey;
 }
 
+.averages-header {
+  text-align: left; 
+  color: @bright-blue;
+  border-top: 1px solid @light-grey;
+}
+
 .split-table {
   border: 1px solid @light-grey;
   border-radius: 5px; 
   .split {
     font-size: 20px;
+  }
+  .averages {
+    font-size: 17px;
   }
 }
 
@@ -34,7 +43,7 @@
   </div>
   <div class="split-table mb-3">
     <div v-if="splits.length > 0">
-      <div class="d-flex header mb-3 py-2">
+      <div class="d-flex header mb-2 py-2">
         <div class="col"> Distance </div>
         <div class="col"> Time </div>
         <div class="col d-flex align-items-center"> 
@@ -43,11 +52,18 @@
         </div>
         <div class="col"> Projected </div>
       </div>
-      <div class="d-flex mb-3 split" v-for="split in splits">
+      <div class="d-flex mb-2 split" v-for="split in splits">
         <div class="col"> {{ split.distance }} {{ split.unit == 'kilometers' ? 'km' : 'mi' }} </div>
         <div class="col"> {{ split.time }} </div>
         <div class="col"> {{ getPace(split.time, split.distance, split.unit) }} </div>
         <div class="col"> {{ getProjection(split.time, split.distance, split.unit) }} </div>
+      </div>
+      <div class="averages-header header py-1 mb-2 pl-3"> Averages </div>
+      <div class="d-flex mb-2 averages">
+        <div class="col"> {{ splitAverages.distance }}</div>
+        <div class="col"> {{ splitAverages.time }} </div>
+        <div class="col"> {{ splitAverages.pace }} </div>
+        <div class="col"> {{ splitAverages.projection }} </div>
       </div>
     </div>
     <div class="no-splits" v-else> 
@@ -100,6 +116,24 @@ export default {
       let t = timeStringToDecimal(time)
       let distConverted = conversion * dist
       return timeDecimalToString((t / distConverted) * this.projectedDist)
+    }
+  }, 
+  computed: {
+    splitAverages: function() {
+      let totals = {
+        distance: 0, 
+        time: 0
+      }
+      for (const split of this.splits) {
+        totals.distance += Number(split.distance)
+        totals.time += timeStringToDecimal(split.time)
+      }
+      let averages = {}
+      averages.distance = totals.distance / this.splits.length
+      averages.time = timeDecimalToString(totals.time / this.splits.length)
+      averages.pace = getPace(averages.time, averages.distance)
+      averages.projection = timeDecimalToString(timeStringToDecimal(averages.pace) * this.projectedDist)
+      return averages
     }
   }
 }
