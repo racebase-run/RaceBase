@@ -64,7 +64,7 @@
       </div>
       <div class="averages-header header py-1 mb-2 pl-3"> Averages </div>
       <div class="d-flex mb-2 averages">
-        <div class="col"> {{ splitAverages.distance }}</div>
+        <div class="col"> {{ splitAverages.distance }} {{ input.unit == 'kilometers' ? 'km' : 'mi' }} </div>
         <div class="col"> {{ splitAverages.time }} </div>
         <div class="col"> {{ splitAverages.pace }} </div>
         <div class="col"> {{ splitAverages.projection }} </div>
@@ -129,14 +129,16 @@ export default {
         time: 0
       }
       for (const split of this.splits) {
-        totals.distance += Number(split.distance)
+        let conversion = split.unit == this.input.unit ? 1 : (split.unit == 'kilometers' ? (1/conv) : conv)
+        totals.distance += Number(split.distance * conversion)
         totals.time += timeStringToDecimal(split.time)
       }
       let averages = {}
       averages.distance = Math.round(100 * totals.distance / this.splits.length) / 100
       averages.time = timeDecimalToString(totals.time / this.splits.length)
-      averages.pace = getPace(averages.time, averages.distance)
-      averages.projection = timeDecimalToString(timeStringToDecimal(averages.pace) * this.projectedDist)
+      let conversion = this.input.unit == this.paceUnit ? 1 : (this.input.unit == 'kilometers' ? (1/conv) : conv)
+      averages.pace = getPace(averages.time, averages.distance * conversion)
+      averages.projection = this.getProjection(averages.time, averages.distance, this.input.unit)
       return averages
     }
   }
