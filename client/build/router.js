@@ -23,6 +23,8 @@ const _369ce686 = () => interopDefault(import('../pages/coach/schedule.vue' /* w
 const _fd5766e6 = () => interopDefault(import('../pages/races/notfound.vue' /* webpackChunkName: "pages/races/notfound" */))
 const _54aea296 = () => interopDefault(import('../pages/signup/claim.vue' /* webpackChunkName: "pages/signup/claim" */))
 const _252ca980 = () => interopDefault(import('../pages/team/notfound.vue' /* webpackChunkName: "pages/team/notfound" */))
+const _f3507a42 = () => interopDefault(import('../pages/tools/pacezones.vue' /* webpackChunkName: "pages/tools/pacezones" */))
+const _69c01544 = () => interopDefault(import('../pages/tools/splits.vue' /* webpackChunkName: "pages/tools/splits" */))
 const _3ca13029 = () => interopDefault(import('../pages/user/settings/index.vue' /* webpackChunkName: "pages/user/settings/index" */))
 const _7ae0ae31 = () => interopDefault(import('../pages/new/result/success.vue' /* webpackChunkName: "pages/new/result/success" */))
 const _0b8119e1 = () => interopDefault(import('../pages/signup/coach/claim.vue' /* webpackChunkName: "pages/signup/coach/claim" */))
@@ -197,6 +199,14 @@ export function createRouter() {
       path: "/team/notfound",
       component: _252ca980,
       name: "team-notfound"
+    }, {
+      path: "/tools/pacezones",
+      component: _f3507a42,
+      name: "tools-pacezones"
+    }, {
+      path: "/tools/splits",
+      component: _69c01544,
+      name: "tools-splits"
     }, {
       path: "/user/settings",
       component: _3ca13029,

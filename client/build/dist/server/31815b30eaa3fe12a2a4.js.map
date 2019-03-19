@@ -1,1 +1,0 @@
-{"version":3,"file":"31815b30eaa3fe12a2a4.js","sources":["webpack:///./pages/api/routes/index.vue"],"sourcesContent":["//\n//\n//\n//\n//\n//\n//\n//\n//\n \nconst Docs = () => import('~/components/API/Docs')\nexport default {\n  layout: 'api', \n  components: { Docs }\n}\n"],"mappings":"AAWA","sourceRoot":""}
