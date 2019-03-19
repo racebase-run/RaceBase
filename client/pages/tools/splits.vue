@@ -37,6 +37,13 @@
     text-transform: uppercase;
   }
 }
+
+.log-entry {
+  h4 {
+    text-transform: uppercase;
+    font-size: 18px;
+  }
+}
 </style>
 <template>
 <div class="container w-95 mt-4">
@@ -82,10 +89,16 @@
     <button class="btn btn-primary" @click="addSplit"> Add Split </button>
   </div>
 
+  <div class="mt-3 log-entry mb-5"> 
+    <h4> Log Entry </h4>
+    <div> {{ logEntry || "Add some splits to get started" }} </div>
+  </div>
+
 </div>
 </template>
 <script> 
 const conv = 1.60934
+import _ from 'underscore'
 const UnitSelector = () => import('~/components/Tools/UnitSelector')
 import { timeStringToDecimal, timeDecimalToString, getPace } from '~/utils/date'
 export default {
@@ -140,6 +153,25 @@ export default {
       averages.pace = getPace(averages.time, averages.distance * conversion)
       averages.projection = this.getProjection(averages.time, averages.distance, this.input.unit)
       return averages
+    }, 
+    logEntry : function() {
+
+      let entry = ""
+      let splitDistances = _.groupBy(this.splits, 'distance')
+
+      for (const [j, splitDistance] of Object.keys(splitDistances).reverse().entries()) {
+        let curSplits = splitDistances[splitDistance]
+        let label = curSplits[0].unit == "miles" ? "mi" : "km"
+        entry += curSplits.length + " x " + splitDistance + " " + curSplits[0].unit + " "
+        entry += "("
+        for (const [i, split] of curSplits.entries()) {
+          entry += split.time
+          if (i+1 < curSplits.length) entry += ", "
+        }
+        entry += ")"
+        if (j+1 < Object.keys(splitDistances).length) entry += ", "
+      }
+      return entry
     }
   }
 }
