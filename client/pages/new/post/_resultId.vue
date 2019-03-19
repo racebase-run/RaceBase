@@ -33,8 +33,10 @@ export default {
     let result
     try {
       result = await $axios.$get('/result/' + params.resultId)
-    } catch (e) { console.log(e.response.data) }
-    result = result.athlete ? result : null
+    } catch (e) { 
+      result = null; 
+      console.log(e.response.data) 
+    }
     return {
       user: user, 
       result: result, 

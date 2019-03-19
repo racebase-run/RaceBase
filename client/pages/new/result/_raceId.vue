@@ -57,7 +57,7 @@ label {
   </div>
   <div v-else> 
     Can't find the race you're looking for? Create one 
-    <strong><nuxt-link to="/user/content"> here </nuxt-link></strong>
+    <strong><nuxt-link to="/new/race"> here </nuxt-link></strong>
   </div>
   
   <div class="mt-4" v-if="curRace.name">
