@@ -192,9 +192,14 @@ export default {
     let athlete = await $axios.$get('/user/athlete/' + params.id)
 
     // calculate pace for runs
-    for (const run of entry.runs) {
-      run.pace = dateUtil.getPace(run.time, run.distance)
+    try {
+      for (const run of entry.runs) {
+        run.pace = dateUtil.getPace(run.time, run.distance)
+      }
+    } catch (e) {
+      redirect('/athlete/' + params.id + '/logs')
     }
+
 
     // format date
     let date = dateUtil.getDateFromUrl(params.date)

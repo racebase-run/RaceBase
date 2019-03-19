@@ -364,7 +364,8 @@ td .btn-default, .day .btn-default, .header.row .btn-default {
         </h1>
       </div>
       <div class="col d-flex align-items-center justify-content-end">
-        <nuxt-link to="/user/log/week/" class="btn btn-primary">Weekly View</nuxt-link>
+        <nuxt-link :to="'/athlete/' + user.athlete_id + '/logs'" class="mr-3 btn btn-outline-primary btn-small">Monthly View</nuxt-link>
+        <nuxt-link to="/user/log/week/" class="btn btn-primary btn-small">Weekly View</nuxt-link>
       </div>
     </div>
 

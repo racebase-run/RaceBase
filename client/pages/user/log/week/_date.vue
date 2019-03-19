@@ -201,15 +201,15 @@ h4 input, .schedule input {
 </style>
 
 <template>
-  <div class="mx-auto w-md-100 mx-md-0 px-md-4 container">
-    <div class="row">
-      <h1 class="mt-4 col"> 
+  <div class="mx-auto w-md-100 mx-md-0 px-md-4 container mt-4">
+    <div class="row d-flex align-items-center">
+      <h1 class="col"> 
         <span class="name" v-if="user.name">{{ user.firstName }}'s</span>
         Training Log
       </h1>
-<!--       <div class="col d-flex align-items-center justify-content-end">
-        <div class="btn btn-primary">Monthly View</div>
-      </div> -->
+      <div class="col d-flex align-items-center justify-content-end">
+        <nuxt-link :to="'/athlete/' + user.athlete_id + '/logs'" class="btn btn-outline-primary btn-small">Monthly View</nuxt-link>
+      </div>
     </div>
 
     
