@@ -7,7 +7,6 @@ const _0ae2655c = () => interopDefault(import('../pages/api/index.vue' /* webpac
 const _0927d6d3 = () => interopDefault(import('../pages/changelog.vue' /* webpackChunkName: "pages/changelog" */))
 const _424f7bc8 = () => interopDefault(import('../pages/coach/index.vue' /* webpackChunkName: "pages/coach/index" */))
 const _ca9b4a84 = () => interopDefault(import('../pages/contribute.vue' /* webpackChunkName: "pages/contribute" */))
-const _667a3f8c = () => interopDefault(import('../pages/developers.vue' /* webpackChunkName: "pages/developers" */))
 const _6b54b02f = () => interopDefault(import('../pages/feed.vue' /* webpackChunkName: "pages/feed" */))
 const _053ce4b0 = () => interopDefault(import('../pages/login.vue' /* webpackChunkName: "pages/login" */))
 const _01f47e67 = () => interopDefault(import('../pages/news/index.vue' /* webpackChunkName: "pages/news/index" */))
@@ -21,6 +20,7 @@ const _1b912761 = () => interopDefault(import('../pages/welcome.vue' /* webpackC
 const _b74b8eea = () => interopDefault(import('../pages/api/blog/index.vue' /* webpackChunkName: "pages/api/blog/index" */))
 const _c0af5a9a = () => interopDefault(import('../pages/api/routes/index.vue' /* webpackChunkName: "pages/api/routes/index" */))
 const _369ce686 = () => interopDefault(import('../pages/coach/schedule.vue' /* webpackChunkName: "pages/coach/schedule" */))
+const _2eebaaf1 = () => interopDefault(import('../pages/new/race.vue' /* webpackChunkName: "pages/new/race" */))
 const _fd5766e6 = () => interopDefault(import('../pages/races/notfound.vue' /* webpackChunkName: "pages/races/notfound" */))
 const _54aea296 = () => interopDefault(import('../pages/signup/claim.vue' /* webpackChunkName: "pages/signup/claim" */))
 const _252ca980 = () => interopDefault(import('../pages/team/notfound.vue' /* webpackChunkName: "pages/team/notfound" */))
@@ -137,10 +137,6 @@ export function createRouter() {
       component: _ca9b4a84,
       name: "contribute"
     }, {
-      path: "/developers",
-      component: _667a3f8c,
-      name: "developers"
-    }, {
       path: "/feed",
       component: _6b54b02f,
       name: "feed"
@@ -192,6 +188,10 @@ export function createRouter() {
       path: "/coach/schedule",
       component: _369ce686,
       name: "coach-schedule"
+    }, {
+      path: "/new/race",
+      component: _2eebaaf1,
+      name: "new-race"
     }, {
       path: "/races/notfound",
       component: _fd5766e6,
