@@ -7,7 +7,7 @@ var bcrypt = require('bcryptjs')
 var jwt = require('jsonwebtoken')
 var config = require('../config')
 
-let cookie_domain = process.env.NODE_ENV == "development" ? 'localhost' : 'racebase.io'
+let cookie_domain = process.env.NODE_ENV == "development" ? 'localhost' : process.env.PROD_URL
 
 // login route
 router.post('/login', function(req, res) {
