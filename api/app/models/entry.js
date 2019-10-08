@@ -15,13 +15,13 @@ var entrySchema = mongoose.Schema({
   mileageGoal: Number,
   weights: [{
     name: String, 
-    sets: Number, 
-    reps: Number
+    details: String
   }],
-  sleep: String, 
+  sleep: String,
   rhr: Number, 
   weight: Number,
-  checks: { type: Map, of: Boolean }, 
+  metrics: [{ name: String, value: String }],
+  checks: [{ name: String, done: Boolean }], 
   note: String, 
   date: Date, 
   metricUnits: { type: Boolean, default: false }

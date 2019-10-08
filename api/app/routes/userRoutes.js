@@ -63,8 +63,20 @@ router.get('/claimed/:athlete_id', function(req,res) {
   });
 });
 
+router.get('/metrics', authCheck, async (req, res) => {
+  let curUser = await User.findOne({ _id: req.userId })
+  if (!curUser) res.status(400).send("User doesn't exist")
+  else res.send(curUser.logSettings.metrics)
+})
+
+router.get('/checks', authCheck, async (req, res) => {
+  let curUser = await User.findOne({ _id: req.userId })
+  if (!curUser) res.status(400).send("User doesn't exist")
+  else res.send(curUser.logSettings.checklist)
+})
+
 router.get('/following', authCheck, async (req, res) => {
-  let curUser = User.findOne({ _id: req.userId })
+  let curUser = await User.findOne({ _id: req.userId })
   if (!curUser) res.status(400).send("User doesn't exist")
   else res.send(curUser.following)
 })
@@ -453,6 +465,20 @@ router.post('/:id/alias/:alias', authCheck, function(req, res) {
     })
   }
 });
+
+router.post('/metrics', authCheck, async (req, res) => {
+  let curUser = await User.findOne({ _id: req.userId })
+  curUser.logSettings.metrics = req.body
+  await curUser.save()
+  res.send(curUser)
+})
+
+router.post('/checks', authCheck, async (req, res) => {
+  let curUser = await User.findOne({ _id: req.userId })
+  curUser.logSettings.checklist = req.body
+  await curUser.save()
+  res.send(curUser)
+})
 
 router.put('/email/:email', authCheck, async (req, res) => {
 

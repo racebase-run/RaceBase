@@ -249,8 +249,10 @@ router.post('/:date?', authCheck, (req, res) => {
   entry.date = day
   entry.userId = req.userId
 
+
   Entry.findOneAndUpdate({ userId: req.userId, date: day }, entry, { upsert: true, new: true }, 
     (err, data) => {
+      console.log(err)
       if (err)
         res.status(500).send(err)
       else 

@@ -28,7 +28,12 @@ var userSchema = mongoose.Schema({
   active: { type: Boolean, default: false }, 
   emailVer: String, 
   team_id: String, 
-  publicLogs: Boolean
+  publicLogs: Boolean, 
+  logSettings: {
+    public: Boolean, 
+    checklist: [String], 
+    metrics: [String]
+  }
 });
 
 module.exports = mongoose.model('User', userSchema);
