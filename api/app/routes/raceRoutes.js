@@ -140,6 +140,21 @@ router.post('/downvote/:id', authCheck, function(req, res) {
   });
 });
 
+router.post('/unvote/:id', authCheck, async (req, res) => {
+  let r = await Race.findOne({ _id: req.params.id }); 
+  if (!r) res.status(400).send("That race doesn't exist."); 
+
+  let v = await Vote.findOne({ race_id: req.params.id, user_id: req.userId }); 
+  if (!v) res.status(400).send("You haven't voted for this race."); 
+
+  await v.remove();
+  let voteType = v.up ? "upvotes" : "downvotes"; 
+  r[voteType] = r[voteType] - 1; 
+  await r.save(); 
+  
+  res.send("Successfully removed vote."); 
+});
+
 // route to create a race
 router.post('/', authCheck, function(req, res) {
 
