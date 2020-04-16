@@ -115,7 +115,7 @@
 </template>
 
 <script> 
-const ResultEditor = () => import('~/components/ResultEditor')
+const ResultEditor = () => import('~/components/Results/ResultEditor')
 export default {
     async asyncData ({ params, $axios }) {
         let result = await $axios.$get('result/' + params.id)

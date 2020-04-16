@@ -28,7 +28,7 @@
 
   <div class="btn-group vote" role="group" v-if="isLoggedIn">
 
-    <button type="button" @click="vote(true)" class="btn"
+    <button type="button" @click="upvoted && voted ? unvote() : vote(true)" class="btn"
       :class="{ 
         'btn-primary' : upvoted && voted, 
         'btn-default' : !upvoted || !voted
@@ -37,7 +37,7 @@
       <fa :icon="['far', 'thumbs-up']"></fa>
     </button>
 
-    <button type="button" @click="vote(false)" class="btn"
+    <button type="button" @click="downvoted && voted ? unvote() : vote(false)" class="btn"
       :class="{ 
         'btn-primary' : downvoted && voted,
         'btn-default' : !downvoted || !voted
@@ -119,20 +119,25 @@ export default {
     }
   },
   created () {
-    if (this.voteData.vote) {
-      this.upvoted = this.voteData.vote.up; 
-      this.downvoted = !this.voteData.vote.up;
+    if (this.voteData) {
+      this.upvoted = this.voteData.up === true; 
+      this.downvoted = this.voteData.up === false;
     }
   },
   methods : {
     vote: async function (up) {
-      if (!this.isLoggedIn)
-        return
+      if (!this.isLoggedIn) return; 
       this.upvoted = up
       this.downvoted = !up
       let path = up ? 'upvote/' : 'downvote/'
       await this.$axios.$post('race/'+ path + this.race._id)
       this.$emit('loadRace')
+    }, 
+    unvote: async function () {
+      if (!this.isLoggedIn) return; 
+      this.upvoted = this.downvoted = false; 
+      await this.$axios.$post('race/unvote/' + this.race._id);
+      this.$emit('loadRace'); 
     }
   }
 }

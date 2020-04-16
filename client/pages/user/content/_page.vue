@@ -57,7 +57,7 @@
 </template>
 
 <script>
-const RaceEditor = () => import('~/components/RaceEditor')
+const RaceEditor = () => import('~/components/Races/RaceEditor')
 const RaceTable = () => import('~/components/RaceTable')
 
 export default {

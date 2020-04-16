@@ -13,15 +13,6 @@
     @loadRace="loadRace"
     class="mb-3"
   />
-
-  <ResultEditor
-    :editMode="editMode"
-    :addMode="addMode"
-    :race="currentRace"
-    :currentResult="currentResult"
-    @closeWindow="closeWindow"
-    @loadResults="loadResults"
-  />
   <RaceEditor
     :addingRace="false"
     :editingRace="editingRace"
@@ -35,23 +26,20 @@
     :results="results"
     :teamResults="teamResults"
     v-if="!message"
-    @openEditWindow="openEditWindow"
   />
 
 </div>
 </template>
 <script>
-const RaceHeader = ()  => import('~/components/RaceHeader')
-const RaceActions = () => import('~/components/RaceActions')
-const ResultEditor = () => import('~/components/ResultEditor')
-const RaceEditor = () => import('~/components/RaceEditor')
-const ResultsTable = () => import('~/components/ResultsTable')
+const RaceHeader = ()  => import('~/components/Races/RaceHeader')
+const RaceActions = () => import('~/components/Races/RaceActions')
+const RaceEditor = () => import('~/components/Races/RaceEditor')
+const ResultsTable = () => import('~/components/Results/ResultsTable')
 
 export default {
   components: {
     RaceHeader, 
     RaceActions, 
-    ResultEditor,
     RaceEditor, 
     ResultsTable
   },
@@ -93,7 +81,7 @@ export default {
     let eventNum = (Number(params.event) || 0)
     eventNum = eventNum < events.length ? eventNum : 0
 
-    var voteData
+    var voteData = {};
 
     if (store.getters['auth/isLoggedIn']) {
       try {
@@ -103,9 +91,6 @@ export default {
         console.log(err)
       }
     }
-
-    else 
-      voteData = {}
 
     let results = await $axios.$get(
       'result/list/' 
