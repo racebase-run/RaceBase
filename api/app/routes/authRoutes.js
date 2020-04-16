@@ -7,7 +7,7 @@ var bcrypt = require('bcryptjs')
 var jwt = require('jsonwebtoken')
 var config = require('../config')
 
-let cookie_domain = process.env.NODE_ENV == "development" ? 'localhost' : process.env.PROD_URL
+let cookie_domain = process.env.NODE_ENV == "development" ? process.env.DEV_URL : process.env.PROD_URL
 
 // login route
 router.post('/login', function(req, res) {
@@ -23,8 +23,10 @@ router.post('/login', function(req, res) {
           }, config.secret, { expiresIn: 86400 })
           res
             .cookie('csrf_token', token, { maxAge: 86400000, httpOnly: true, domain: cookie_domain })
+            .set("Access-Control-Allow-Headers", "Cookie")
+            .set("Access-Control-Expose-Headers", "Set-Cookie")
             .status(200)
-            .send({ auth: true, token: token })
+            .send({ auth: true, token: token, user: user })
         }
       }).catch((err) => {
         console.log("Error  comparing passwords:")

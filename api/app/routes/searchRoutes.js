@@ -7,7 +7,7 @@ var Result = require('../models/result');
 var moment = require('moment');
 var authCheck = require('../auth')
 
-router.get('/results/:query/:page/:length', function(req, res) {
+router.get('/results/:query/:page/:length', async function(req, res) {
   if (!req.params.query || req.params.query == "" || typeof req.params.query== 'undefined') {
     res.status(400).send("Invalid search!");
   } else {
@@ -15,11 +15,23 @@ router.get('/results/:query/:page/:length', function(req, res) {
     var page = parseInt(req.params.page);
 
     let query = req.params.query
-    
+
+    let searchResults = await (Result.find({ 
+      $text: { $search: query } 
+    }, { 
+      score : { $meta: "textScore" } 
+    }).sort({
+      score: {
+        $meta: 'textScore'
+      }
+    }).skip(length*(page-1)).limit(length+1).lean());
+
+    // console.log(searchResults);
+
     Result.find({ 
       $text: { $search: query } 
     }, { 
-      score : { $meta: 'textScore' } 
+      score : { $meta: "textScore" } 
     }).sort({
       score: {
         $meta: 'textScore'
@@ -34,7 +46,6 @@ router.get('/results/:query/:page/:length', function(req, res) {
         results[x].date = moment(results[x].date).format('MMMM D YYYY');
       }
       var response = {};
-      results.splice(-1);
       response.docs = results; 
       response.lastPage = lastPage; 
       res.json(response);
@@ -50,10 +61,6 @@ router.get('/races/:query', function(req, res) {
       $text: { $search: req.params.query } 
     }, { 
       score : { $meta: 'textScore' } 
-    }).sort({
-      score: {
-        $meta: 'textScore'
-      }
     }).sort({
       score: {
         $meta: 'textScore'

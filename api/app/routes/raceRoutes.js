@@ -3,6 +3,7 @@ var router = express.Router();
 
 var Race = require('../models/race');
 var Result = require('../models/result');
+var Change = require('../models/change');
 var User = require('../models/user');
 var Vote = require('../models/vote');
 
@@ -10,6 +11,11 @@ var authCheck = require('../auth')
 
 var moment = require('moment');
 var Papa = require('papaparse');
+
+router.get('/:id/history', async (req, res) => {
+  let changeHistory = await Change.find({ 'document_id' : req.params.id, 'type': 'race' }); 
+  res.send(changeHistory); 
+});
 
 router.get('/list/:page?/:length?', function(req, res) {
   Race.paginate({}, { 
@@ -190,11 +196,21 @@ router.post('/', authCheck, function(req, res) {
 });
 
 // route to handle updating races
-router.put('/:_id', authCheck, function(req, res) {
-  Race.findById(req.params._id, function(err, data) {
+router.put('/:_id', authCheck, async function(req, res) {
+  Race.findById(req.params._id, async function(err, data) {
     if (err)
       res.status(500).send(err);
     if (data) {
+
+      let oldVersion = await Change.create({
+        author: req.userId, 
+        date: new Date(), 
+        version: data.version, 
+        type: "race", 
+        document: data,
+        document_id: data._id
+      });
+
       if (data.user_id == req.userId) {
         data.name = req.body.name || data.name;
         data.location = req.body.location || data.location;
@@ -204,6 +220,7 @@ router.put('/:_id', authCheck, function(req, res) {
         data.user_id = req.body.user_id || data.user_id;
         var raceName = data.name;
         data.markModified("date");
+        data.version = data.version+1; 
         User.findById(req.body.user_id, function(err, user) {
 
           if (user)

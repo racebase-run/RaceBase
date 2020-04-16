@@ -63,6 +63,16 @@ router.get('/claimed/:athlete_id', function(req,res) {
   });
 });
 
+router.get('/:id/info', async (req, res) => {
+  let user = await User.findById(req.params.id); 
+  let publicInfo = {
+    name: user.name || "Anonymous", 
+    athlete_id: user.athlete_id, 
+    _id: user._id
+  }
+  res.send(user ? publicInfo : {});
+});
+
 router.get('/metrics', authCheck, async (req, res) => {
   let curUser = await User.findOne({ _id: req.userId })
   if (!curUser) res.status(400).send("User doesn't exist")
@@ -151,10 +161,24 @@ router.get('/:id', authCheck, async function(req, res) {
       }
     });
   } else {
-    res.status(403).send("This isn't your athlete ID")
+    res.status(403).send("This isn't your user ID")
   }
 
 });
+
+router.get('/', authCheck, async function(req, res) {
+  User.findOne({ '_id' : req.userId }, async function (err, user) {
+    if (err)
+      res.status(500).send(err); 
+    else {
+      if (!user.referralCode) {
+        user.referralCode = uuidv1();
+        await user.save(); 
+      }
+      res.json(user);
+    }
+  })
+})
 
 router.get('/:userId/isFollowing/:id', authCheck, function(req, res) {
   if (req.userId != req.params.userId) res.status(401).send('Not authorized.')

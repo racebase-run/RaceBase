@@ -1,20 +1,35 @@
-var express = require('express')
-var router = express.Router()
-const _ = require('underscore')
+var express = require('express');
+var router = express.Router();
+const _ = require('underscore');
 
 var Race = require('../models/race');
-var Result = require('../models/result')
-var User = require('../models/user')
-var authCheck = require('../auth')
+var Result = require('../models/result');
+var Change = require('../models/change'); 
+var User = require('../models/user');
+var authCheck = require('../auth');
 
-const moment = require('moment')
+const moment = require('moment'); 
 
 router.get('/count', async function(req, res) {
   try {
     let count = await Result.find({}).count()
     res.send({count: count}) 
   } catch(e) { res.status(500).send(e) }
-})
+});
+
+router.get('/:id/history', async (req, res) => {
+  let changeHistory = await Change.find({ 'document_id' : req.params.id, 'type': 'result' }); 
+  res.send(changeHistory); 
+});
+
+router.get('/:id/version/:number', async (req, res) => {
+  let doc = await Change.findOne({
+    'document_id' : req.params.id, 
+    'type' : 'result', 
+    'version' : Number(req.params.number)
+  });
+  res.send(doc); 
+});
 
 // Get team scores for specified race, gender, and event
 router.get('/teamlist/:id/:gender/:event/', (req, res) => {
@@ -228,7 +243,8 @@ router.get('/:id', async (req, res) => {
 router.post('/', authCheck, function(req, res) {
 
   var result = new Result(req.body);
-  result.user_id = req.userId
+  result.user_id = req.userId; 
+  result.version = 1; 
 
   Race.findById(req.body.race_id, function(err, data) {
     if (!data)
@@ -246,35 +262,36 @@ router.post('/', authCheck, function(req, res) {
 });
 
 // route to handle updating results
-router.put('/:_id', authCheck, function(req, res) {
-  Result.findById(req.params._id, function(err, data) {
+router.put('/:_id', authCheck, async function(req, res) {
+  Result.findById(req.params._id, async function(err, data) {
+    let oldVersion = await Change.create({
+      author: req.userId, 
+      date: new Date(), 
+      version: data.version || 1, 
+      type: "result", 
+      document: data, 
+      document_id: data._id
+    });
+
     if (err)
       res.status(500).send(err);
     else if (data) {
-      if (data.user_id == req.userId || !data.user_id) {
-        data.athlete = req.body.athlete || data.athlete;
-        data.verified = req.body.verified;
-        data.time = req.body.time || data.time;
-        data.race = req.body.race || data.race; 
-        data.story = req.body.story || data.story;
-        data.place = req.body.place || data.place;
-        data.athlete_id = req.body.athlete_id || data.athlete_id; 
-        data.womens = req.body.womens || data.womens; 
-        data.team = req.body.team || data.team;
-        data.team_id = req.body.team_id || data.team_id; 
-        data.event = req.body.event || data.event;
-        data.date = data.date || moment(req.body.date, 'MMMM D YYYY').toDate();
+      data.athlete = req.body.athlete || data.athlete;
+      data.verified = req.body.verified;
+      data.time = req.body.time || data.time;
+      data.race = req.body.race || data.race; 
+      data.story = req.body.story || data.story;
+      data.place = req.body.place || data.place;
+      data.athlete_id = req.body.athlete_id || data.athlete_id; 
+      data.womens = req.body.womens || data.womens; 
+      data.team = req.body.team || data.team;
+      data.team_id = req.body.team_id || data.team_id; 
+      data.event = req.body.event || data.event;
+      data.date = data.date || moment(req.body.date, 'MMMM D YYYY').toDate();
+      data.version = data.version+1 || 1; 
+      data.markModified("date");
 
-        data.markModified("date");
-
-        data.save(function(err, data) {
-          if (err)
-            res.status(500).send(err);
-          res.send(data);
-        });
-      } else {
-        res.status(403).send("Not authorized to update result.");
-      }
+      res.send(await data.save());
     }
   });
 });

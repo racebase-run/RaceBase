@@ -18,24 +18,24 @@ var resultSchema = mongoose.Schema({
   place: {type: Number},
   event: {type: String},
   date: {type: Date}, 
-  post_id: {type: String}
+  post_id: {type: String}, 
+  version: Number
 });
 
 resultSchema.plugin(mongoosePaginate);
 
 resultSchema.index({ 
-  athlete : 'text', 
-  race : 'text', 
-  team : 'text'
+  'athlete' : 'text', 
+  'athlete_id': 'text', 
+  'race' : 'text', 
+  'team' : 'text'
 }, { 
   weights: {
-    athlete: 10, 
-    team: 9, 
-    race: 1
+    'athlete': 10, 
+    'athlete_id': 9,
+    'team': 5, 
+    'race': 1
   } 
 });
-resultSchema.index({ race_id: 1, gender: 1, event: 1 })
-resultSchema.index({ team_id: 1, date: 1 })
-resultSchema.index({ athlete_id: 1, post_id: 1 })
 
 module.exports = mongoose.model('Result', resultSchema);
