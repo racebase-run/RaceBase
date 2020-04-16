@@ -10,7 +10,8 @@ td {
 </style>
 <template>
 <div class="mb-5"> 
-<SearchBar 
+<SearchBar
+  class="mb-2"
   v-model="searchInput"   
   @search="search"         
 />

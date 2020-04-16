@@ -24,7 +24,7 @@ label {
   </div>
   <h4> 1. Find a race </h4>
   <div class="mb-3" v-if="!idParam"> Search for a race to add your result to. </div>
-  <SearchBar v-model="searchInput" @search="search" v-if="!idParam"/>
+  <SearchBar class="w-50 mb-3" v-model="searchInput" @search="search" v-if="!idParam"/>
   <div v-for="race in races" class="d-flex align-items-center mb-2">
     <div
       v-if="curRace._id == race._id" 
@@ -39,7 +39,7 @@ label {
     >
       Select
     </div>
-    <nuxt-link :to="'/races/' + race._id">
+    <nuxt-link :to="'/races/' + race._id" target="_blank">
       {{ race.name }}
     </nuxt-link>
     &nbsp; on {{ race.date }}
@@ -121,7 +121,7 @@ label {
 
   <div class="mt-4" v-if="result.event">
     <h4> 3. Find your team </h4>
-    <SearchBar v-model="teamSearchInput" @search="teamSearch"/>
+    <SearchBar v-model="teamSearchInput" class="mb-3" @search="teamSearch"/>
     <div>
       <div v-for="team in teams" class="mb-2 d-flex align-items-center">
         <div 
@@ -242,14 +242,13 @@ label {
 <script>
 import _ from 'underscore'
 const SearchBar = () => import('~/components/Search/SearchBar')
-const ResultEditor = () => import('~/components/ResultEditor')
 export default {
   head () {
     return {
       title: "Add Result - RaceBase"
     }
   },
-  components: { ResultEditor, SearchBar }, 
+  components: { SearchBar }, 
   async asyncData ({ params, $axios, store }) {
     let user = store.state.auth.user
     let curRace = {}

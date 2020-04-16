@@ -99,25 +99,6 @@
     </div>
   </div>
 
-  <div class="settings-section mb-4" v-if="user.athlete_id">
-    <div class="settings-label">Logs</div>
-    <div>
-      <label class="form-check-label mb-3">
-        <input 
-          v-model="publicLogs" 
-          :value="true" 
-          type="radio"
-        /> Public <fa icon="globe-americas"></fa>&nbsp; 
-        <input 
-          v-model="publicLogs" 
-          :value="false" 
-          type="radio"
-        /> Private <fa icon="lock"></fa>
-      </label>
-    </div>
-    <div class="btn btn-primary btn-small" @click="changeLogType">Save</div>
-  </div>
-
    <div class="settings-section" v-if="user.athlete_id">
     <div class="settings-label">Profile</div>
     <form class="profile mb-4 w-md-75 w-100" @submit.prevent="updateProfile()">

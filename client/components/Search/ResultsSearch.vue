@@ -3,7 +3,8 @@
 
 <SearchBar
   v-model="interface" 
-  @search="search"         
+  @search="search"   
+  class="mb-2"      
 />
 
 <h3 v-if="Object.keys(results).length === 0" class="no-results pt-3">

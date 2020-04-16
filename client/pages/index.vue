@@ -25,10 +25,6 @@ p {
   text-align: center; 
 }
 
-h2 {
-  text-transform: uppercase;
-}
-
 .nav {
   margin: 0 auto;
   text-align: center;
@@ -54,6 +50,22 @@ h2 {
   height: 45px;
   margin: 0 auto;
   border: 1px solid @light-grey;
+}
+
+.intro {
+  width: 60%;
+  margin: 0 auto;
+  h2 {
+    font-size: 22px;
+    text-align: center;
+    width: 100%;
+    margin-bottom: 15px;
+  }
+
+  p {
+    font-size: 15px;
+    text-align: center;
+  }
 }
 
 .header {
@@ -107,7 +119,7 @@ h4 {
 .logo {
   margin-top: -15px;
   margin-right: 5px;
-  height: 50px;
+  height: 40px;
 }
 
 .search-container {
@@ -120,7 +132,11 @@ h4 {
 
     .input-group {
       margin: 0 auto;
-      width: 320px;
+      width: 450px;
+      input {
+        font-size: 20px;
+        height: auto;
+      }
     }
   }
 
@@ -179,7 +195,7 @@ h4 {
 <template>
 <div class="container">
   <div class="header row">
-    <h1> <img class="logo" src="/images/logo.svg"> RaceBase </h1>
+    <h1> <img class="logo" src="/images/textlogo.svg"> </h1>
 
     <div class="nav mb-3">
       <nuxt-link class="link" to="/about"> About </nuxt-link>
@@ -216,67 +232,11 @@ h4 {
       
   </div>
 
-  <div class="row mt-5 mb-4 mx-auto">
-
-    <div class="col-md-7 col-12">
-      <h3> Community Sourced </h3>
-      <h2> Results </h2>
-      <p> 
-        RaceBase was founded upon the idea that the records of our hard earned PR's should not be owned and put under lock and key by a company that doesn't know or care who you are. All RaceBase results are maintained by the community, and anyone can add or edit results… even small meets and time trials can be showcased on your profile. 
-      </p>
-    </div>
-    
-    <div class="col-md-5 col-12 mx-auto mx-md-0 mt-3 mt-md-0">
-      <div class="races mb-4">
-        <h4>Recent Races</h4>
-        <div v-for="race in races" class="race row mb-2">
-          <div class="col-2 pr-0">
-            <div class="mb-1"> {{ race.upvotes }} </div>
-            <div><fa :icon="['far', 'thumbs-up']"></fa></div>
-          </div>
-          <div class="col-10 pr-0">
-            <h5 class="mb-1">
-              <nuxt-link :to="'/races/' + race._id"> 
-                {{ race.name }} 
-              </nuxt-link>
-            </h5>
-            <div class="metadata">
-              <span class="date mr-2"> {{ race.date }} </span>
-              <span> <fa icon="user-circle"></fa> {{ race.user }} </span>
-            </div>
-          </div>
-        </div>
-        <nuxt-link class="more mt-3 mx-auto d-block" to="/races/all">More Races</nuxt-link>
-      </div>
-    </div>
-  </div>
-
-  <div class="row mb-5 mx-auto">
-    <div class="col-md-5 col-12 align-items-center d-flex"> 
-      <img class="graphic mx-auto mx-md-0 mb-5 mb-md-0" src="/images/logs.png" />
-    </div>
-
-    <div class="col-md-7 col-12">
-      <h3> Comprehensive </h3>
-      <h2> Training Logs </h2>
-      <p> 
-        There’s a lot that goes into running behind the scenes, that someone looking at your records and results alone might not fully understand. From core to weights, sleep to workouts, running is a lifestyle more than just a sport. We’ve tried to embody this principle in our training logs by offering logs that help you keep track of everything that’s important to you - and share those logs with everyone if you so choose. 
-      </p>
-    </div>
-
-  </div>
-
-  <div class="row mb-5 mx-auto pb-5">
-    <div class="col-md-7 col-12">
-      <h2> Coaching Tools </h2>
-      <p> 
-        Coaches should have an easy way to see their athletes logs, assign workouts, manage team meet schedules and rosters, and analyze trends in their athletes’ data to make better decisions. So we’ve created some tools that help them do just that. Integrated with our training logs, our tools for coaches allow you to easily manage a team of athletes. 
-      </p>
-    </div>
-
-    <div class="col-md-5 col-12 align-items-center d-flex"> 
-      <img class="graphic ml-md-auto mx-auto mt-md-0 mt-5" src="/images/coaching.png" />
-    </div>
+  <div class="row mt-5 mb-4 mx-auto intro">
+    <h2> Community Sourced Results </h2>
+    <p> 
+      RaceBase was founded upon the idea that the records of our hard earned PR's should not be owned by a company that doesn't know or care who you are. All RaceBase results are maintained by the community, and anyone can add or edit results. Even small meets and time trials can be showcased on your profile. 
+    </p>
   </div>
 
 </div>
@@ -284,12 +244,11 @@ h4 {
 
 <script>
 const UserWidget = () => import('~/components/User/UserWidget')
-const NewsItem = () => import('~/components/NewsItem.vue')
 import auth from '~~/utils/auth'
 export default {
   layout: 'home',
   components: {
-    NewsItem, UserWidget
+    UserWidget
   },
   head () {
     return {

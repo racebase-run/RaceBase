@@ -15,8 +15,8 @@
     <h1 class="mb-3"> About RaceBase </h1>
 
     <p class="mb-3">
-      <a href="mailto:remington@racebase.io">
-        Email us at remington@racebase.io
+      <a href="mailto:remington@breeze.software">
+        Email us at remington@breeze.software
       </a>
     </p>
 

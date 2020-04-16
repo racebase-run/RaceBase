@@ -1,5 +1,5 @@
 <template>
-  <form class="search-form mb-3" @submit.prevent="$emit('search', true)">
+  <form class="search-form" @submit.prevent="$emit('search', true)">
     <div class="input-group">
       <input 
         type="text" 

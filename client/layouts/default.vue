@@ -17,18 +17,11 @@
 <template>
 <div class="container-fluid h-100">
   <div class="row h-md-100 h-auto">
-    <div 
-      class=
-      "sidebar-container
-      col-12 col-md-4 col-lg-3 
-      pl-0 pr-0 
-      h-100">
-      <sidebar/>
+    <div class="w-100"> 
+      <Navbar/>
     </div>
     <div 
-      class="col-12 col-md-8 col-lg-9 
-      offset-lg-3 offset-md-4 
-      pr-0 pl-0">
+      class="w-100 pr-0 pl-0">
       <nuxt/>
     </div>
   </div>
@@ -36,10 +29,10 @@
 </template>
 
 <script>
-const Sidebar = () => import('~/components/Sidebar')
+const Navbar = () => import('~/components/Navbar')
 export default {
   components: {
-    Sidebar
+    Navbar
   }, 
   data () {
     return {

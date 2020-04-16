@@ -90,9 +90,7 @@ td.team {
             <th>Name</th>
             <th>Time</th>
             <th>Team</th>
-            <th class="nowrap">
-              <fa icon="user" class="mr-1"></fa> User
-            </th>
+            <th>History</th>
           </tr>
         </thead>
 
@@ -131,10 +129,11 @@ td.team {
               <span v-if="!result.team_id">{{ result.team }}</span>
             </td>
 
-            <td class="data author-data nowrap">
-              {{ result.user }}
+            <td class="data nowrap"> 
+              <nuxt-link :to="'/result/history/' + result._id"> 
+                View
+              </nuxt-link>
             </td>
-
           </tr>
         </tbody>
       </table>
