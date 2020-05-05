@@ -273,11 +273,8 @@ export default {
     }
   },
   async asyncData ({ $axios }) {
-    // get races
-    let raceData = await $axios.$get('race/list/1/3')
 
     return { 
-      races: raceData.docs,
       searchInput: ""
     }
   },
@@ -290,9 +287,6 @@ export default {
     }
   }, 
   computed: {
-    posts () {
-      return this.$store.state.posts.posts.slice(0,3)
-    }, 
     user () {
       return this.$store.state.auth.user
     }, 

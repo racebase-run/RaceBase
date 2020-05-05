@@ -1,5 +1,6 @@
 <style lang="less" scoped> 
 @import (reference) '~assets/less/colors.less';
+@import '~assets/less/result.less'; 
 
 .title {
     .btn {
@@ -26,7 +27,10 @@ h4 {
 }
 
 .version {
-    font-weight: 500;
+    margin: 0;
+    &:hover { 
+        cursor: default;
+    }
 }
 </style> 
 
@@ -42,7 +46,7 @@ h4 {
         <div class="label">
             Version
         </div>
-        <div class="data"> 
+        <div class="data version btn btn-primary"> 
             {{ doc.version || 1 }}
         </div>
     </div>

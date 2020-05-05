@@ -8,6 +8,12 @@
     box-shadow: none !important;
   }
 }
+
+.btn, .btn-group button {
+  font-size: 14px;
+  text-transform: uppercase;
+  font-weight: 500;
+}
 </style>
 
 <template>
@@ -16,7 +22,7 @@
     :to="'/new/result/' + race._id" 
     v-if="isLoggedIn">
       Add Result &nbsp;
-      <fa icon="pencil-alt"></fa>
+      <fa icon="plus"></fa>
   </nuxt-link>
 
   <a class="btn btn-default" 

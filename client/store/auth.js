@@ -59,7 +59,10 @@ export const actions = {
       try {
         user = await this.$axios.$get('user/' + store.getters.getId())
       } catch(err) {
-        console.log("Error fetching user... " + err.response.data.message)
+        if (err.response)
+          console.log("Error fetching user... " + err.response.data.message)
+        else 
+          console.log(err)
       }
 
       if (user)

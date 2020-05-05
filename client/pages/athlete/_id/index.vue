@@ -378,7 +378,9 @@ h3.event-header {
                 </td>
 
                 <td class="time ml-auto">
-                  {{ result.time }}<span class="star" v-if="recordsArray.includes(result)">*</span>
+                  <nuxt-link :to="'/result/history/' + result._id"> 
+                    {{ result.time }}<span class="star" v-if="recordsArray.includes(result)">*</span>
+                  </nuxt-link>
                 </td>
 
               </tr>
