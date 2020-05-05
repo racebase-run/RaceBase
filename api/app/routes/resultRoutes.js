@@ -18,7 +18,7 @@ router.get('/count', async function(req, res) {
 });
 
 router.get('/:id/history', async (req, res) => {
-  let changeHistory = await Change.find({ 'document_id' : req.params.id, 'type': 'result' }); 
+  let changeHistory = await Change.find({ 'document_id' : req.params.id, 'type': 'result' }).sort({ 'version': -1 }); 
   res.send(changeHistory); 
 });
 
@@ -240,38 +240,57 @@ router.get('/:id', async (req, res) => {
 })
 
 // route to handle creating a result
-router.post('/', authCheck, function(req, res) {
+router.post('/', authCheck, async (req, res) => {
 
   var result = new Result(req.body);
   result.user_id = req.userId; 
   result.version = 1; 
 
-  Race.findById(req.body.race_id, function(err, data) {
-    if (!data)
-      res.send("No race with that ID exists.");
+  let data = await Race.findById(req.body.race_id); 
+  if (!data) res.send("No race with that ID exists.");
 
-    else { 
-      result.save(function(err, data) {
-        if (err) res.status(500).send(err);
-        res.send(data);
-      });
-    }
+  try {
+    await result.save(); 
+    await Change.create({
+      author: result.user_id, 
+      date: new Date(), 
+      version: result.version, 
+      type: "result", 
+      document: result, 
+      document_id: result._id
+    });
+  } catch(err) {
+    res.status(500).send(err);
+  }
 
+});
+
+router.post('/:id/revert/:version', async (req, res) => {
+  let result = await Result.findById(req.params.id); 
+  if (!result) res.send("Result not found!"); 
+
+  let versionToRevert = await Change.findOne({ version: req.params.version }); 
+  await result.update({ ...versionToRevert.document }); 
+  result.version = result.version+1; 
+
+  await result.save(); 
+
+  await Change.create({
+    author: result.user_id, 
+    date: new Date(), 
+    version: result.version, 
+    type: "result", 
+    document: result, 
+    document_id: result._id
   });
+
+  res.send(result); 
 
 });
 
 // route to handle updating results
 router.put('/:_id', authCheck, async function(req, res) {
   Result.findById(req.params._id, async function(err, data) {
-    let oldVersion = await Change.create({
-      author: req.userId, 
-      date: new Date(), 
-      version: data.version || 1, 
-      type: "result", 
-      document: data, 
-      document_id: data._id
-    });
 
     if (err)
       res.status(500).send(err);
@@ -291,6 +310,14 @@ router.put('/:_id', authCheck, async function(req, res) {
       data.version = data.version+1 || 1; 
       data.markModified("date");
 
+      let updated = await Change.create({
+        author: req.userId, 
+        date: new Date(), 
+        version: data.version || 1, 
+        type: "result", 
+        document: data, 
+        document_id: data._id
+      });
       res.send(await data.save());
     }
   });

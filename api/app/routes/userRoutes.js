@@ -163,7 +163,6 @@ router.get('/:id', authCheck, async function(req, res) {
   } else {
     res.status(403).send("This isn't your user ID")
   }
-
 });
 
 router.get('/', authCheck, async function(req, res) {
