@@ -38,9 +38,20 @@ h4 {
 <div> 
     <div class="title d-flex align-items-center mb-3 pb-3 pl-3"> 
         <h4 class="mb-0 mr-3"> Result Info </h4> 
-        <nuxt-link class="btn btn-default" :to='"/result/edit/" + doc._id'>
+        <nuxt-link class="btn btn-default mr-2" :to='"/result/edit/" + doc._id'>
             Edit
         </nuxt-link>
+        <div v-if="root">
+            <button @click="confirm()" class="btn btn-default" v-if="!confirmed"> 
+                Delete <fa :icon="['fas', 'trash-alt']" class="ml-1"></fa> 
+            </button>
+            <div class="d-flex" v-else> 
+                <div class="mr-2"> Are you sure? </div>
+                <button @click="$emit('deleteResult', doc._id)" class="btn btn-danger">
+                    Confirm
+                </button>
+            </div>
+        </div>
     </div>
     <div class="d-flex">
         <div class="label">
@@ -123,6 +134,16 @@ h4 {
 
 <script> 
 export default {
-    props: ['doc']
+    props: ['doc', 'root'], 
+    data () {
+        return {
+            confirmed: false
+        }
+    },
+    methods: {
+        confirm: function() {
+            this.confirmed = true;
+        }
+    }
 }
 </script> 

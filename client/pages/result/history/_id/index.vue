@@ -11,6 +11,10 @@ h4 {
   text-transform: uppercase;
 }
 
+.deleted {
+  border-bottom: 1px solid @light-grey;
+}
+
 .table-container {
   border: 1px solid @light-grey;
   border-radius: 3px;
@@ -35,7 +39,12 @@ h4 {
 </style>
 <template>
 <div class="p-4"> 
-  <Viewer :doc="current" class="mb-4" />
+  <div v-if="!deleted && current"> 
+    <Viewer :doc="current" class="mb-4" :root="true" @deleteResult="deleteResult"/>
+  </div>
+  <div class="deleted mb-3 pb-2" v-else> 
+    <h2> This result has been deleted. </h2>
+  </div>
   <h2 class="mb-3"> Revision History </h2>
   <div class="table-container p-2">
     <table class="history" v-if="history.length > 0">
@@ -93,7 +102,13 @@ export default {
   components: { Viewer }, 
   async asyncData ({ params, $axios }) {
       let history = await $axios.$get('result/' + params.id + '/history');
-      let current = await $axios.$get('result/' + params.id);
+      let deleted = false;
+      let current = false;
+      try {
+        current = await $axios.$get('result/' + params.id);
+      } catch(e) {
+        deleted = true;
+      }
       for (var result of history) {
         let authorInfo = await $axios.$get('user/' + result.author + '/info'); 
         result.author = authorInfo; 
@@ -104,7 +119,8 @@ export default {
           history: [ ...history ], 
           current: current,
           id: params.id, 
-          confirmed: confirmed
+          confirmed: confirmed, 
+          deleted: deleted
       }
   },
   methods: {
@@ -115,10 +131,13 @@ export default {
       this.confirmed.splice(i, 1, true);
     }, 
     revert: async function(i) {
-      await this.$axios.post('result/' + this.current._id + '/revert/' + i);
+      await this.$axios.post('result/' + this.history[i].document_id + '/revert/' + this.history[i].version);
     }, 
     unconfirm: function(i) {
       this.confirmed.splice(i, 1, false);
+    }, 
+    deleteResult: async function(id) {
+      await this.$axios.delete('result/' + id);
     }
   }
 }
