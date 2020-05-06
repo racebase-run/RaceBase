@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const _ = require('underscore');
+let mongoose = require('mongoose');
 
 var Race = require('../models/race');
 var Result = require('../models/result');
@@ -266,25 +267,55 @@ router.post('/', authCheck, async (req, res) => {
 });
 
 router.post('/:id/revert/:version', async (req, res) => {
-  let result = await Result.findById(req.params.id); 
-  if (!result) res.send("Result not found!"); 
+  if (!req.params.id) {
+    res.status(500).send("Invalid ID"); 
+    return;
+  } else if (!req.params.version) {
+    res.status(500).send("Invalid version"); 
+    return;
+  }
 
-  let versionToRevert = await Change.findOne({ version: req.params.version }); 
-  await result.update({ ...versionToRevert.document }); 
-  result.version = result.version+1; 
 
-  await result.save(); 
+  try { 
 
-  await Change.create({
-    author: result.user_id, 
-    date: new Date(), 
-    version: result.version, 
-    type: "result", 
-    document: result, 
-    document_id: result._id
-  });
+    let versionToRevert = await Change.findOne({
+      'document_id' : req.params.id, 
+      'type' : 'result', 
+      'version' : Number(req.params.version)
+    });
 
-  res.send(result); 
+    let result = await Result.findById(req.params.id);
+    let latest = 1; 
+    if (!result) {
+      let changeHistory = await Change.find({
+        'document_id' : req.params.id, 
+        'type' : 'result'
+      }).sort({ 'version': -1 }); 
+      latest = changeHistory[0].version;
+    } else {
+      await Result.deleteOne({ _id: req.params.id });
+      latest = result.version; 
+    }
+
+    result = await Result.create({ ...versionToRevert.document });
+    result._id = mongoose.Types.ObjectId(req.params.id); 
+    result.version = latest+1;
+    await result.save(); 
+
+    await Change.create({
+      author: result.user_id, 
+      date: new Date(), 
+      version: result.version, 
+      type: "result", 
+      document: result, 
+      document_id: result._id
+    });
+
+    res.send(result); 
+
+  } catch (e) {
+    console.log(e);
+  }
 
 });
 
