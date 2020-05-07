@@ -400,7 +400,8 @@ h3.event-header {
       style="text-align: center" 
       class="mb-3"> 
       Want to customize this page? <br/>
-      <nuxt-link to="/user/settings" v-if="isLoggedIn"> Claim this profile </nuxt-link>
+      <nuxt-link to="/user/settings/profile" v-if="claimed && user.athlete_id == id && isLoggedIn"> Go to your profile settings </nuxt-link>
+      <nuxt-link to="/user/settings" v-else> Claim this profile </nuxt-link>
       <span v-if="!isLoggedIn">
         <nuxt-link to="/login"> Log In </nuxt-link> or
         <nuxt-link to="/signup"> Sign Up </nuxt-link>

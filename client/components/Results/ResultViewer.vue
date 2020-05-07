@@ -8,7 +8,6 @@
         text-transform: uppercase;
         padding: 3px 7px;
     }
-    width: 50%;
     border-bottom: 1px solid @light-grey;
 }
 h4 {

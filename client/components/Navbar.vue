@@ -1,6 +1,7 @@
 <style lang="less" scoped>
 
 @import (reference) "~assets/less/colors.less";
+@import (reference) "~assets/less/sizes.less";
 
 .logo-container {
   height: 20px;
@@ -22,31 +23,69 @@
   font-weight: 500;
   align-self: center;
 }
+
+.actions {
+  display: flex;
+}
+
+.showMore {
+  display: none;
+  font-size: 20px;
+}
+
+.visible {
+  display: flex !important;
+}
+
+@media (max-width: @large) {
+  .actions {
+    display: none;
+    justify-content: right;
+  }
+  
+  .showMore {
+    display: block;
+  }
+}
+
+@media (max-width: @medium) { 
+  .logo-container {
+    height: 25px;
+  }
+  .actions {
+    justify-content: center;
+  }
+}
 </style>
 
 <template>
   <div class="navbar d-flex align-items-center"> 
-    <div class="col-auto logo-container"> 
+    <div class="col-12 col-md-auto logo-container mt-3 mt-md-0"> 
       <nuxt-link to="/">
-        <img class="logo mb-2" src="/images/textlogo.svg"> 
+        <img class="logo mb-2 mb-md-0 mx-auto mx-md-0" src="/images/textlogo.svg"> 
       </nuxt-link>
     </div>
-    <div class="col-4 mr-auto ml-2"> 
+    <div class="col-lg-4 col-sm-8 col-10 mt-md-0 mt-4 mr-lg-auto ml-lg-2 ml-md-auto mr-md-0 mx-auto mb-3 mb-md-0 d-flex"> 
       <SearchBar
         v-model="searchText" 
-        @search="search"         
+        @search="search"
+        class="col px-0"
       />
+      <button class="btn btn-default ml-2 showMore" @click="toggleMore()"> 
+        <fa icon="caret-down" v-if="!showMore"/> 
+        <fa icon="caret-up" v-else />
+      </button>
     </div>
     <div class="col-auto" v-if="!isLoggedIn"> 
       <nuxt-link to="/signup" class="btn btn-primary mr-2"> Sign Up </nuxt-link>
       <nuxt-link to="/login" class="btn btn-default"> Log In </nuxt-link>
     </div>
-    <div class="col-auto d-flex" v-if="isLoggedIn">
-      <nuxt-link to="/new/result" class="btn btn-primary mr-3"> 
+    <div class="col-12 col-lg-auto mb-2 mt-1 my-lg-0 mx-auto mx-lg-0 actions row mt-md-3" :class="{visible: showMore}" v-if="isLoggedIn">
+      <nuxt-link to="/new/result" class="btn btn-primary mr-0 mr-sm-3 mb-3 mb-sm-0"> 
         Add Result <fa icon="plus"/> 
       </nuxt-link>
-      <div class="user col"> 
-        <UserWidget :user="user" @logOut="logOut"/>
+      <div class="user ml-2"> 
+        <UserWidget :user="user" @logOut="logOut" class="mx-auto"/>
       </div>
     </div>
   </div>
@@ -59,7 +98,8 @@ export default {
   components: { UserWidget, SearchBar },
   data () {
     return {
-      searchText: ""
+      searchText: "", 
+      showMore: false 
     }
   }, 
   computed: {
@@ -80,6 +120,10 @@ export default {
     search: function(notTyping) {
       if (notTyping)
         this.$router.push({ path: '/search/' + encodeURI(this.searchText) })
+    },
+    toggleMore: function() {
+      console.log(this.showMore);
+      this.showMore = !this.showMore;
     }
   }
 }
