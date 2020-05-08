@@ -68,11 +68,6 @@
 
   </div>
 
-  <gender-picker
-    :race_id="race._id" 
-    :gender="gender"
-  />
-
   <div class="btn-group dropdown-btn-group dropdown" v-if="eventList.length > 0">
 
     <button type="button" 
@@ -85,16 +80,15 @@
       <span v-for="(event, index) in eventList">
         <nuxt-link 
           :to="{ 
-            name: 'races-id-gender-event', 
+            name: 'races-id-event', 
             params: { 
               id: race._id,
-              gender: gender, 
-              event: index
+              event: event._id
             } 
           }" 
           class="dropdown-item"
         >
-          {{ event }}
+          {{ event.name }}
         </nuxt-link>
       </span>
     </div>
@@ -104,12 +98,8 @@
 </div>
 </template>
 <script>
-const GenderPicker = () => import('~/components/GenderPicker')
 export default {
-  components: {
-    GenderPicker
-  },
-  props: ['eventList', 'gender', 'race', 'voteData'], 
+  props: ['eventList', 'race', 'voteData'], 
   computed: {
     isLoggedIn: function () {
       return this.$store.getters['auth/isLoggedIn']

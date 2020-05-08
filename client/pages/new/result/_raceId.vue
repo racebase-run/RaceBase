@@ -62,31 +62,16 @@ label {
   
   <div class="mt-4" v-if="curRace.name">
     <h4> 2. Choose your event </h4>
-    <div>
-      <label class="form-check-label mb-3">
-        <input 
-          v-model="womens"
-          :value="true" 
-          type="radio"
-        /> Women's &nbsp; 
-
-        <input 
-          v-model="womens"
-          :value="false" 
-          type="radio"
-        /> Men's
-      </label>
-    </div>
     
     <div class="d-flex align-items-center mb-3" v-if="events">
       <div 
         v-for="event in events" 
         class="event btn d-inline-block mr-2"
-        :class="result.event == event ? 'btn-primary' : 'btn-outline-dark'"
-        @click="result.event != event ? selectEvent(event) : result.event = ''"
+        :class="result.event_id == event._id ? 'btn-primary' : 'btn-outline-dark'"
+        @click="result.event_id != event._id ? selectEvent(event) : result.event_id = ''"
       >
-        {{ event }} 
-        <fa class="ml-1" icon="check" v-if="result.event == event"></fa>
+        {{ event.name }} 
+        <fa class="ml-1" icon="check" v-if="result.event_id == event._id"></fa>
       </div>
       <div>
         <div class="input-group">
@@ -140,7 +125,7 @@ label {
           {{ team.team }}
         </nuxt-link>
       </div>
-      <div> 
+      <div v-if="!result.team"> 
         Can't find your team? Create a new one: 
         <div class="mt-3 mb-2 d-flex align-items-center w-50">
           <input 
@@ -273,7 +258,6 @@ export default {
       idParam: params.raceId,
       races: {}, 
       teams: {},
-      womens: false, 
       events: events, 
       user: user,
       newEvent: "",
@@ -287,11 +271,11 @@ export default {
         athlete_id: "",
         race: raceName,
         race_id: params.raceId, 
-        womens: false,
         team: "",
         team_id: "",
         place: null,
         event: "",
+        event_id: "",
         date: ""
       }
     }
@@ -324,13 +308,14 @@ export default {
       try {
         this.raceId = id
         this.curRace = await this.$axios.$get('/race/' + id) || {}
-        this.events = await this.$axios.$get('/race/' + id + '/' + this.gender + '/events')
+        this.events = await this.$axios.$get('/race/' + id + '/events')
       } catch (e) {
         console.log(e.response.data)
       }
     }, 
     selectEvent: function(event) {
-      this.result.event = event; 
+      this.result.event = event.name; 
+      this.result.event_id = event._id;
     }, 
     selectTeam: function(team) {
       this.result.team = team.team; 
@@ -341,11 +326,10 @@ export default {
         this.result.athlete = this.user.name
         this.result.athlete_id = this.user.athlete_id
       } 
-      this.result.womens = this.womens ? true : false
       this.result.date = this.curRace.date
       try {
-        let response = await this.$axios.$post('result', this.result)
-        if (response) this.$router.push('/new/result/success')
+        let response = await this.$axios.$post('result', this.result);
+        if (response) this.$router.push('/new/result/success');
       } catch (e) { console.log(e) }
     }, 
     createCustomTeam: function() {
@@ -358,23 +342,12 @@ export default {
     }
   }, 
   watch: {
-    womens: async function() {
-      try {
-        if (this.curRace._id)
-          this.events = await this.$axios.$get('/race/' + this.curRace._id + '/' + this.gender + '/events')
-      } catch (e) {
-        console.log(e)
-      }
-    }, 
     curRace: function() {
       this.result.race = this.curRace.name
       this.result.race_id = this.curRace._id
     }
   },
   computed: {
-    gender: function() {
-      return this.womens ? 'womens' : 'mens'
-    }, 
     step: function() {
       if (this.result.place && this.result.time) return 4
       else if (this.result.team) return 3

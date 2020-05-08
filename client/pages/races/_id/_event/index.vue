@@ -1,13 +1,11 @@
 <template>
 <div class="mx-auto w-90 w-md-100 mx-md-0 pl-md-5">
 
-  <RaceHeader :race="currentRace" v-if="currentRace && !message"/>
+  <RaceHeader :race="currentRace" v-if="currentRace"/>
   <RaceActions 
     :eventList="eventList" 
     :race="currentRace" 
-    :gender="gender"
     :voteData="voteData"
-    v-if="!message"
     @openAddWindow="openAddWindow"
     @editRace="editRace"
     @loadRace="loadRace"
@@ -21,11 +19,9 @@
     @load="loadRace"
   />
   <ResultsTable 
-    :eventList="eventList" 
-    :eventNum="eventNum"
+    :event="event"
     :results="results"
-    :teamResults="teamResults"
-    v-if="!message"
+    :id="currentRace._id"
   />
 
 </div>
@@ -68,18 +64,13 @@ export default {
     }
   },
   async asyncData ({ $axios, params, redirect, store }) {
-    let race = await $axios.$get('race/' + params.id)
+    let race = await $axios.$get('race/' + params.id);
     let events = {}
 
-    let gender = params.gender || "mens"
-
     if (!race.message) 
-      events = await $axios.$get('race/' + race._id + '/' + gender + '/events')
+      events = await $axios.$get('race/' + race._id + '/events');
     else 
-      redirect('/races/notfound')
-
-    let eventNum = (Number(params.event) || 0)
-    eventNum = eventNum < events.length ? eventNum : 0
+      redirect('/races/notfound');
 
     var voteData = {};
 
@@ -92,41 +83,31 @@ export default {
       }
     }
 
+    let event = {}
+    if (params.event)
+        event = await $axios.$get('event/' + params.event); 
+    else 
+      event = await $axios.$get('race/' + params.id + '/events/default'); 
+
     let results = await $axios.$get(
       'result/list/' 
       + race._id 
-      + '/' 
-      + gender
-      + '/'
-      + encodeURI(events[eventNum])
+      + '/event/' 
+      + event._id
     ).catch(() => {
       redirect('/races/notfound')
-    })
-
-    let teamResults = await $axios.$get(
-      'result/teamlist/' 
-      + race._id 
-      + '/' 
-      + gender 
-      + '/'
-      + encodeURI(events[eventNum])
-    ).catch(() => {
-      redirect('/races/notfound') 
-    })
+    });
 
     return {
       currentRace: race, 
       eventList: events, 
-      eventNum: eventNum, 
       results: results, 
-      teamResults: teamResults, 
-      gender: gender, 
       voteData: voteData, 
+      event: event
     } 
   },
   data () {
     return {
-      message: "", 
       editMode: false,
       addMode: false,
       editingRace: false,
@@ -136,16 +117,14 @@ export default {
   methods : {
     loadResults: async function() {
 
-      this.eventList = await this.$axios.$get('race/' + this.currentRace._id + '/' + this.gender + '/events')
+      this.eventList = await this.$axios.$get('race/' + this.currentRace._id + '/events')
         .catch(() => { console.log("Something went wrong getting the events list.") })
 
       this.results = await this.$axios.$get(
         'result/list/' 
         + this.currentRace._id 
         + '/' 
-        + this.gender 
-        + '/'
-        + encodeURI(this.eventList[this.eventNum])
+        + this.event._id
       ).catch(() => {
         console.log("Something went wrong.")
       })
@@ -154,8 +133,6 @@ export default {
         'result/teamlist/' 
         + this.currentRace._id 
         + '/' 
-        + this.gender 
-        + '/'
         + encodeURI(this.eventList[this.eventNum])   
       ).catch(() => {
         console.log("Something went wrong.")
@@ -165,7 +142,6 @@ export default {
 
     },
     loadRace: async function(shouldLoadResults) {
-      console.log(shouldLoadResults)
       this.currentRace = await this.$axios.$get('race/' + this.currentRace._id)
       if (shouldLoadResults)
         this.loadResults()
@@ -194,9 +170,11 @@ export default {
     }
   }, 
   watch: {
-    $route: function () {
-      this.gender = this.$route.params.gender || this.gender
-      this.eventNum = this.$route.params.event || 0
+    $route: async function () {
+      if (this.$route.params.event)
+        this.event = await this.$axios.$get('event/' + this.$route.params.event); 
+      else 
+        this.event = await this.$axios.$get('race/' + this.$route.params.id + '/events/default'); 
       this.updateResults()
     } 
   }

@@ -30,56 +30,15 @@ td.team {
 <div class="pb-5 mt-2">
 
   <h4 class="mb-2" v-if="results.length > 0">
-    {{ eventList[eventNum] }}
+    {{ event.name }}
   </h4>
 
-  <div class="mb-3 team-toggle" v-if="teamResults.length > 0">
-    <span
-      @click="showTeams = true" 
-      v-if="!showTeams"> 
-      Show Team Scores 
-    </span>
-    
-    <span 
-      @click="showTeams = false" 
-      v-if="showTeams"> 
-      Hide Team Scores 
-    </span>
+  <div class="mb-3 team-toggle">
+    <nuxt-link :to="'/races/' + id + '/' + event._id + '/team/all'"> Show Team Scores </nuxt-link>
   </div>
 
   <div class="results-container pb-0" 
     v-if="results.length > 0 && !loading" v-cloak>
-
-    <div class="table-responsive mb-3" v-if="teamResults && showTeams">
-      <table class="table table-striped mb-2">
-        <thead>
-          <tr> 
-            <th> Team </th>
-            <th> Athletes </th>
-            <th> Score </th>
-          </tr>
-        </thead>
-        
-        <tbody>
-          <tr v-for="result in teamResults"> 
-            <td class="team">
-              <router-link :to="'/team/' + result.team_id">
-                {{ result.team }} 
-              </router-link>
-            </td>
-            <td> 
-              <div v-for="athlete in result.athletes">
-                <router-link :to="'/athlete/' + athlete.athlete_id">
-                  {{ athlete.athlete }}
-                </router-link>: {{ athlete.place }}
-              </div>
-            </td>
-            <td> {{ result.score }} </td>
-          </tr>
-        </tbody>
-
-      </table>
-    </div>
 
     <div class="table-responsive">
       <table class="table table-striped mb-0">
@@ -103,10 +62,9 @@ td.team {
             </td>
 
             <td class="nowrap">
-              <a v-if="$store.state.auth.user._id == result.user_id || !result.user_id" 
-                @click="$emit('openEditWindow', result)">
+              <nuxt-link :to="'/result/edit/' + result._id" v-if="$store.state.auth.user._id == result.user_id || !result.user_id">
                 <fa icon="pencil-alt" class="pencil mr-1"></fa>
-              </a>
+              </nuxt-link>
               <router-link v-if="result.athlete_id" :to="'/athlete/' + result.athlete_id">
                 {{ result.athlete }}
               </router-link>
@@ -155,11 +113,10 @@ td.team {
 
 <script>
 export default {
-  props: ['eventList', 'eventNum', 'id', 'results', 'teamResults'],
+  props: ['event', 'id', 'results'],
   data () {
     return {
-      loading: false, 
-      showTeams: false
+      loading: false
     }
   }
 };

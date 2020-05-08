@@ -16,7 +16,7 @@
       {{ team.name || team.team_id }} - Meet Schedule
     </h2>
     <div class="copy ml-auto">
-      <div class="btn btn-primary btn-small" v-clipboard:copy="'https://racebase.io/team/' + team.team_id + '/schedule'" @click="copied = true">
+      <div class="btn btn-primary btn-small" v-clipboard:copy="link" @click="copied = true">
         <span v-if="!copied">
           <fa icon="clipboard"></fa> 
           Copy Link to Clipboard
@@ -55,7 +55,13 @@ export default {
     let team = await $axios.$get('/team/public/' + params.id)
     return {
       team: team, 
-      copied: false
+      copied: false, 
+      teamId: params.id, 
+    }
+  },
+  data () {
+    return {
+      link: process.env.ROOT_URL + this.$route.path
     }
   },
   methods: {

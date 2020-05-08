@@ -19,12 +19,6 @@ h1 {
     {{ race.location }}
   </span>
 
-  <span class="user">
-    <fa icon="user-circle"></fa> 
-    <span v-if="!race.user">Anonymous</span>
-    {{ race.user }}
-  </span>
-
   <a 
     :href="'https://twitter.com/intent/tweet?text='
       + encodeURI('Check out this race on RaceBase! ')

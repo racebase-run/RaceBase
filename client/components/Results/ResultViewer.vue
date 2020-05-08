@@ -65,7 +65,7 @@ h4 {
             Race
         </div>
         <div class="data"> 
-            {{ doc.race }}
+            <nuxt-link :to="'/races/' + doc.race_id"> {{ doc.race }} </nuxt-link>
         </div>
     </div>
     <div class="d-flex">
