@@ -15,6 +15,34 @@ var cors = require('cors')
 var responseTime = require('response-time')
 var cluster = require('cluster')
 
+// database initialization for event change 
+var Result = require('./app/models/result');
+var Event = require('./app/models/event');
+
+async function initEvents() {
+  // connect to mongoDB database
+  mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true })
+  .catch((err) => { 
+    console.log("Error connecting to database:")
+    console.log(err) 
+  });
+
+  console.log("Initializing events database from current results"); 
+  let results = await Result.find({}); 
+  for (var result of results) {
+    let event = await Event.findOne({ race_id: result.race_id, name: result.event }); 
+    if (!event) {
+        event = await Event.create({ 
+          race_id: result.race_id, 
+          name: result.event, 
+          date: result.date
+        });
+    }
+    result.event_id = event._id; 
+    await result.save(); 
+  }
+}
+
 // configuration ===========================================
 
 if (cluster.isMaster) {
@@ -26,6 +54,9 @@ if (cluster.isMaster) {
   for (var i = 0; i < cpuCount; i += 1) {
     cluster.fork();
   }
+
+  // Uncomment to create Event data from Results
+  // initEvents();
 
 } else {
 

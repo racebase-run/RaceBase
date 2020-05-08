@@ -6,6 +6,7 @@ var Result = require('../models/result');
 var Change = require('../models/change');
 var User = require('../models/user');
 var Vote = require('../models/vote');
+var Event = require('../models/event');
 
 var authCheck = require('../auth')
 
@@ -67,16 +68,15 @@ router.get('/:id', function(req, res) {
   });
 });
 
-router.get('/:id/:gender/events', (req, res) => {
-  var womens = true; 
-  if (req.params.gender == "mens")
-    womens = false;
-  Result.find({ race_id : req.params.id, womens : womens }).distinct('event', (error, events) => {
-    if (error)
-      res.status(500).send(error)
-    else
-      res.send(events);
-  });
+router.get('/:id/events', async (req, res) => {
+  let events = await Event.find({ race_id: req.params.id }); 
+  res.send(events); 
+});
+
+router.get('/:id/events/default', async (req, res) => {
+  let events = await Event.find({ race_id: req.params.id }); 
+  if (events) res.send(events[0]); 
+  else res.send({}); 
 });
 
 router.get('/vote/:id', authCheck, function(req, res) {

@@ -6,6 +6,7 @@ let mongoose = require('mongoose');
 var Race = require('../models/race');
 var Result = require('../models/result');
 var Change = require('../models/change'); 
+var Event = require('../models/event'); 
 var User = require('../models/user');
 var authCheck = require('../auth');
 
@@ -32,17 +33,12 @@ router.get('/:id/version/:number', async (req, res) => {
   res.send(doc); 
 });
 
-// Get team scores for specified race, gender, and event
-router.get('/teamlist/:id/:gender/:event/', (req, res) => {
-
-  var womens = true; 
-  if (req.params.gender == "mens")
-    womens = false; 
+// Get team scores for specified race and event
+router.get('/teamlist/:id/event/:event/', (req, res) => {
 
   Result.find({ 
     'race_id' : req.params.id, 
-    'event' : decodeURI(req.params.event), 
-    'womens' : womens
+    'event_id' : req.params.event 
   })
   .lean().exec((err, results) => {
     if (results.length > 0) {
@@ -86,12 +82,10 @@ router.get('/teamlist/:id/:gender/:event/', (req, res) => {
   })
 })
 
-// Get years for a specified team and gender
-router.get('/list/team/:id/:gender/years', function(req,res) {
-  var womens = true; 
-  if (req.params.gender == "mens")
-    womens = false; 
-  Result.find({ 'team_id' : req.params.id, 'womens' : womens })
+// Get years for a specified team
+router.get('/list/team/:id/years', function(req,res) {
+
+  Result.find({ 'team_id' : req.params.id })
         .lean()
         .select('date')
         .exec((err, data) => {
@@ -109,6 +103,15 @@ router.get('/list/team/:id/:gender/years', function(req,res) {
           }
         });
 });
+
+router.get('/list/race/:race_id/event/:event_id/team/:team_id', async (req, res) => {
+  let results = await Result.find({ 
+    'team_id' : req.params.team_id,
+    'race_id' : req.params.race_id, 
+    'event_id' : req.params.event_id
+  }).sort({ place: 1 }); 
+  res.send(results); 
+}); 
 
 // Get results for a specified team and year
 router.get('/list/team/:id/:year', function(req, res) {
@@ -130,8 +133,8 @@ router.get('/list/team/:id/:year', function(req, res) {
         })
 });
 
-// Get results for a specified team, year, and gender
-router.get('/list/team/:id/:year?/:gender?', function(req, res) {
+// Get results for a specified team and year
+router.get('/list/team/:id/:year?', function(req, res) {
 
   let query = {
     'team_id' : req.params.id, 
@@ -142,12 +145,6 @@ router.get('/list/team/:id/:year?/:gender?', function(req, res) {
     let yearStart = moment(year + "-01-01").toDate()
     let yearEnd = moment(year + "-12-31").toDate()
     query.date = { $gte : yearStart, $lt: yearEnd }
-  }
-
-  if (req.params.gender) {
-    query.womens = true; 
-    if (req.params.gender == "mens")
-      query.womens = false; 
   }
 
   Result.find(query).sort({ date: -1 }).lean().exec(function(err, data) {
@@ -191,19 +188,10 @@ router.get('/list/athlete/:id', function(req, res) {
 });
 
 const getResults = (req, res) => {
-  let id = req.params.id
-  let query = { "race_id" : req.params.id }
-
-  if (req.params.gender) {
-    query.womens = true; 
-    if (req.params.gender == "mens")
-      query.womens = false; 
-  }
-
-  if (req.params.event)
-    query.event = decodeURI(req.params.event)
-
-  Result.find(query).lean()
+  Result.find({
+    "race_id" : req.params.id, 
+    "event_id" : req.params.event
+  }).lean()
   .sort({ 'place': 1, 'name' : 1 }) 
   .exec(function(err, results) {
 
@@ -224,11 +212,9 @@ const getResults = (req, res) => {
   });
 }
 
-// Get results for a specified race (gender and event are optional)
-router.get('/list/:id/:gender?/:event?', (req, res) => {
-
-  getResults(req, res)
-  
+// Get results for a specified race
+router.get('/list/:id/event/:event?', (req, res) => {
+  getResults(req, res);
 })
 
 router.get('/:id', async (req, res) => {
@@ -251,7 +237,6 @@ router.post('/', authCheck, async (req, res) => {
   if (!data) res.send("No race with that ID exists.");
 
   try {
-    await result.save(); 
     await Change.create({
       author: result.user_id, 
       date: new Date(), 
@@ -260,6 +245,14 @@ router.post('/', authCheck, async (req, res) => {
       document: result, 
       document_id: result._id
     });
+    let event = null;
+    if (result.event_id) event = await Event.findById(result.event_id);
+    if (!event) 
+      event = await Event.create({ race_id: result.race_id, name: result.event, date: result.date }); 
+    result.event_id = event._id;
+    result.event = event.name;
+    await result.save(); 
+    res.send(result); 
   } catch(err) {
     res.status(500).send(err);
   }
@@ -274,7 +267,6 @@ router.post('/:id/revert/:version', async (req, res) => {
     res.status(500).send("Invalid version"); 
     return;
   }
-
 
   try { 
 
@@ -329,17 +321,24 @@ router.put('/:_id', authCheck, async function(req, res) {
       data.athlete = req.body.athlete || data.athlete;
       data.verified = req.body.verified;
       data.time = req.body.time || data.time;
-      data.race = req.body.race || data.race; 
       data.story = req.body.story || data.story;
       data.place = req.body.place || data.place;
       data.athlete_id = req.body.athlete_id || data.athlete_id; 
       data.womens = req.body.womens || data.womens; 
       data.team = req.body.team || data.team;
       data.team_id = req.body.team_id || data.team_id; 
-      data.event = req.body.event || data.event;
       data.date = data.date || moment(req.body.date, 'MMMM D YYYY').toDate();
       data.version = data.version+1 || 1; 
       data.markModified("date");
+
+      if (data.event != req.body.event) {
+        let query = { name: req.body.event, race_id: data.race_id }; 
+        let event = await Event.findOne(query); 
+        if (!event) 
+          event = await Event.create({ ...query, date: data.date }); 
+        data.event_id = event._id; 
+        data.event = event.name; 
+      } 
 
       let updated = await Change.create({
         author: req.userId, 

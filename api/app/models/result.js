@@ -17,6 +17,7 @@ var resultSchema = mongoose.Schema({
   team_id: {type: String, default: ''},
   place: {type: Number},
   event: {type: String},
+  event_id: String, 
   date: {type: Date}, 
   post_id: {type: String}, 
   version: Number

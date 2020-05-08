@@ -10,6 +10,7 @@ router.use('/search', require('./searchRoutes.js'));
 router.use('/log', require('./logRoutes.js'));
 router.use('/post', require('./postRoutes.js'));
 router.use('/team', require('./teamRoutes.js'));
+router.use('/event', require('./eventRoutes.js'));
 router.get('/', (req, res) => {
   res.redirect("https://" + process.env.PROD_URL + "/api")
 })

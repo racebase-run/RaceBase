@@ -3,9 +3,11 @@ var express = require('express')
 var router = express.Router()
 
 // import models
-var User = require('../models/user')
-var Team = require('../models/team')
-var Result = require('../models/result')
+var User = require('../models/user');
+var Team = require('../models/team');
+var Result = require('../models/result');
+var Event = require('../models/event'); 
+var Race = require('../models/race'); 
 
 // import authCheck middleware
 var authCheck = require('../auth')
@@ -44,7 +46,7 @@ router.get('/:id/roster', authCheck, async (req, res) => {
 
 // get list of all athletes affiliated with a team
 router.get('/:id/athletes', async (req, res) => {
-  let data = await Result.find({ team_id: req.params.id }).distinct('athlete_id')
+  let data = await Result.find({ team_id: req.params.id }).distinct('athlete_id');
   let athletes = []
   // iterate through all distinct athlete ID's
   for (const athlete of data) {
@@ -57,7 +59,22 @@ router.get('/:id/athletes', async (req, res) => {
     else athletes.push({ athlete_id: athlete })
   }
   res.send(athletes)
-})
+});
+
+router.get('/:id/athletes/year/:year', async (req, res) => {
+  let year = parseInt(req.params.year);
+  let yearStart = moment(year + "-01-01").toDate();
+  let yearEnd = moment(year + "-12-31").toDate();
+  let athletes = []; 
+  let athleteFound = {}; 
+  let results = await Result.find({ team_id: req.params.id, 'date': { $gte : yearStart, $lt: yearEnd }}).sort({ 'athlete': 1 });
+  for (result of results) {
+    if (athleteFound[result.athlete_id]) continue; 
+    athleteFound[result.athlete_id] = true; 
+    athletes.push({ athlete_id: result.athlete_id, name: result.athlete }); 
+  }
+  res.send(athletes); 
+});
 
 router.get('/:id', authCheck, async (req, res) => {
   let user = await User.findById(req.userId)
@@ -78,7 +95,40 @@ router.get('/public/:id', async (req, res) => {
     delete team.join_code
     res.send(team)
   }
-})
+});
+
+router.get('/:id/years', async (req, res) => {
+  let results = await Result.find({ 'team_id' : req.params.id }).lean().select('date'); 
+  let years = {};
+  for (var result of results) {
+    let curYear = parseInt(moment(result.date).format('YYYY')); 
+    if (!years[curYear]) years[curYear] = true; 
+  }
+  let list = []; 
+  for (var year of Object.keys(years)) {
+    if (years[year]) list.push(year); 
+  }
+  res.send(list.sort((a, b) => { return a < b }));     
+});
+
+router.get('/:id/year/:year/races', async (req, res) => {
+  var results = await Result.find({ team_id: req.params.id });
+  var races = {}; 
+  for (var result of results) {
+    var race; 
+    if (!races[result.race_id]) {
+      race = (await Race.findById(result.race_id)).toObject() ;
+      race.events = {}; 
+      races[result.race_id] = race;
+    } else race = races[result.race_id]; 
+  
+    if (!race.events[result.event_id]) {
+      var event = await Event.findById(result.event_id);
+      race.events[result.event_id] = event;
+    }
+  }
+  res.send(races); 
+});
 
 router.post('/join/:code', authCheck, async (req, res) => {
   let team = await Team.findOne({ join_code: req.params.code })
@@ -103,7 +153,7 @@ router.post('/leave/', authCheck, async (req, res) => {
   user.team_id = null
   await user.save()
   res.send("Left team")
-})
+});
 
 // small function to create a team with a join code
 let createTeam = async (user_id, team_id) => {
