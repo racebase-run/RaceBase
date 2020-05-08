@@ -38,8 +38,11 @@
 }
 
 @media (max-width: @large) {
-  .actions {
+  .actions, .login {
     display: none;
+  }
+
+  .actions {
     justify-content: right;
   }
   
@@ -65,21 +68,23 @@
         <img class="logo mb-2 mb-md-0 mx-auto mx-md-0" src="/images/textlogo.svg"> 
       </nuxt-link>
     </div>
-    <div class="col-lg-4 col-sm-8 col-10 mt-md-0 mt-4 mr-lg-auto ml-lg-2 ml-md-auto mr-md-0 mx-auto mb-3 mb-md-0 d-flex"> 
+    <div class="col-lg-4 col-sm-8 col-10 mt-md-0 mt-4 mr-lg-auto ml-lg-2 ml-md-auto mr-md-0 mx-auto mb-3 mb-md-0 d-flex align-items-center"> 
       <SearchBar
         v-model="searchText" 
         @search="search"
         class="col px-0"
       />
-      <button class="btn btn-default ml-2 showMore" @click="toggleMore()"> 
+      <button class="btn btn-default ml-2 showMore" @click="toggleMore()" v-if="isLoggedIn"> 
         <fa icon="caret-down" v-if="!showMore"/> 
         <fa icon="caret-up" v-else />
       </button>
     </div>
-    <div class="col-auto" v-if="!isLoggedIn"> 
+
+    <div class="col-auto login" v-if="!isLoggedIn"> 
       <nuxt-link to="/signup" class="btn btn-primary mr-2"> Sign Up </nuxt-link>
       <nuxt-link to="/login" class="btn btn-default"> Log In </nuxt-link>
     </div>
+    
     <div class="col-12 col-lg-auto mb-2 mt-1 my-lg-0 mx-auto mx-lg-0 actions row mt-md-3" :class="{visible: showMore}" v-if="isLoggedIn">
       <nuxt-link to="/new/result" class="btn btn-primary mr-0 mr-sm-3 mb-3 mb-sm-0"> 
         Add Result <fa icon="plus"/> 
