@@ -56,7 +56,7 @@ if (cluster.isMaster) {
   }
 
   // Uncomment to create Event data from Results
-  // initEvents();
+  initEvents();
 
 } else {
 

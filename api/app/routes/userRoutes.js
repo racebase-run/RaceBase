@@ -212,7 +212,7 @@ let sendVerificationEmail = async function(user, token, callback) {
 router.post('/', async function(req, res) {
   User.findOne({ 'email' : req.body.email }, function(err, user) {
     if (user) {
-      res.status(400).send("User already exists.")
+      res.status(400).send("That email is taken.")
     }
     else {
       var hashedPassword = bcrypt.hashSync(req.body.password, 8);
@@ -429,16 +429,10 @@ router.post('/claim/athlete/:athlete_id', authCheck, function(req, res) {
   User.findOne({ 'athlete_id' : req.params.athlete_id }, function(err, data) {
     if (err) res.status(500).send(err)
     else if (!data) {
-      Result.findOne({ 'athlete_id' : req.params.athlete_id }, function(err, data) {
-        if (data) {
-          User.findOneAndUpdate({ '_id' : req.userId }, { athlete_id : req.params.athlete_id }, {new:true}, (err, response) => {
-            if (err) res.status(500).send(err);
-            else res.send("Successfully claimed ID");
-          });
-        } else {
-          res.status(400).send("That Athlete ID doesn't exist");
-        }
-      });  
+      User.findOneAndUpdate({ '_id' : req.userId }, { athlete_id : req.params.athlete_id }, {new:true}, (err, response) => {
+        if (err) res.status(500).send(err);
+        else res.send("Successfully claimed ID");
+      });
     } else {
       res.status(400).send("Athlete ID already claimed");
     }
@@ -523,12 +517,19 @@ router.put('/email/:email', authCheck, async (req, res) => {
 router.put('/coach', authCheck, async (req, res) => {
   // get the user
   let user = await User.findById(req.userId)
+  let team = await Team.findOne({ team_id: user.team_id }); 
   // if the user wants to change to coach account, unaffiliate them from any teams
-  if (req.body.coach && !user.coach) user.team_id = null
+  if (req.body.coach && !user.coach) { 
+    user.team_id = null; 
+    if (team) {
+      team.coach = null;
+      await team.save(); 
+    }
+  }
 
   // change their account type
-  user.coach = req.body.coach
-  let updated = await user.save()
+  user.coach = req.body.coach;
+  let updated = await user.save();
   res.send(updated)
 })
 

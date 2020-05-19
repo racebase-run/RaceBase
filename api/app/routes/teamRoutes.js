@@ -8,6 +8,8 @@ var Team = require('../models/team');
 var Result = require('../models/result');
 var Event = require('../models/event'); 
 var Race = require('../models/race'); 
+var Roster = require('../models/roster'); 
+var WorkoutGroup = require('../models/workoutgroup'); 
 
 // import authCheck middleware
 var authCheck = require('../auth')
@@ -43,6 +45,16 @@ router.get('/:id/roster', authCheck, async (req, res) => {
     res.send(athletes)
   } catch (e) { res.status(500).send(e) }
 })
+
+router.get('/roster/:rosterId', authCheck, async (req, res) => {
+  let roster = await Roster.findById(req.params.rosterId); 
+  res.send(roster); 
+});
+
+router.get('/workoutgroup/:groupId', authCheck, async (req, res) => {
+  let group = await WorkoutGroup.findById(req.params.groupId); 
+  res.send(group); 
+});
 
 // get list of all athletes affiliated with a team
 router.get('/:id/athletes', async (req, res) => {
@@ -130,6 +142,48 @@ router.get('/:id/year/:year/races', async (req, res) => {
   res.send(races); 
 });
 
+router.get('/:id/rosters', async (req, res) => {
+  let rosters = await Roster.find({ team_id: req.params.id }); 
+  res.send(rosters); 
+});
+
+router.get('/:id/workoutgroups', async (req, res) => {
+  let groups = await WorkoutGroup.find({ team_id: req.params.id }); 
+  res.send(groups); 
+});
+
+router.post('/roster/:id/athletes', authCheck, async (req, res) => {
+  let user = await User.findById(req.userId); 
+  if (!user.coach) res.status(500).send("You are not a coach."); 
+  else if (!user.team_id) res.status(403).send("You haven't claimed a team."); 
+  else {
+    let roster = await Roster.findById(req.params.id); 
+    if (!roster) res.status(403).send("Roster not found"); 
+    else if (roster.team_id != user.team_id) res.status(500).send("This roster isn't yours."); 
+    else {
+      roster.athletes = req.body.athletes;
+      await roster.save(); 
+      res.send(roster); 
+    }
+  }
+});
+
+router.post('/workoutgroup/:id/athletes', authCheck, async (req, res) => {
+  let user = await User.findById(req.userId); 
+  if (!user.coach) res.status(500).send("You are not a coach."); 
+  else if (!user.team_id) res.status(403).send("You haven't claimed a team."); 
+  else {
+    let group = await WorkoutGroup.findById(req.params.id); 
+    if (!group) res.status(403).send("Group not found"); 
+    else if (group.team_id != user.team_id) res.status(500).send("This group isn't yours."); 
+    else {
+      group.athletes = req.body.athletes; 
+      await group.save(); 
+      res.send(group); 
+    }
+  }
+});
+
 router.post('/join/:code', authCheck, async (req, res) => {
   let team = await Team.findOne({ join_code: req.params.code })
   if (!team) res.status(400).send("No team with that join code exists")
@@ -156,15 +210,21 @@ router.post('/leave/', authCheck, async (req, res) => {
 });
 
 // small function to create a team with a join code
-let createTeam = async (user_id, team_id) => {
+let createTeam = async (user_id, team_id, name) => {
   // create join code
   let join_code = uuidv1()
+
+  if (!name) {
+      let res = await Result.findOne({ team_id: team_id });
+      name = res.team || null; 
+  }
 
   // create new team
   let props = { 
     join_code: join_code, 
     coach: user_id,
-    team_id: team_id
+    team_id: team_id, 
+    name: name
   }
 
   let newTeam = await Team.create(props)
@@ -214,11 +274,11 @@ router.post('/claim/:id', authCheck, async (req, res) => {
   if (!user.coach) res.status(403).send("You are not a coach")
   else if (user.team_id) res.status(400).send("You already own a team")
   else {
-    let team_id = req.params.id
+    let team_id = req.params.id; 
 
     // get Team object if one exists; if not, create one
     let team = await Team.findOne({ team_id: team_id })
-    if (!team) team = createTeam(req.userId, team_id)   
+    if (!team) team = createTeam(req.userId, team_id);
 
     // check if there's a coach who owns this team already
     let taken = await User.findOne({ team_id: team_id, coach: true })
@@ -231,7 +291,53 @@ router.post('/claim/:id', authCheck, async (req, res) => {
     }
 
   } 
-})
+});
+
+router.post('/roster', authCheck, async (req, res) => {
+  let user = await User.findById(req.userId); 
+  if (!user.coach) res.status(403).send("You are not a coach!"); 
+  else if (!user.team_id) res.status(400).send("You haven't claimed a team yet"); 
+  else {
+    let team = await Team.findOne({ team_id: user.team_id, coach: user._id }); 
+    if (!req.body) res.status(400).send("No data provided."); 
+    else if (!req.body.name) res.status(400).send("No name provided"); 
+    else {
+      let exists = await Roster.findOne({ name: req.body.name, team: team.team_id }); 
+      if (exists) res.status(400).send("Roster already exists on this team"); 
+      else {
+        let roster = await Roster.create({
+          name: req.body.name, 
+          team_id: team.team_id, 
+          athletes: []
+        });
+        res.send(roster); 
+      }
+    }
+  }
+});
+
+router.post('/workoutgroup', authCheck, async (req, res) => {
+  let user = await User.findById(req.userId); 
+  if (!user.coach) res.status(403).send("You are not a coach!"); 
+  else if (!user.team_id) res.status(400).send("You haven't claimed a team yet"); 
+  else {
+    let team = await Team.findOne({ team_id: user.team_id, coach: user._id }); 
+    if (!req.body) res.status(400).send("No data provided."); 
+    else if (!req.body.name) res.status(400).send("No name provided"); 
+    else {
+      let exists = await WorkoutGroup.findOne({ name: req.body.name, team: team.team_id }); 
+      if (exists) res.status(400).send("Workout group already exists on this team"); 
+      else {
+        let group = await WorkoutGroup.create({
+          name: req.body.name, 
+          team_id: team.team_id, 
+          athletes: []
+        });
+        res.send(group); 
+      }
+    }
+  }
+});
 
 router.post('/roster/athlete/:id', authCheck, async (req, res) => {
   let user = await User.findById(req.userId)
