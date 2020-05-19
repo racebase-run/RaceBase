@@ -277,12 +277,6 @@ h3.event-header {
 
       </div>
 
-      <div v-if="isLoggedIn">
-        <nuxt-link class="mt-1 mb-2 btn btn-default btn-small d-inline-block" to="/new/result">
-          Add Result <fa icon="plus"></fa>
-        </nuxt-link>
-      </div>
-
       <div class="claim-info" v-if="!claimed">
         <div>
           Is this you? 

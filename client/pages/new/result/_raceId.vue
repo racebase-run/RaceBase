@@ -24,11 +24,12 @@ label {
   </div>
   <h4> 1. Find a race </h4>
   <div class="mb-3" v-if="!idParam"> Search for a race to add your result to. </div>
-  <SearchBar class="w-50 mb-3" v-model="searchInput" @search="search" v-if="!idParam"/>
-  <div v-for="race in races" class="d-flex align-items-center mb-2">
+  <SearchBar class="w-50 mb-3" v-model="searchInput" @search="search"/>
+  <div v-for="race in races" class="d-flex align-items-center mb-2" :key="race._id">
     <div
       v-if="curRace._id == race._id" 
       class="btn btn-primary btn-small mr-3" 
+      @click="deselectRace()"
     >
       Selected <fa icon="check"></fa>
     </div>
@@ -44,25 +45,16 @@ label {
     </nuxt-link>
     &nbsp; on {{ race.date }}
   </div>
-  <div v-if="idParam" class="d-flex align-items-center mb-2 mt-3">
-    <div
-      class="btn btn-primary btn-small mr-3" 
-    >
-      Selected <fa icon="check"></fa>
-    </div>
-    <nuxt-link :to="'/races/' + curRace._id">
-      {{ curRace.name }}
-    </nuxt-link>
-    &nbsp; on {{ curRace.date }}
-  </div>
-  <div v-else> 
+  <div> 
     Can't find the race you're looking for? Create one 
     <strong><nuxt-link to="/new/race"> here </nuxt-link></strong>
   </div>
   
   <div class="mt-4" v-if="curRace.name">
     <h4> 2. Choose your event </h4>
-    
+    <p class="mb-3"> 
+      *We use the event name to mark your PR's, so make sure it has the race distance in it (e.g. 5k, 1 mile) 
+    </p>
     <div class="d-flex align-items-center mb-3" v-if="events">
       <div 
         v-for="event in events" 
@@ -172,13 +164,13 @@ label {
 
   <div class="mt-4" v-if="result.time && result.place">
     <h4> 5. Who's result is this?  </h4>
-    <div>
+    <div v-if="user.athlete_id">
       <label class="form-check-label mb-3">
         <input 
           v-model="mine"
           :value="true" 
           type="radio"
-        /> Mine &nbsp; 
+        /> <span v-if="user.athlete_id"> Mine &nbsp; </span>
 
         <input 
           v-model="mine"
@@ -234,30 +226,33 @@ export default {
     }
   },
   components: { SearchBar }, 
+  middleware: 'auth', 
   async asyncData ({ params, $axios, store }) {
-    let user = store.state.auth.user
-    let curRace = {}
-    let raceName = ""
-    let events = {}
+    let user = store.state.auth.user;
+    let curRace = {};
+    let raceName = "";
+    let events = {};
+    let races = [];
 
     if (params.raceId) {
       try {
-          curRace = await $axios.$get('/race/' + params.raceId)
+        curRace = await $axios.$get('/race/' + params.raceId)
         raceName = curRace.name
-        events = await $axios.$get('/race/' + params.raceId + '/mens/events')
+        events = await $axios.$get('/race/' + params.raceId + '/events')
+        races.push(curRace);
       } catch (e) {
         console.log(e.response.data)
       }
     }
 
     return {
-      mine: true, 
+      mine: user.athlete_id ? true : false, 
       curRace: curRace,
       teamSearchInput: "",
       searchInput: "", 
       idParam: params.raceId,
-      races: {}, 
-      teams: {},
+      races: races, 
+      teams: [],
       events: events, 
       user: user,
       newEvent: "",
@@ -298,10 +293,10 @@ export default {
           this.teams = _.uniq(teams.docs, 'team')
         } catch (e) {
           console.log(e)
-          this.teams = {}
+          this.teams = []
         }
       } else {
-        this.teams = {}
+        this.teams = []
       }
     },
     selectRace: async function(id) {
@@ -333,13 +328,23 @@ export default {
       } catch (e) { console.log(e) }
     }, 
     createCustomTeam: function() {
-      this.result.team = this.newTeam.name
-      this.result.team_id = this.newTeam.team_id
+      this.result.team = this.newTeam.name;
+      this.result.team_id = this.newTeam.team_id;
+      this.teams.push({
+        team: this.result.team, 
+        team_id: this.result.team_id
+      });
     },
     removeTeam: function() {
       this.result.team = ''
       this.result.team_id = ''
-    }
+    }, 
+    deselectRace: function() {
+      console.log("hello!")
+      this.raceId = null
+      this.curRace = {}
+      this.events = []
+    }, 
   }, 
   watch: {
     curRace: function() {

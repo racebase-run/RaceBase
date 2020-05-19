@@ -19,6 +19,7 @@ export default {
     return {
       message: message
     }
-  }
+  }, 
+  middleware: 'auth'
 }
 </script>

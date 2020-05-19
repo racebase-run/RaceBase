@@ -12,7 +12,8 @@ td {
 <div class="mb-5"> 
 <SearchBar 
   v-model="searchInput"   
-  @search="search"         
+  @search="search"   
+  class="mb-3"      
 />
 
 <div class="results-container mb-3" v-if="Object.keys(results).length !== 0">
@@ -109,8 +110,9 @@ export default {
 
       for (const team of filtered) {
         try {
-          let taken = await this.$axios.$get('/team/public/' + team.team_id)
-          if (taken) team.taken = true
+          let taken = await this.$axios.$get('/team/public/' + team.team_id);
+          console.log(taken);
+          if (taken.coach) team.taken = true
         } catch (e) { console.log(e.response.data) }
       }
 

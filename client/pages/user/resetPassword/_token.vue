@@ -36,6 +36,7 @@ export default {
       token: token
     }
   }, 
+  middleware: 'auth',
   methods: {
     resetPassword: async function() {
       if (this.input.confirm == this.input.newPassword) {

@@ -185,38 +185,6 @@ form {
     </div>
   </div>
 
-  <div class="settings-section">
-    <div class="settings-label">Aliases <fa icon="user-plus"></fa></div>
-    <div class="aliases">
-      <div v-for="alias in user.aliases" 
-        v-if="user.aliases.length > 0"
-        class="alias tag mr-2">
-        {{ alias }} &nbsp;
-        <a @click="removeAlias(alias)">
-          <fa icon="times"></fa>
-        </a>
-      </div>
-    </div>
-    <form 
-      class="claim mb-2" 
-      @submit.prevent="addAlias()">
-      <div class="input-group">
-        <input v-model="aliasInput" pattern="^\S*$" type="text" id="athleteIDInput" 
-          placeholder="Alias Athlete ID (no spaces)" class="form-control" required></input>
-        <span class="input-group-append">
-          <input class="btn btn-primary" value="Claim" type="submit">
-        </span>
-      </div>
-    </form>
-
-    <div class="alert alert-success" v-if="aliasSuccess"> 
-      {{ aliasSuccess }} 
-    </div>
-    <div class="alert alert-danger" v-if="aliasFailure"> 
-      {{ aliasFailure }}
-    </div>
-  </div>
-
   <div class="settings-section danger-zone pb-4">
     <div class="settings-label">Danger Zone</div>
     <button class="btn btn-danger" @click="makeSure = true" v-if="!makeSure">

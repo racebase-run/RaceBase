@@ -57,13 +57,23 @@
     <div class="col-auto pr-1">
       <h3 class="mb-1"> {{ user.name }} </h3>
       <h4 class="athlete-id"> 
-        <span v-if="user.athlete_id">
-          <nuxt-link :to="'/athlete/' + user.athlete_id">
-            @{{ user.athlete_id }} 
-          </nuxt-link>
+        <span v-if="!user.coach"> 
+          <span v-if="user.athlete_id">
+            <nuxt-link :to="'/athlete/' + user.athlete_id">
+              @{{ user.athlete_id }} 
+            </nuxt-link>
+          </span>
+          <span v-if="!user.athlete_id">
+            <nuxt-link to="/user/settings/profile">Claim an ID</nuxt-link>
+          </span>
         </span>
-        <span v-if="!user.athlete_id">
-          <nuxt-link to="/user/settings/profile">Claim an ID</nuxt-link>
+        <span v-else> 
+          <span v-if="user.team_id"> 
+            <nuxt-link :to="'/team/' + user.team_id"> @{{user.team_id}} </nuxt-link> 
+          </span>
+          <span v-else> 
+            <nuxt-link to="/signup/coach/claim"> Claim a team </nuxt-link>
+          </span>
         </span>
       </h4>
     </div>

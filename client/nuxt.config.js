@@ -2,7 +2,7 @@ const pkg = require('./package')
 
 module.exports = {
   mode: 'universal',
-
+  buildDir: 'build',
   /*
   ** Headers of the page
   */

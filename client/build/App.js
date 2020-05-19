@@ -1,4 +1,13 @@
 import Vue from 'vue'
+
+import {
+  getMatchedComponentsInstances,
+  getChildrenComponentInstancesUsingFetch,
+  promisify,
+  globalHandleError,
+  sanitizeComponent
+} from './utils'
+
 import NuxtLoading from './components/nuxt-loading.vue'
 
 import '../node_modules/@fortawesome/fontawesome-svg-core/styles.css'
@@ -11,20 +20,19 @@ import _1a3ae264 from '../layouts/api.vue'
 import _6f6c098b from '../layouts/default.vue'
 import _2d2495d5 from '../layouts/home.vue'
 
-const layouts = { "_api": _1a3ae264,"_default": _6f6c098b,"_home": _2d2495d5 }
+const layouts = { "_api": sanitizeComponent(_1a3ae264),"_default": sanitizeComponent(_6f6c098b),"_home": sanitizeComponent(_2d2495d5) }
 
 export default {
-  head: {"title":"RaceBase - Community Sourced Running Results","meta":[{"charset":"utf-8"},{"name":"viewport","content":"width=device-width, initial-scale=1"},{"name":"apple-mobile-web-app-title","content":"RaceBase"},{"property":"og:site_name","content":"RaceBase - Community Sourced Running Results"},{"name":"description","hid":"Default description","content":"For runners, by runners. We believe that people are more important than any race, or time, or championship. Join us now!"},{"property":"og:type","content":"website"},{"name":"google-site-verification","content":"geBi-OI3u5aN15krO_W0_IF9zr0d-N1NNcF1PMOhafk"},{"name":"google-site-verification","content":"VZJIxi0RVW3oOKK8sasKKw8R-kaIu6xUTBuQln0ExLQ"}],"link":[{"rel":"icon","type":"image\u002Fpng","href":"\u002Fimages\u002Ffavicon-320.png"},{"rel":"apple-touch-icon","sizes":"180x180","href":"\u002Fimages\u002Ftouch-icon-iphone-retina.png"},{"rel":"apple-touch-icon","sizes":"167x167","href":"\u002Fimages\u002Ftouch-icon-iphone-retina.png"},{"rel":"stylesheet","href":"https:\u002F\u002Ffonts.googleapis.com\u002Fcss?family=Source+Code+Pro"}],"script":[{"src":"https:\u002F\u002Fcdn.jsdelivr.net\u002Fnpm\u002Fjquery@3.2.1\u002Fdist\u002Fjquery.min.js"},{"src":"https:\u002F\u002Fcdnjs.cloudflare.com\u002Fajax\u002Flibs\u002Fpopper.js\u002F1.14.6\u002Fumd\u002Fpopper.min.js","crossorigin":"anonymous"},{"src":"https:\u002F\u002Fstackpath.bootstrapcdn.com\u002Fbootstrap\u002F4.2.1\u002Fjs\u002Fbootstrap.min.js"}],"style":[]},
-
-  render(h, props) {
+  render (h, props) {
     const loadingEl = h('NuxtLoading', { ref: 'loading' })
+
     const layoutEl = h(this.layout || 'nuxt')
     const templateEl = h('div', {
       domProps: {
         id: '__layout'
       },
       key: this.layoutName
-    }, [ layoutEl ])
+    }, [layoutEl])
 
     const transitionEl = h('transition', {
       props: {
@@ -32,14 +40,14 @@ export default {
         mode: 'out-in'
       },
       on: {
-        beforeEnter(el) {
+        beforeEnter (el) {
           // Ensure to trigger scroll event after calling scrollBehavior
           window.$nuxt.$nextTick(() => {
             window.$nuxt.$emit('triggerScroll')
           })
         }
       }
-    }, [ templateEl ])
+    }, [templateEl])
 
     return h('div', {
       domProps: {
@@ -47,23 +55,30 @@ export default {
       }
     }, [
       loadingEl,
+
       transitionEl
     ])
   },
+
   data: () => ({
     isOnline: true,
+
     layout: null,
-    layoutName: ''
-  }),
-  beforeCreate() {
+    layoutName: '',
+
+    nbFetching: 0
+    }),
+
+  beforeCreate () {
     Vue.util.defineReactive(this, 'nuxt', this.$options.nuxt)
   },
-  created() {
+  created () {
     // Add this.$nuxt in child instances
     Vue.prototype.$nuxt = this
     // add to window so we can listen when ready
     if (process.client) {
       window.$nuxt = this
+
       this.refreshOnlineStatus()
       // Setup the listeners
       window.addEventListener('online', this.refreshOnlineStatus)
@@ -71,9 +86,11 @@ export default {
     }
     // Add $nuxt.error()
     this.error = this.nuxt.error
+    // Add $nuxt.context
+    this.context = this.$options.context
   },
 
-  mounted() {
+  mounted () {
     this.$loading = this.$refs.loading
   },
   watch: {
@@ -81,12 +98,17 @@ export default {
   },
 
   computed: {
-    isOffline() {
+    isOffline () {
       return !this.isOnline
+    },
+
+      isFetching() {
+      return this.nbFetching > 0
     }
   },
+
   methods: {
-    refreshOnlineStatus() {
+    refreshOnlineStatus () {
       if (process.client) {
         if (typeof window.navigator.onLine === 'undefined') {
           // If the browser doesn't support connection status reports
@@ -99,14 +121,65 @@ export default {
       }
     },
 
-    errorChanged() {
+    async refresh () {
+      const pages = getMatchedComponentsInstances(this.$route)
+
+      if (!pages.length) {
+        return
+      }
+      this.$loading.start()
+
+      const promises = pages.map((page) => {
+        const p = []
+
+        // Old fetch
+        if (page.$options.fetch && page.$options.fetch.length) {
+          p.push(promisify(page.$options.fetch, this.context))
+        }
+        if (page.$fetch) {
+          p.push(page.$fetch())
+        } else {
+          // Get all component instance to call $fetch
+          for (const component of getChildrenComponentInstancesUsingFetch(page.$vnode.componentInstance)) {
+            p.push(component.$fetch())
+          }
+        }
+
+        if (page.$options.asyncData) {
+          p.push(
+            promisify(page.$options.asyncData, this.context)
+              .then((newData) => {
+                for (const key in newData) {
+                  Vue.set(page.$data, key, newData[key])
+                }
+              })
+          )
+        }
+
+        return Promise.all(p)
+      })
+      try {
+        await Promise.all(promises)
+      } catch (error) {
+        this.$loading.fail(error)
+        globalHandleError(error)
+        this.error(error)
+      }
+      this.$loading.finish()
+    },
+
+    errorChanged () {
       if (this.nuxt.err && this.$loading) {
-        if (this.$loading.fail) this.$loading.fail()
-        if (this.$loading.finish) this.$loading.finish()
+        if (this.$loading.fail) {
+          this.$loading.fail(this.nuxt.err)
+        }
+        if (this.$loading.finish) {
+          this.$loading.finish()
+        }
       }
     },
 
-    setLayout(layout) {
+    setLayout (layout) {
       if (!layout || !layouts['_' + layout]) {
         layout = 'default'
       }
@@ -114,13 +187,14 @@ export default {
       this.layout = layouts['_' + layout]
       return this.layout
     },
-    loadLayout(layout) {
+    loadLayout (layout) {
       if (!layout || !layouts['_' + layout]) {
         layout = 'default'
       }
       return Promise.resolve(layouts['_' + layout])
     }
   },
+
   components: {
     NuxtLoading
   }

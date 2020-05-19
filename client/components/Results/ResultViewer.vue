@@ -38,16 +38,18 @@ h4 {
     <div class="title d-flex align-items-center mb-3 pb-3 pl-3"> 
         <h4 class="mb-0 mr-3"> Result Info </h4> 
         <nuxt-link class="btn btn-default mr-2" :to='"/result/edit/" + doc._id'>
-            Edit
+            Edit <fa icon="pencil-alt" class="ml-1" />
         </nuxt-link>
         <div v-if="root">
-            <button @click="confirm()" class="btn btn-default" v-if="!confirmed"> 
+            <button @click="confirmed=true" class="btn btn-default" v-if="!confirmed"> 
                 Delete <fa :icon="['fas', 'trash-alt']" class="ml-1"></fa> 
             </button>
             <div class="d-flex" v-else> 
-                <div class="mr-2"> Are you sure? </div>
-                <button @click="$emit('deleteResult', doc._id)" class="btn btn-danger">
-                    Confirm
+                <button @click="$emit('deleteResult', doc._id)" class="btn btn-danger mr-2">
+                    Confirm <fa icon="check"/>
+                </button>
+                <button @click="confirmed=false" class="btn btn-primary"> 
+                    Cancel <fa icon="times"/>
                 </button>
             </div>
         </div>
@@ -137,11 +139,6 @@ export default {
     data () {
         return {
             confirmed: false
-        }
-    },
-    methods: {
-        confirm: function() {
-            this.confirmed = true;
         }
     }
 }

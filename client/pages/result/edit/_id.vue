@@ -7,16 +7,30 @@
 .panel-title {
   font-weight: 600;
 }
+
+.back {
+  text-transform: uppercase;
+  font-weight: 500;
+  font-size: 13px;
+}
 </style>
 
 <template>
 <div class="container-fluid">
+  <div class="mt-3 pl-2 back"> 
+    <nuxt-link :to="'/races/' + input.race_id + '/' + input.event_id" class="mr-4"> 
+      <fa icon="arrow-left" class="mr-1"/> Back to results
+    </nuxt-link>
+    <nuxt-link :to="'/result/history/' + input._id"> 
+      <fa icon="book-open" class="mr-1"/> Revision History 
+    </nuxt-link>
+  </div>
   <div class="row">
     <form 
       class="card col-lg-6 col-md-10 ml-lg-3 mx-md-auto mx-sm-auto mt-3 px-0" 
       @submit.prevent="updateResult()"
     >
-      <div class="card-body">
+      <div class="card-body pb-0">
         <div class="d-flex"> 
           <h5 class="panel-title mb-3"> Edit Result </h5>
           <div class="ml-auto id"> {{ input._id }} </div>
@@ -113,19 +127,38 @@
           </div>
         </div>
 
-        <input 
-          v-if="!saved"
-          class="btn btn-primary" 
-          type="submit" 
-          value="Update" 
-        />
+        <div class="d-flex align-items-center mt-4"> 
 
-        <button
-          v-else
-          class="btn btn-primary"
-        >
-          Saved <fa :icon="['fas', 'check']" class="ml-1"/>
-        </button>
+          <input 
+            v-if="!saved"
+            class="btn btn-primary" 
+            type="submit" 
+            value="Update" 
+          />
+          <button
+            v-else
+            class="btn btn-primary"
+          >
+            Saved <fa :icon="['fas', 'check']" class="ml-1"/>
+          </button>
+
+          <div class="d-flex align-items-center ml-auto" v-if="confirm"> 
+            <button @click="deleteResult()" class="btn btn-danger mr-2"> 
+              Confirm <fa icon="check" class="ml-1" />
+            </button>
+            <button @click="confirm=false" class="btn btn-primary"> 
+              Cancel <fa icon="times" class="ml-1" />
+            </button>
+          </div>
+
+          <button v-else
+            class="btn btn-danger ml-auto"
+            @click="confirm=true"
+          >
+            Delete <fa :icon="['fas', 'trash']" class="ml-1"/>
+          </button>
+
+        </div>
 
         <p>
           <div class="alert alert-success" role="alert" v-if="success">{{ success }}</div>
@@ -147,7 +180,8 @@ export default {
             input: { ...result },
             original: { ...result },
             failure: false, 
-            success: false
+            success: false,
+            confirm: false
         }
     },
     methods: {
@@ -158,6 +192,10 @@ export default {
         }).catch((err) => {
           this.failure = err.response.data;
         });
+      }, 
+      deleteResult: async function() {
+        await this.$axios.delete('result/' + this.input._id);
+        this.$router.push({ path: '/races/' + this.input.race_id + '/' + this.input.event_id });
       }
     }, 
     computed: {

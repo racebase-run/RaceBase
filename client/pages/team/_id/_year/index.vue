@@ -103,8 +103,7 @@ export default {
     let curYear = params.year || years[0];
 
     let races = await $axios.$get('team/' + teamId + '/year/' + curYear + '/races'); 
-
-    if (!races)
+    if (Object.keys(races).length <= 0)
       redirect('/notfound')
     
     let athletes = []; 

@@ -99,6 +99,35 @@
     </div>
   </div>
 
+  <div class="settings-section mb-3" v-if="user.athlete_id">
+    <div class="settings-label">Aliases <fa icon="user-plus"></fa></div>
+    <div class="aliases">
+      <div v-for="alias in user.aliases" 
+        v-if="user.aliases.length > 0"
+        class="alias tag mr-2">
+        {{ alias }} &nbsp;
+        <a @click="removeAlias(alias)">
+          <fa icon="times"></fa>
+        </a>
+      </div>
+    </div>
+    <form 
+      class="claim mb-2" 
+      @submit.prevent="addAlias()">
+      <div class="input-group">
+        <input v-model="aliasInput" pattern="^\S*$" type="text" id="athleteIDInput" 
+          placeholder="Alias Athlete ID (no spaces)" class="form-control" required></input>
+        <span class="input-group-append">
+          <input class="btn btn-primary" value="Claim" type="submit">
+        </span>
+      </div>
+    </form>
+    <br>
+    <div class="alert alert-warning d-inline-block mt-2" v-if="aliasFailure"> 
+      {{ aliasFailure }}
+    </div> 
+  </div>
+
    <div class="settings-section" v-if="user.athlete_id">
     <div class="settings-label">Profile</div>
     <form class="profile mb-4 w-md-75 w-100" @submit.prevent="updateProfile()">
@@ -325,21 +354,15 @@ export default {
       this.user = { ...this.$store.state.auth.user }
       this.currentEmail = this.user.email
     },
-    addAlias: function() {
-      this.$axios.$post('user/' + this.id + '/alias/' + this.aliasInput)
-      .then((res) => {
-        if (res.failure) {
-          this.aliasSuccess = null
-          this.aliasFailure = res.failure
-        } else if (res.success) {
-          this.aliasFailure = null
-          this.aliasSuccess = res.success
-          this.loadUser()
-        }
-      }).catch((err) => {
+    addAlias: async function() {
+      try {
+        let res = await this.$axios.$post('user/' + this.id + '/alias/' + this.aliasInput);
+        this.loadUser(); 
+      } catch(err) {
+        console.log(err.response.data);
         this.aliasFailure = err.response.data
         this.aliasSuccess = null
-      })
+      }
     },
     removeAlias: function(alias) {
       this.$axios.$delete('user/' + this.id + '/alias/' + alias)

@@ -86,8 +86,11 @@
     </div>
     
     <div class="col-12 col-lg-auto mb-2 mt-1 my-lg-0 mx-auto mx-lg-0 actions row mt-md-3" :class="{visible: showMore}" v-if="isLoggedIn">
-      <nuxt-link to="/new/result" class="btn btn-primary mr-0 mr-sm-3 mb-3 mb-sm-0"> 
+      <nuxt-link to="/new/result" class="btn btn-primary mr-0 mr-sm-3 mb-3 mb-sm-0" v-if="!user.coach"> 
         Add Result <fa icon="plus"/> 
+      </nuxt-link>
+      <nuxt-link :to="user.coach ? '/team/home/coach' : '/team/home/athlete'" class="btn btn-primary mr-0 mr-sm-3 mb-3 mb-sm-0" v-if="user.team_id"> 
+        Your Team <fa :icon="['fas', 'users']" />
       </nuxt-link>
       <div class="user ml-2"> 
         <UserWidget :user="user" @logOut="logOut" class="mx-auto"/>

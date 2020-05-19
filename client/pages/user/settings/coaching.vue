@@ -68,6 +68,7 @@ export default {
       coachAccount: user.coach 
     }
   }, 
+  middleware: 'auth',
   methods: {
     unclaimTeam: async function() {
       let res = await this.$axios.$post('/user/unclaim/team')

@@ -124,6 +124,16 @@ export default {
       }
   },
   methods: {
+    getHistory: async function() {
+      let history = await this.$axios.$get('result/' + this.id + '/history');
+      let current = await this.$axios.$get('result/' + this.id);
+      for (var result of history) {
+        let authorInfo = await this.$axios.$get('user/' + result.author + '/info'); 
+        result.author = authorInfo; 
+      }
+      this.history = [ ...history ]; 
+      this.current = { ...current }; 
+    }, 
     formatDate: function(date) {
       return moment(date).format("MMMM D YYYY");
     }, 
@@ -132,12 +142,15 @@ export default {
     }, 
     revert: async function(i) {
       await this.$axios.post('result/' + this.history[i].document_id + '/revert/' + this.history[i].version);
+      this.getHistory(); 
+      this.confirmed = false; 
     }, 
     unconfirm: function(i) {
       this.confirmed.splice(i, 1, false);
     }, 
     deleteResult: async function(id) {
       await this.$axios.delete('result/' + id);
+      this.$router.push({ path: '/races/' + this.current.race_id + '/' + this.current.event_id });
     }
   }
 }
