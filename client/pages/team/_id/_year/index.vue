@@ -55,10 +55,12 @@ h4, h5 {
         {{ races[id].name }}
       </a>
     </div>
-    <div v-for="event in Object.keys(races[id].events)">
-      <nuxt-link :to="'/races/' + id + '/' + event + '/team/' + teamId"> 
-        {{ races[id].events[event].name }}
-      </nuxt-link>
+    <div v-if="Object.keys(races[id].events.length > 0)"> 
+      <div v-for="event in Object.keys(races[id].events)">
+        <nuxt-link :to="'/races/' + id + '/' + event + '/team/' + teamId"> 
+          {{ races[id].events[event].name }}
+        </nuxt-link>
+      </div>
     </div>
   </div>
 </div>
