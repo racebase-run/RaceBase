@@ -73,6 +73,20 @@ router.get('/:id/athletes', async (req, res) => {
   res.send(athletes)
 });
 
+router.get('/:id/active', authCheck, async (req, res) => {
+  let team = await Team.findOne({ team_id: req.params.id }); 
+  if (!team) res.status(400).send("No team with that ID exists"); 
+  if (req.userId != team.coach) res.status(403).send("You are not the coach of that team"); 
+  let data = await Result.find({ team_id: req.params.id }).distinct('athlete_id');
+  let active = []
+  // iterate through all distinct athlete ID's
+  for (const athlete of data) {
+    let user = await User.findOne({ athlete_id: athlete }).select({ password: 0, email: 0, emailVer: 0, referrer: 0 }).lean();
+    if (user) active.push(user); 
+  }
+  res.send(active); 
+}); 
+
 router.get('/:id/athletes/year/:year', async (req, res) => {
   let year = parseInt(req.params.year);
   let yearStart = moment(year + "-01-01").toDate();
@@ -89,11 +103,11 @@ router.get('/:id/athletes/year/:year', async (req, res) => {
 });
 
 router.get('/:id', authCheck, async (req, res) => {
-  let user = await User.findById(req.userId)
-  if (!user.coach) res.status(403).send("You're not a coach")
+  let user = await User.findById(req.userId);
+  if (!user.coach) res.status(403).send("You're not a coach");
   else {
-    let team = await Team.findOne({ team_id: req.params.id })
-    if (!team) res.status(400).send("That team doesn't exist")
+    let team = await Team.findOne({ team_id: req.params.id });
+    if (!team) res.status(400).send("That team doesn't exist");
     else if (team.coach != req.userId || user.team_id != team.team_id) 
       res.status(403).send("This isn't your team")
     else res.send(team)
@@ -286,13 +300,15 @@ router.post('/claim/:id', authCheck, async (req, res) => {
     if (!team) team = createTeam(req.userId, team_id);
 
     // check if there's a coach who owns this team already
-    let taken = await User.findOne({ team_id: team_id, coach: true })
-    if (taken) res.status(400).send("This team has already been claimed")
+    let taken = await User.findOne({ team_id: team_id, coach: true }); 
+    if (taken) res.status(400).send("This team has already been claimed");
 
     else {
-      user.team_id = team_id
-      await user.save()
-      res.send("Successfully claimed team")
+      user.team_id = team_id;
+      team.coach = req.userId;
+      await user.save();
+      await team.save();
+      res.send("Successfully claimed team");
     }
 
   } 
