@@ -178,7 +178,7 @@ export default {
   },
   async asyncData ({ $axios, store }) {
     let user = { ...store.state.auth.user }
-
+    console.log(user.coach);
     let team = await $axios.$get('/team/' + user.team_id)
     console.log(team)
     let roster = await $axios.$get('/team/' + user.team_id + '/roster')

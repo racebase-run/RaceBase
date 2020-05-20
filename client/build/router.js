@@ -20,13 +20,13 @@ const _2a02d174 = () => interopDefault(import('../pages/terms.vue' /* webpackChu
 const _fc9646e2 = () => interopDefault(import('../pages/welcome.vue' /* webpackChunkName: "pages/welcome" */))
 const _fff218c6 = () => interopDefault(import('../pages/api/blog/index.vue' /* webpackChunkName: "pages/api/blog/index" */))
 const _43129145 = () => interopDefault(import('../pages/api/routes/index.vue' /* webpackChunkName: "pages/api/routes/index" */))
-const _7f437062 = () => interopDefault(import('../pages/coach/schedule.vue' /* webpackChunkName: "pages/coach/schedule" */))
 const _e582c8fa = () => interopDefault(import('../pages/new/race.vue' /* webpackChunkName: "pages/new/race" */))
 const _5d01079f = () => interopDefault(import('../pages/races/notfound.vue' /* webpackChunkName: "pages/races/notfound" */))
 const _7812fa28 = () => interopDefault(import('../pages/signup/claim.vue' /* webpackChunkName: "pages/signup/claim" */))
 const _20d80169 = () => interopDefault(import('../pages/team/edit.vue' /* webpackChunkName: "pages/team/edit" */))
 const _369045ee = () => interopDefault(import('../pages/team/notfound.vue' /* webpackChunkName: "pages/team/notfound" */))
 const _40ad52b9 = () => interopDefault(import('../pages/team/rosters.vue' /* webpackChunkName: "pages/team/rosters" */))
+const _3edc4814 = () => interopDefault(import('../pages/team/schedule.vue' /* webpackChunkName: "pages/team/schedule" */))
 const _05689057 = () => interopDefault(import('../pages/user/settings/index.vue' /* webpackChunkName: "pages/user/settings/index" */))
 const _2694df7a = () => interopDefault(import('../pages/new/result/success.vue' /* webpackChunkName: "pages/new/result/success" */))
 const _cc34ee3a = () => interopDefault(import('../pages/resources/tools/pacezones.vue' /* webpackChunkName: "pages/resources/tools/pacezones" */))
@@ -154,10 +154,6 @@ export const routerOptions = {
     component: _43129145,
     name: "api-routes"
   }, {
-    path: "/coach/schedule",
-    component: _7f437062,
-    name: "coach-schedule"
-  }, {
     path: "/new/race",
     component: _e582c8fa,
     name: "new-race"
@@ -181,6 +177,10 @@ export const routerOptions = {
     path: "/team/rosters",
     component: _40ad52b9,
     name: "team-rosters"
+  }, {
+    path: "/team/schedule",
+    component: _3edc4814,
+    name: "team-schedule"
   }, {
     path: "/user/settings",
     component: _05689057,
