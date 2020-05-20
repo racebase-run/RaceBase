@@ -196,11 +196,11 @@ router.get('/:userId/isFollowing/:id', authCheck, function(req, res) {
 let sendVerificationEmail = async function(user, token, callback) {
   fs.readFile('./mail_templates/verify.hbs', 'utf8', (err, source) => {
     let template = Handlebars.compile(source)
-    let data = { emailToken: token, firstname: user.name.split(' ')[0] }
+    let data = { emailToken: token, firstname: user.name.split(' ')[0], url: process.env.PROD_URL }
     let content = template(data)
     const msg = {
       to: user.email,
-      from: { email: 'donotreply@racebase.io', name: 'RaceBase Accounts' },
+      from: { email: 'donotreply@' + process.env.PROD_URL, name: 'RaceBase Accounts' },
       subject: 'Verify your RaceBase account', 
       html: content
     };

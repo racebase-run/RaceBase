@@ -242,7 +242,8 @@ let sendInviteEmail = async function(email, coachname, firstname, joincode, team
       teamname: teamname, 
       coachname: coachname, 
       firstname: firstname, 
-      joincode: joincode
+      joincode: joincode, 
+      url: process.env.PROD_URL
     }
     let content = template(data)
     const msg = {
