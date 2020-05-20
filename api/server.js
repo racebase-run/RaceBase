@@ -42,7 +42,7 @@ async function initEvents() {
           date: result.date
         });
     }
-    await Result.update(query, { $set: { event_id: eventDoc.id }});
+    await Result.updateMany(query, { $set: { event_id: eventDoc.id }});
   }
   console.log("Done."); 
 }
@@ -60,7 +60,7 @@ if (cluster.isMaster) {
   }
 
   // Uncomment to create Event data from Results
-  // initEvents();
+  initEvents();
 
 } else {
 
