@@ -247,10 +247,10 @@ router.post('/forgotPassword', async (req, res) => {
   let user = await User.findOne({ email: req.body.email })
   if (!user) res.status(400).send("User does not exist!")
   let token = jwt.sign({ id: user._id }, config.secret, { expiresIn: 360 })
-  let link = "https://racebase.io/user/resetPassword/" + token
+  let link = "https://" + process.env.PROD_URL + "/user/resetPassword/" + token;
   const msg = {
     to: req.body.email, 
-    from: { email: 'donotreply@racebase.io', name: 'RaceBase Accounts' }, 
+    from: { email: 'donotreply@' + process.env.PROD_URL, name: 'RaceBase Accounts' }, 
     subject: 'Reset your RaceBase password', 
     html: '<p> Use the link below to reset your password (expires in 10 minutes): <br> <a href="' + link + '">Reset password</a></p>'
   }
