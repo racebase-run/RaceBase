@@ -317,7 +317,7 @@ router.post('/:id/profile_pic', parser.single("image"), authCheck, (req, res) =>
 
 router.post('/:id/brand_pic', parser.single("image"), authCheck, (req, res) => {
   User.findOne({ '_id' : req.params.id }, (err, user) => {
-    if (err)
+    if (err) 
       res.status(500).send(err)
 
     else {
@@ -327,6 +327,7 @@ router.post('/:id/brand_pic', parser.single("image"), authCheck, (req, res) => {
 
       user.brandPicUrl = req.file.url; 
       user.brandPic_id = req.file.public_id;
+
 
       user.save((err, data) => {
         if (err)

@@ -134,7 +134,7 @@ router.get('/:id/year/:year/races', async (req, res) => {
       races[result.race_id] = race;
     } else race = races[result.race_id]; 
   
-    if (!race.events[result.event_id]) {
+    if (!race.events[result.event_id] && result.event_id != undefined) {
       var event = await Event.findById(result.event_id);
       race.events[result.event_id] = event;
     }
