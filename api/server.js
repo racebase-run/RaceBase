@@ -28,18 +28,21 @@ async function initEvents() {
   });
 
   console.log("Initializing events database from current results"); 
-  let results = await Result.find({}); 
-  for (var result of results) {
-    let event = await Event.findOne({ race_id: result.race_id, name: result.event }); 
-    if (!event) {
-        event = await Event.create({ 
-          race_id: result.race_id, 
-          name: result.event, 
+  let events = await Result.aggregate([{"$group": { "_id": { event: "$event", race_id: "$race_id" } }}]); 
+  for (var event of events) {
+    if (!event._id.event) continue;
+    let curEvent = event._id;
+    let query = { race_id: curEvent.race_id, event: curEvent.event };
+    let eventDoc = await Event.findOne({ race_id: curEvent.race_id, name: curEvent.event }); 
+    let result = await Result.findOne(query);
+    if (!eventDoc) {
+        eventDoc = await Event.create({ 
+          race_id: curEvent.race_id, 
+          name: curEvent.event, 
           date: result.date
         });
     }
-    result.event_id = event._id; 
-    await result.save(); 
+    await Result.update(query, { $set: { event_id: eventDoc.id }});
   }
   console.log("Done."); 
 }
