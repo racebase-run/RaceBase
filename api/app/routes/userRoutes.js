@@ -64,13 +64,23 @@ router.get('/claimed/:athlete_id', function(req,res) {
 });
 
 router.get('/:id/info', async (req, res) => {
-  let user = await User.findById(req.params.id); 
-  let publicInfo = {
-    name: user.name || "Anonymous", 
-    athlete_id: user.athlete_id, 
-    _id: user._id
+  let user = await User.findById(req.params.id);
+  var publicInfo = {};
+  if (user) {
+    publicInfo = {
+      name: user.name || "Anonymous", 
+      athlete_id: user.athlete_id, 
+      _id: user._id
+    } 
+  } else {
+    publicInfo = {
+      name: "Anonymous", 
+      athlete_id: "", 
+      _id: ""
+    }
   }
-  res.send(user ? publicInfo : {});
+
+  res.send(publicInfo);
 });
 
 router.get('/metrics', authCheck, async (req, res) => {
