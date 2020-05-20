@@ -124,6 +124,9 @@ router.get('/:id/years', async (req, res) => {
 });
 
 router.get('/:id/year/:year/races', async (req, res) => {
+  let year = parseInt(req.params.year);
+  let yearStart = moment(year + "-01-01").toDate();
+  let yearEnd = moment(year + "-12-31").toDate();
   var results = await Result.find({ team_id: req.params.id, 'date': { $gte : yearStart, $lt: yearEnd }});
   var races = {}; 
   for (var result of results) {
