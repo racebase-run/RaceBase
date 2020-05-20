@@ -120,7 +120,8 @@ router.get('/:id/years', async (req, res) => {
   for (var year of Object.keys(years)) {
     if (years[year]) list.push(year); 
   }
-  res.send(list.sort((a, b) => { return a > b }));     
+  list.sort((a, b) => { return Number(b) - Number(a) })
+  res.send(list);     
 });
 
 router.get('/:id/year/:year/races', async (req, res) => {
