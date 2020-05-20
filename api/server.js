@@ -41,6 +41,7 @@ async function initEvents() {
     result.event_id = event._id; 
     await result.save(); 
   }
+  console.log("Done."); 
 }
 
 // configuration ===========================================
