@@ -20,8 +20,12 @@ router.get('/count', async function(req, res) {
 });
 
 router.get('/:id/history', async (req, res) => {
-  let changeHistory = await Change.find({ 'document_id' : req.params.id, 'type': 'result' }).sort({ 'version': -1 }); 
-  res.send(changeHistory); 
+  try {  
+    let changeHistory = await Change.find({ 'document_id' : req.params.id, 'type': 'result' }).sort({ 'version': -1 }); 
+    res.send(changeHistory);  
+  } catch (err) {
+    res.status(400).send(err); 
+  }
 });
 
 router.get('/:id/version/:number', async (req, res) => {
@@ -309,6 +313,24 @@ router.post('/:id/revert/:version', async (req, res) => {
     console.log(e);
   }
 
+});
+
+router.post('/:id/restore', async (req, res) => {
+  let result = await Result.findById(req.params.id); 
+  if (result) {
+    res.status(500).send("Result hasn't been deleted."); 
+    return;
+  }
+  let history = await Change.find({ "document_id" : req.params.id }).sort({ 'version': -1 }); 
+  if (!history || history.length == 0) { 
+    res.status(500).send("No history to restore."); 
+    return;
+  }
+  let latest = { ...history[0].document }; 
+  delete latest._id;
+  result = await Result.create({ ...latest }); 
+  await Change.updateMany({ "document_id": req.params.id }, { "document_id" : result._id }); 
+  res.send(result); 
 });
 
 // route to handle updating results
