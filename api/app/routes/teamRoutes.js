@@ -153,8 +153,12 @@ router.get('/:id/year/:year/races', async (req, res) => {
     } else race = races[result.race_id]; 
   
     if (!race.events[result.event_id] && result.event_id != undefined) {
-      var event = await Event.findById(result.event_id);
-      race.events[result.event_id] = event;
+      try {
+        var event = await Event.findById(result.event_id);
+        race.events[result.event_id] = event;
+      } catch (e) {
+        continue;
+      }
     }
   }
   res.send(races); 
