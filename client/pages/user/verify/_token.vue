@@ -16,6 +16,5 @@ export default {
       success: success
     }
   }, 
-  middleware: 'auth'
 }
 </script>
