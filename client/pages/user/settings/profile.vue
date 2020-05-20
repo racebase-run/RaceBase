@@ -348,6 +348,7 @@ export default {
     }
   },
   components: { ProfilePic, SettingsNav }, 
+  middleware: 'auth', 
   methods: {
     loadUser: async function() {
       await this.$store.dispatch('auth/fetchUser')

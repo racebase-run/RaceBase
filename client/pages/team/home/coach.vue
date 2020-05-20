@@ -18,7 +18,7 @@
     </div>
 
     <h5> Active Athletes </h5>
-    <div class="active section mb-4">
+    <div class="active section mb-4" v-if="active.length > 0">
       <div v-for="athlete in active" class="athlete p-2">
         <div class="d-flex align-items-center"> 
           <ProfilePic class="profile-pic mr-2" :url="athlete.profilePicUrl" />
@@ -55,6 +55,10 @@
           </div>
         </div>
       </div>
+    </div>
+
+    <div v-else class="mt-4"> 
+      <h1> No active athletes yet. </h1>
     </div>
 
   </div>
