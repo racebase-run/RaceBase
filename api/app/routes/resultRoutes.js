@@ -379,14 +379,12 @@ router.delete('/:_id', authCheck, function(req, res) {
   Result.findById(req.params._id, function(err, result) {
     if (!result) {
       res.status(400).send("No result with that ID found.")
-    } else if (result.user_id == req.userId || !result.user_id) {
+    } else {
       Result.remove({ _id: req.params._id}, function(err, result) {
         if (err)
           res.status(500).send(err);
         res.send("Successfully deleted result");
       });
-    } else {
-      res.status(403).send("You are not authorized to delete this result.");
     }
   });
 });
