@@ -40,17 +40,6 @@ ul {
     <ul v-else>
       <li> Claim an Athlete ID for more features </li>
     </ul>
-
-    <h5> Check out your <nuxt-link to="/user/log/week">Running Log</nuxt-link>: </h5>
-    <ul> 
-      <li> Log your weight routines </li>
-      <li> Enter multiple runs for a day </li>
-      <li> See your total mileage for the week </li>
-      <li> Plan out your mileage for the week </li>
-      <li> Add custom Daily Checkboxes to keep track of anything you want</li>
-      <li> Log your sleep and resting heart rate </li>
-      <li> See insights about your data </li>
-    </ul>
   
     <h5> Browse Results: </h5>
     <ul> 

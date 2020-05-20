@@ -20,7 +20,7 @@ ul {
   <ResultsSearch v-model="searchInput"/>
 
   <p> Or, create your own Athlete ID: </p>
-  <div class="input-group w-50">
+  <div class="input-group w-50 mb-5">
     <input v-model="custom" pattern="^\S*$" type="text" id="customInput" 
       placeholder="Athlete ID (no spaces)" class="form-control" />
 

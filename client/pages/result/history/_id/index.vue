@@ -11,6 +11,13 @@ h4 {
   text-transform: uppercase;
 }
 
+.btn-restore {
+  font-size: 13px;
+  font-weight: 500;
+  text-transform: uppercase;
+  padding: 3px 5px;
+}
+
 .deleted {
   border-bottom: 1px solid @light-grey;
 }
@@ -40,10 +47,13 @@ h4 {
 <template>
 <div class="p-4"> 
   <div v-if="!deleted && current"> 
-    <Viewer :doc="current" class="mb-4" :root="true" @deleteResult="deleteResult"/>
+    <Viewer :doc="current" class="mb-3" :root="true" @deleteResult="deleteResult"/>
   </div>
   <div class="deleted mb-3 pb-2" v-else> 
-    <h2> This result has been deleted. </h2>
+    <h2 class="d-flex align-items-center">
+      <span> This result has been deleted. </span>
+      <button class="btn btn-primary btn-restore ml-3" @click="restore()" v-if="history.length > 0"> Restore </button>
+    </h2>
   </div>
   <h2 class="mb-3"> Revision History </h2>
   <div class="table-container p-2">
@@ -71,7 +81,7 @@ h4 {
               {{ revision.author.name }}
             </div>
           </td>
-          <td v-if="revision.version != current.version">
+          <td v-if="revision.version != current.version && !deleted">
             <div class="d-flex"  v-if="confirmed[i]">
               <button class="btn btn-danger mr-2" @click="revert(i)">
                 Confirm 
@@ -151,6 +161,11 @@ export default {
     deleteResult: async function(id) {
       await this.$axios.delete('result/' + id);
       this.$router.push({ path: '/races/' + this.current.race_id + '/' + this.current.event_id });
+    },
+    restore: async function() {
+      let restored = await this.$axios.$post('result/' + this.id + '/restore'); 
+      if (restored)
+        this.$router.push({ path: '/result/history/' + restored._id }); 
     }
   }
 }
