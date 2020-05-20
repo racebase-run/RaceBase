@@ -119,15 +119,11 @@ export default {
   },
   methods : {
     updateResults: async function() {
-      let resultsData = await this.$axios
-        .$get(
-             'result/list/team/' 
-             + this.teamId 
-             + '/' 
-             + this.curYear 
-        )
-      if (resultsData)
-        this.results = resultsData
+      let races = await $axios.$get('team/' + teamId + '/year/' + curYear + '/races'); 
+      if (races) {
+        this.races = races;
+        this.race_ids = Object.keys(races);
+      }
     }
   }, 
   watch: {
