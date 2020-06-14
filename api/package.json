@@ -23,7 +23,7 @@
     "express-jwt": "^5.3.1",
     "fs": "0.0.1-security",
     "gray-matter": "^4.0.1",
-    "handlebars": "^4.1.0",
+    "handlebars": "^4.3.0",
     "jsonwebtoken": "^8.3.0",
     "jwks-rsa": "^1.2.1",
     "method-override": "latest",
