@@ -36,7 +36,7 @@
     "multer-storage-cloudinary": "^2.2.1",
     "nodemailer": "latest",
     "nodemailer-smtp-transport": "latest",
-    "npm": "^5.8.0",
+    "npm": "^6.13.4",
     "papaparse": "^4.6.1",
     "password-hash": "latest",
     "response-time": "^2.3.2",
