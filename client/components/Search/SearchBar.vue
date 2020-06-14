@@ -1,0 +1,34 @@
+<template>
+  <form class="search-form" @submit.prevent="$emit('search', true)">
+    <div class="input-group">
+      <input 
+        type="text" 
+        placeholder="Search..." 
+        v-model="interface" 
+        class="form-control"
+        @keyup="$emit('search', false)"
+      />
+      <div class="input-group-append">
+        <span class="input-group-text">
+          <fa icon="search" @click="$emit('search', true)"></fa>
+        </span>
+      </div>
+    </div>
+  </form>
+</template>
+
+<script> 
+export default {
+  props: ['value', 'search'], 
+  computed: {
+    interface: {
+      get() {
+        return this.value
+      },
+      set(val) {
+        this.$emit('input', val)
+      }
+    }
+  }
+}
+</script>
