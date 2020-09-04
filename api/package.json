@@ -40,7 +40,7 @@
     "papaparse": "^4.6.1",
     "password-hash": "latest",
     "response-time": "^2.3.2",
-    "showdown": "^1.8.6",
+    "showdown": "^1.9.1",
     "spdy": "^4.0.0",
     "underscore": "^1.9.1",
     "util": "^0.11.1",
