@@ -37,7 +37,7 @@
     "nodemailer": "latest",
     "nodemailer-smtp-transport": "latest",
     "npm": "^5.8.0",
-    "papaparse": "^4.6.1",
+    "papaparse": "^5.2.0",
     "password-hash": "latest",
     "response-time": "^2.3.2",
     "showdown": "^1.8.6",
