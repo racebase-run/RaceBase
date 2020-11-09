@@ -1,4 +1,4 @@
-name: Publish Docker image
+name: Publish API Docker image
 on:
   push:
     # Publish `master` as Docker `latest` image.
