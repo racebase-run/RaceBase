@@ -3,7 +3,7 @@ WORKDIR /usr/src/app
 COPY package.json .
 RUN npm install
 COPY . .
-ENV API_URL=https://api.race.breeze.software
+ENV API_URL=https://api.racebase.run
 ENV ROOT_URL=http://localhost:3000
 RUN npm run build
 EXPOSE 3000
